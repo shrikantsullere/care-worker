@@ -49,6 +49,11 @@ import AppraisalForm from "./Dashboard/Admin/AllForms/AppraisalForm";
 import MedicationManagementForm from "./Dashboard/Admin/AllForms/MedicationManagementForm";
 import ApplicationForm from "./Dashboard/Admin/AllForms/ApplicationForm";
 import CareWorkerShadowingForm from "./Dashboard/Admin/AllForms/CareWorkerShadowingForm";
+import CarePlanForm from "./Dashboard/Admin/AllForms/CarePlanForm";
+import TrainingMatrix from "./Dashboard/Admin/AllForms/TrainingMatrix";
+import ClientProfileForm from "./Dashboard/Admin/AllForms/ClientProfileForm";
+import UniteCareLtd from "./Dashboard/Admin/AllForms/UniteCareLtd";
+import InductionChecklist from "./Dashboard/Admin/AllForms/InductionChecklist";
 
 
 
@@ -119,6 +124,11 @@ function App() {
             <Route path="/admin/forms/application" element={<ApplicationForm />} />
             <Route path="/admin/forms/medication-management-form" element={<MedicationManagementForm />} />
             <Route path="/admin/forms/care-worker-shadowing" element={<CareWorkerShadowingForm />} />
+            <Route path="/admin/forms/care-plan" element={<CarePlanForm />} />
+            <Route path="/admin/forms/training-matrix" element={<TrainingMatrix />} />
+            <Route path="/admin/forms/client-profile-form" element={<ClientProfileForm />} />
+            <Route path="/admin/forms/unite-care-ltd-form" element={<UniteCareLtd />} />
+            <Route path="/admin/forms/induction-checklist-form" element={<InductionChecklist />} />
 
 
             {/* fallback */}
