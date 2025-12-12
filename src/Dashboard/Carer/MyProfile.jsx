@@ -226,8 +226,34 @@ const MyProfile = () => {
   
   // Styles
   const styles = {
-    profileContainer: { fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", color: '#333333', minHeight: '100vh', padding: '0' },
-    profileHeader: { backgroundColor: '#ffffff', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', padding: isMobile ? '15px' : '25px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: '0', zIndex: '100' },
+    // Main container - full width
+    profileContainer: { 
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", 
+      color: '#333333', 
+      minHeight: '100vh', 
+      padding: '0', 
+      width: '100%',
+      margin: '0',
+      boxSizing: 'border-box',
+      display: 'block'
+    },
+    
+    // Header - full width
+    profileHeader: { 
+      backgroundColor: '#ffffff', 
+      boxShadow: '0 2px 10px rgba(0,0,0,0.05)', 
+      padding: isMobile ? '15px' : '25px 30px', 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      position: 'sticky', 
+      top: '0', 
+      zIndex: '100', 
+      width: '100%',
+      margin: '0',
+      boxSizing: 'border-box'
+    },
+    
     headerLeft: { display: 'flex', alignItems: 'center' },
     profileAvatar: { width: isMobile ? '40px' : '60px', height: isMobile ? '40px' : '60px', borderRadius: '50%', backgroundColor: '#e3f2fd', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' },
     profileTitle: { fontSize: isMobile ? '20px' : '26px', fontWeight: '600', color: '#2c3e50', margin: '0' },
@@ -242,26 +268,86 @@ const MyProfile = () => {
     infoNotification: { backgroundColor: '#2196F3' },
     errorNotification: { backgroundColor: '#f44336' },
     
-    mobileIndicator: { display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '4px', margin: '0 15px 15px', color: '#6c757d', fontSize: '14px' },
+    // Main content - full width
+    profileContent: { 
+      width: '100%', 
+      padding: isMobile ? '15px' : '30px', 
+      boxSizing: 'border-box',
+      margin: '0',
+      display: 'block'
+    },
     
-    profileContent: { maxWidth: '900px', margin: '0 auto', padding: isMobile ? '15px' : '30px' },
+    // Section containers - full width
+    sectionContainer: { 
+      backgroundColor: '#ffffff', 
+      borderRadius: '12px', 
+      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)', 
+      padding: isMobile ? '15px' : '30px', 
+      marginBottom: isMobile ? '15px' : '30px', 
+      transition: 'all 0.3s ease', 
+      width: '100%', 
+      boxSizing: 'border-box',
+      margin: '0 0 ' + (isMobile ? '15px' : '30px') + ' 0'
+    },
     
-    sectionContainer: { backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)', padding: isMobile ? '15px' : '30px', marginBottom: isMobile ? '15px' : '30px', transition: 'all 0.3s ease' },
     sectionTitle: { fontSize: isMobile ? '18px' : '20px', fontWeight: '600', color: '#2c3e50', margin: '0 0 ' + (isMobile ? '15px' : '25px') + ' 0', paddingBottom: '10px', borderBottom: '2px solid #eaeaea', display: 'flex', alignItems: 'center' },
     sectionIcon: { marginRight: '10px', color: '#4285F4' },
     
-    formGrid: { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? '15px' : '30px' },
-    formGroup: { marginBottom: isMobile ? '15px' : '25px' },
+    // Form grid - full width
+    formGrid: { 
+      display: 'grid', 
+      gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', 
+      gap: isMobile ? '15px' : '30px', 
+      width: '100%',
+      boxSizing: 'border-box'
+    },
+    
+    formGroup: { 
+      marginBottom: isMobile ? '15px' : '25px', 
+      width: '100%',
+      boxSizing: 'border-box'
+    },
+    
     formLabel: { display: 'flex', alignItems: 'center', fontSize: isMobile ? '13px' : '14px', fontWeight: '500', color: '#6c757d', marginBottom: '8px' },
     formIcon: { marginRight: '10px', color: '#6c757d', fontSize: '16px' },
     formInput: { width: '100%', padding: isMobile ? '10px 12px' : '12px 15px', border: '1px solid #eaeaea', borderRadius: '8px', fontSize: isMobile ? '14px' : '16px', backgroundColor: '#f9f9f9', color: '#6c757d', cursor: 'not-allowed', boxSizing: 'border-box' },
     
-    certificateHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMobile ? '15px' : '25px', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '10px' : '0' },
+    certificateHeader: { 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      marginBottom: isMobile ? '15px' : '25px', 
+      flexDirection: isMobile ? 'column' : 'row', 
+      gap: isMobile ? '10px' : '0', 
+      width: '100%',
+      boxSizing: 'border-box'
+    },
+    
     uploadButton: { display: 'flex', alignItems: 'center', padding: isMobile ? '10px 15px' : '12px 20px', backgroundColor: '#4285F4', color: '#ffffff', border: 'none', borderRadius: '8px', fontSize: isMobile ? '13px' : '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 5px rgba(66, 133, 244, 0.2)', width: isMobile ? '100%' : 'auto', justifyContent: 'center' },
     fileInput: { display: 'none' },
     
-    certificateList: { marginTop: isMobile ? '15px' : '25px' },
-    certificateItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '15px' : '20px', border: '1px solid #eaeaea', borderRadius: '8px', marginBottom: isMobile ? '10px' : '15px', transition: 'all 0.2s ease', backgroundColor: '#ffffff', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '15px' : '0' },
+    certificateList: { 
+      marginTop: isMobile ? '15px' : '25px', 
+      width: '100%',
+      boxSizing: 'border-box'
+    },
+    
+    certificateItem: { 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      padding: isMobile ? '15px' : '20px', 
+      border: '1px solid #eaeaea', 
+      borderRadius: '8px', 
+      marginBottom: isMobile ? '10px' : '15px', 
+      transition: 'all 0.2s ease', 
+      backgroundColor: '#ffffff', 
+      flexDirection: isMobile ? 'column' : 'row', 
+      gap: isMobile ? '15px' : '0', 
+      width: '100%', 
+      boxSizing: 'border-box'
+    },
+    
     certificateInfo: { display: 'flex', alignItems: 'center', flex: '1', width: isMobile ? '100%' : 'auto' },
     certificateIcon: { marginRight: '15px', fontSize: '20px', color: '#6c757d' },
     certificateDetails: { flex: '1' },
@@ -272,7 +358,7 @@ const MyProfile = () => {
     downloadButton: { color: '#4285F4', border: '1px solid #4285F4' },
     removeButton: { color: '#f44336', border: '1px solid #f44336' },
     expiryBadge: { marginLeft: '10px', padding: '3px 8px', borderRadius: '12px', fontSize: isMobile ? '10px' : '11px', fontWeight: '600' },
-    emptyState: { textAlign: 'center', padding: isMobile ? '30px' : '40px', color: '#6c757d', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #eaeaea' },
+    emptyState: { textAlign: 'center', padding: isMobile ? '30px' : '40px', color: '#6c757d', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #eaeaea', width: '100%', boxSizing: 'border-box' },
     emptyStateIcon: { fontSize: isMobile ? '40px' : '48px', marginBottom: '15px', color: '#cccccc' },
     emptyStateText: { fontSize: isMobile ? '15px' : '16px', marginBottom: '10px' },
     emptyStateSubtext: { fontSize: isMobile ? '13px' : '14px', color: '#999999' }
@@ -320,14 +406,6 @@ const MyProfile = () => {
         </div>
       </header>
       
-      {/* Mobile View Indicator */}
-      {/* {isMobile && (
-        <div style={styles.mobileIndicator}>
-          <FaMobileAlt style={{marginRight: '5px'}} />
-          Mobile View - Scroll to see more
-        </div>
-      )}
-       */}
       {/* Notification */}
       <div 
         style={{

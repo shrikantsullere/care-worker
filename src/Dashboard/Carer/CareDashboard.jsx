@@ -3,7 +3,7 @@ import {
   FaFileAlt, FaClock, FaPen, FaCheckCircle, FaExclamationCircle, 
   FaBell, FaPlay, FaEdit, FaSignature, FaTimes, FaUser, FaCalendarAlt,
   FaFilter, FaSearch, FaAngleDown, FaAngleUp, FaMobileAlt, FaDownload, FaPrint,
-  FaBars, FaSignOutAlt, FaHome, FaClipboardList
+  FaBars, FaSignOutAlt, FaHome, FaClipboardList, FaForward
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
@@ -70,8 +70,7 @@ const CareDashboard = () => {
       { id: 2, name: 'Training Assessment', status: 'In Progress', action: 'Resume', dueDate: '2023-09-20', lastSavedData: { step: 2, data: { name: 'John Doe' } } },
       { id: 3, name: 'Medical Declaration', status: 'Pending', action: 'Start', dueDate: '2023-09-25' },
       { id: 4, name: 'Emergency Contact Form', status: 'Completed', action: 'View', dueDate: '2023-09-10', submissionDate: '2023-09-08' },
-      { id: 5, name: 'Code of Conduct', status: 'In Progress', action: 'Resume', dueDate: '2023-09-22', lastSavedData: { step: 1, data: { agreed: false } } },
-      { id: 6, name: 'Privacy Agreement', status: 'Pending Signature', action: 'Sign', dueDate: '2023-09-18' }
+      { id: 5, name: 'Code of Conduct', status: 'In Progress', action: 'Resume', dueDate: '2023-09-22', lastSavedData: { step: 1, data: { agreed: false } } }
     ]);
   }, []);
   
@@ -94,7 +93,7 @@ const CareDashboard = () => {
     setActiveModal(action);
   };
 
-  // Fixed signature pad handlers - Using approach from DocumentsPage
+  // Fixed signature pad handlers - Improved implementation
   const startDrawing = (e) => {
     if (!signaturePadRef.current) return;
     
@@ -107,8 +106,14 @@ const CareDashboard = () => {
     const ctx = canvas.getContext('2d');
     
     // Get coordinates properly for both mouse and touch events
-    const x = (e.clientX || e.touches[0].clientX) - rect.left;
-    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    let x, y;
+    if (e.type === 'touchstart') {
+      x = e.touches[0].clientX - rect.left;
+      y = e.touches[0].clientY - rect.top;
+    } else {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    }
     
     // Set up drawing context
     ctx.lineWidth = 2;
@@ -131,8 +136,14 @@ const CareDashboard = () => {
     const ctx = canvas.getContext('2d');
     
     // Get coordinates properly for both mouse and touch events
-    const x = (e.clientX || e.touches[0].clientX) - rect.left;
-    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    let x, y;
+    if (e.type === 'touchmove') {
+      x = e.touches[0].clientX - rect.left;
+      y = e.touches[0].clientY - rect.top;
+    } else {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    }
     
     // Draw line
     ctx.lineTo(x, y);
@@ -289,7 +300,7 @@ const CareDashboard = () => {
         logging: false
       });
       
-      // Remove the temporary div
+      // Remove temporary div
       document.body.removeChild(tempDiv);
       
       // Create PDF
@@ -337,8 +348,8 @@ const CareDashboard = () => {
       backgroundColor: '#F4F7FB',
       color: '#333333',
       minHeight: '100vh',
-      paddingTop: '80px', // Added padding to account for fixed navbar
-      padding: isMobile ? '10px' : isTablet ? '15px' : '20px',
+      paddingTop: '70px', // Added padding to account for fixed navbar
+      padding: isMobile ? '8px' : isTablet ? '12px' : '15px',
       maxWidth: '100%',
       overflowX: 'hidden',
       boxSizing: 'border-box'
@@ -351,17 +362,17 @@ const CareDashboard = () => {
       right: '0',
       zIndex: '1000',
       backgroundColor: '#ffffff',
-      borderRadius: isMobile ? '0' : '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: isMobile ? '10px 15px' : '15px 20px',
-      marginBottom: isMobile ? '15px' : '20px',
+      borderRadius: isMobile ? '0' : '8px',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+      padding: isMobile ? '8px 12px' : '10px 15px',
+      marginBottom: '0',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       boxSizing: 'border-box'
     },
     logo: {
-      fontSize: isMobile ? '18px' : '22px',
+      fontSize: isMobile ? '16px' : '20px',
       fontWeight: '700',
       color: '#1A1A1A',
       margin: '0',
@@ -375,16 +386,16 @@ const CareDashboard = () => {
     navActions: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px'
+      gap: '10px'
     },
     navButton: {
       background: 'none',
       border: 'none',
-      fontSize: isMobile ? '16px' : '18px',
+      fontSize: isMobile ? '14px' : '16px',
       color: '#6B7280',
       cursor: 'pointer',
-      padding: '8px',
-      borderRadius: '8px',
+      padding: '6px',
+      borderRadius: '6px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center'
@@ -402,36 +413,36 @@ const CareDashboard = () => {
       zIndex: '1000',
       display: 'flex',
       flexDirection: 'column',
-      padding: '20px'
+      padding: '15px'
     },
     mobileMenuItem: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px',
-      padding: '15px 0',
+      gap: '10px',
+      padding: '10px 0',
       borderBottom: '1px solid #eaeaea',
       cursor: 'pointer',
       color: '#1A1A1A',
-      fontSize: '16px'
+      fontSize: '14px'
     },
     mobileMenuClose: {
       position: 'absolute',
-      top: '15px',
-      right: '15px',
+      top: '10px',
+      right: '10px',
       background: 'none',
       border: 'none',
-      fontSize: '20px',
+      fontSize: '18px',
       cursor: 'pointer'
     },
     // Page Header
     pageHeader: {
-      marginBottom: isMobile ? '20px' : '30px',
+      marginBottom: isMobile ? '15px' : '20px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
     },
     pageTitle: {
-      fontSize: isMobile ? '24px' : '28px',
+      fontSize: isMobile ? '20px' : '24px',
       fontWeight: '600',
       color: '#2c3e50',
       margin: '0'
@@ -439,11 +450,11 @@ const CareDashboard = () => {
     userProfile: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px'
+      gap: '10px'
     },
     userAvatar: {
-      width: isMobile ? '35px' : '40px',
-      height: isMobile ? '35px' : '40px',
+      width: isMobile ? '30px' : '35px',
+      height: isMobile ? '30px' : '35px',
       borderRadius: '50%',
       backgroundColor: '#e3f2fd',
       display: 'flex',
@@ -452,54 +463,42 @@ const CareDashboard = () => {
       color: '#1976d2'
     },
     userName: {
-      fontSize: isMobile ? '14px' : '16px',
+      fontSize: isMobile ? '12px' : '14px',
       fontWeight: '500',
       color: '#2c3e50',
       display: isMobile ? 'none' : 'block'
     },
-    // Mobile View Indicator
-    mobileIndicator: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '10px',
-      backgroundColor: '#f5f5f5',
-      borderRadius: '8px',
-      marginBottom: '20px',
-      color: '#6c757d',
-      fontSize: '14px'
-    },
-    // Summary Cards Section - Fixed responsive layout
+    // Summary Cards Section - Reduced spacing
     summaryCardsContainer: {
       display: 'grid',
-      gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(240px, 1fr))',
-      gap: isMobile ? '15px' : isTablet ? '20px' : '25px',
-      marginBottom: isMobile ? '25px' : isTablet ? '30px' : '35px',
+      gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: isMobile ? '10px' : isTablet ? '15px' : '20px',
+      marginBottom: isMobile ? '15px' : isTablet ? '20px' : '25px',
       width: '100%',
       maxWidth: '100%',
       boxSizing: 'border-box'
     },
     summaryCard: {
       backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px',
       display: 'flex',
       alignItems: 'center',
       transition: 'transform 0.3s ease, box-shadow 0.3s ease',
       cursor: 'pointer',
       height: '100%',
-      minHeight: isMobile ? '100px' : isTablet ? '110px' : '120px',
+      minHeight: isMobile ? '80px' : isTablet ? '90px' : '100px',
       width: '100%',
       maxWidth: '100%',
       boxSizing: 'border-box',
       overflow: 'hidden'
     },
     summaryIcon: {
-      width: isMobile ? '50px' : isTablet ? '55px' : '60px',
-      height: isMobile ? '50px' : isTablet ? '55px' : '60px',
+      width: isMobile ? '40px' : isTablet ? '45px' : '50px',
+      height: isMobile ? '40px' : isTablet ? '45px' : '50px',
       borderRadius: '50%',
-      marginRight: isMobile ? '12px' : isTablet ? '14px' : '15px',
+      marginRight: isMobile ? '8px' : isTablet ? '10px' : '12px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -526,20 +525,20 @@ const CareDashboard = () => {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      minWidth: 0,
+      minWidth: '0',
       overflow: 'hidden'
     },
     summaryTitle: {
-      fontSize: isMobile ? '14px' : isTablet ? '15px' : '16px',
+      fontSize: isMobile ? '12px' : isTablet ? '13px' : '14px',
       fontWeight: '500',
-      margin: '0 0 5px 0',
+      margin: '0 0 3px 0',
       color: '#6c757d',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
     },
     summaryValue: {
-      fontSize: isMobile ? '22px' : isTablet ? '25px' : '28px',
+      fontSize: isMobile ? '18px' : isTablet ? '22px' : '24px',
       fontWeight: '700',
       margin: '0',
       color: '#2c3e50',
@@ -550,10 +549,10 @@ const CareDashboard = () => {
     // Notifications Section
     notificationsContainer: {
       backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px',
-      marginBottom: isMobile ? '25px' : isTablet ? '30px' : '35px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px',
+      marginBottom: isMobile ? '15px' : isTablet ? '20px' : '25px',
       width: '100%',
       maxWidth: '100%',
       boxSizing: 'border-box'
@@ -562,10 +561,10 @@ const CareDashboard = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: isMobile ? '15px' : isTablet ? '18px' : '20px'
+      marginBottom: isMobile ? '10px' : isTablet ? '12px' : '15px'
     },
     sectionTitle: {
-      fontSize: isMobile ? '18px' : isTablet ? '19px' : '20px',
+      fontSize: isMobile ? '16px' : isTablet ? '17px' : '18px',
       fontWeight: '600',
       color: '#2c3e50',
       margin: '0'
@@ -573,55 +572,55 @@ const CareDashboard = () => {
     toggleButton: {
       background: 'none',
       border: '1px solid #eaeaea',
-      fontSize: isMobile ? '12px' : isTablet ? '13px' : '14px',
+      fontSize: isMobile ? '10px' : isTablet ? '11px' : '12px',
       cursor: 'pointer',
       color: '#6c757d',
       display: 'flex',
       alignItems: 'center',
-      gap: '5px',
-      padding: isMobile ? '6px 10px' : isTablet ? '7px 11px' : '8px 12px',
+      gap: '3px',
+      padding: isMobile ? '4px 8px' : isTablet ? '5px 10px' : '6px 12px',
       borderRadius: '4px',
       transition: 'all 0.2s ease'
     },
     notificationsList: {
-      maxHeight: showNotifications ? '500px' : '0',
+      maxHeight: showNotifications ? '400px' : '0',
       overflow: 'hidden',
       transition: 'max-height 0.3s ease'
     },
     notificationItem: {
       display: 'flex',
       alignItems: 'flex-start',
-      padding: isMobile ? '12px 0' : isTablet ? '13px 0' : '15px 0',
+      padding: isMobile ? '8px 0' : isTablet ? '10px 0' : '12px 0',
       borderBottom: '1px solid #f1f1f1'
     },
     notificationIcon: {
-      marginRight: '15px',
-      fontSize: '18px'
+      marginRight: '10px',
+      fontSize: '16px'
     },
     notificationContent: {
       flex: '1'
     },
     notificationMessage: {
-      fontSize: isMobile ? '13px' : isTablet ? '13px' : '14px',
+      fontSize: isMobile ? '11px' : isTablet ? '12px' : '13px',
       color: '#333333',
-      marginBottom: '5px'
+      marginBottom: '3px'
     },
     notificationTime: {
-      fontSize: isMobile ? '11px' : isTablet ? '11px' : '12px',
+      fontSize: isMobile ? '10px' : isTablet ? '10px' : '11px',
       color: '#6c757d'
     },
     unreadNotification: {
       backgroundColor: '#f9f9f9',
       borderRadius: '4px',
-      padding: isMobile ? '12px' : isTablet ? '13px' : '15px',
+      padding: isMobile ? '8px' : isTablet ? '10px' : '12px',
       borderLeft: '3px solid #2196f3'
     },
     // Forms Table Section
     formsTableContainer: {
       backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px',
       display: isMobile ? 'none' : 'block',
       overflowX: 'auto',
       width: '100%',
@@ -632,24 +631,24 @@ const CareDashboard = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: isMobile ? '15px' : isTablet ? '18px' : '20px',
+      marginBottom: isMobile ? '10px' : isTablet ? '12px' : '15px',
       flexWrap: 'wrap',
-      gap: '15px'
+      gap: '10px'
     },
     searchInput: {
-      padding: isMobile ? '8px 12px' : isTablet ? '9px 13px' : '10px 15px',
+      padding: isMobile ? '6px 10px' : isTablet ? '7px 12px' : '8px 12px',
       border: '1px solid #eaeaea',
-      borderRadius: '8px',
-      fontSize: isMobile ? '13px' : isTablet ? '13px' : '14px',
-      width: isMobile ? '100%' : '300px',
+      borderRadius: '6px',
+      fontSize: isMobile ? '12px' : isTablet ? '12px' : '13px',
+      width: isMobile ? '100%' : '250px',
       maxWidth: '100%',
       boxSizing: 'border-box'
     },
     filterSelect: {
-      padding: isMobile ? '8px 12px' : isTablet ? '9px 13px' : '10px 15px',
+      padding: isMobile ? '6px 10px' : isTablet ? '7px 12px' : '8px 12px',
       border: '1px solid #eaeaea',
-      borderRadius: '8px',
-      fontSize: isMobile ? '13px' : isTablet ? '13px' : '14px',
+      borderRadius: '6px',
+      fontSize: isMobile ? '12px' : isTablet ? '12px' : '13px',
       backgroundColor: '#ffffff',
       boxSizing: 'border-box'
     },
@@ -660,39 +659,39 @@ const CareDashboard = () => {
     },
     tableHeader: {
       textAlign: 'left',
-      padding: isMobile ? '10px 12px' : isTablet ? '11px 13px' : '12px 15px',
+      padding: isMobile ? '6px 10px' : isTablet ? '8px 12px' : '10px 12px',
       fontWeight: '600',
       color: '#6c757d',
       borderBottom: '2px solid #eaeaea',
-      fontSize: isMobile ? '13px' : isTablet ? '13px' : '14px'
+      fontSize: isMobile ? '11px' : isTablet ? '12px' : '13px'
     },
     tableCell: {
-      padding: isMobile ? '10px 12px' : isTablet ? '11px 13px' : '12px 15px',
+      padding: isMobile ? '6px 10px' : isTablet ? '8px 12px' : '10px 12px',
       borderBottom: '1px solid #f1f1f1',
-      fontSize: isMobile ? '13px' : isTablet ? '13px' : '14px',
+      fontSize: isMobile ? '11px' : isTablet ? '12px' : '13px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
     },
     statusBadge: {
       display: 'inline-block',
-      padding: '4px 12px',
-      borderRadius: '20px',
-      fontSize: isMobile ? '10px' : isTablet ? '11px' : '12px',
+      padding: '2px 8px',
+      borderRadius: '12px',
+      fontSize: isMobile ? '9px' : isTablet ? '10px' : '11px',
       fontWeight: '600',
       textTransform: 'uppercase'
     },
     actionButton: {
-      padding: isMobile ? '5px 10px' : isTablet ? '5px 11px' : '6px 12px',
+      padding: isMobile ? '4px 8px' : isTablet ? '4px 10px' : '5px 10px',
       border: '1px solid',
-      borderRadius: '8px',
-      fontSize: isMobile ? '11px' : isTablet ? '11px' : '12px',
+      borderRadius: '6px',
+      fontSize: isMobile ? '10px' : isTablet ? '10px' : '11px',
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
       display: 'flex',
       alignItems: 'center',
-      gap: '5px',
+      gap: '3px',
       width: 'fit-content',
       backgroundColor: '#ffffff'
     },
@@ -700,16 +699,16 @@ const CareDashboard = () => {
     formsCardsContainer: {
       display: isMobile ? 'flex' : 'none',
       flexDirection: 'column',
-      gap: '15px',
+      gap: '8px',
       width: '100%',
       maxWidth: '100%',
       boxSizing: 'border-box'
     },
     formCard: {
       backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: '15px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+      padding: '10px',
       transition: 'all 0.2s ease',
       width: '100%',
       maxWidth: '100%',
@@ -719,10 +718,10 @@ const CareDashboard = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      marginBottom: '10px'
+      marginBottom: '8px'
     },
     cardTitle: {
-      fontSize: '16px',
+      fontSize: '14px',
       fontWeight: '500',
       color: '#2c3e50',
       margin: '0',
@@ -738,20 +737,20 @@ const CareDashboard = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: '10px'
+      marginBottom: '8px'
     },
     cardDate: {
       display: 'flex',
       alignItems: 'center',
-      gap: '5px',
-      fontSize: '12px',
+      gap: '3px',
+      fontSize: '11px',
       color: '#6c757d'
     },
     cardAction: {
       display: 'flex',
       justifyContent: 'flex-end'
     },
-    // Modal Styles - Updated z-index to be higher than navbar
+    // Modal Styles - Reduced spacing
     modalOverlay: {
       position: 'fixed',
       top: '0',
@@ -762,28 +761,28 @@ const CareDashboard = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 3000, // Increased z-index to be higher than navbar
-      padding: isMobile ? '10px' : '0'
+      zIndex: 3000,
+      padding: isMobile ? '5px' : '0'
     },
     modalContent: {
       backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      width: isMobile ? '100%' : '90%',
-      maxWidth: isMobile ? '100%' : '600px',
-      maxHeight: isMobile ? '95vh' : '90vh',
+      borderRadius: '8px',
+      width: isMobile ? '95%' : '85%',
+      maxWidth: isMobile ? '95%' : '550px',
+      maxHeight: isMobile ? '92vh' : '88vh',
       overflow: 'auto',
       position: 'relative',
       boxSizing: 'border-box'
     },
     modalHeader: {
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px',
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px',
       borderBottom: '1px solid #eaeaea',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
     },
     modalTitle: {
-      fontSize: isMobile ? '16px' : isTablet ? '18px' : '20px',
+      fontSize: isMobile ? '14px' : isTablet ? '16px' : '18px',
       fontWeight: '600',
       color: '#2c3e50',
       margin: '0'
@@ -791,26 +790,26 @@ const CareDashboard = () => {
     closeButton: {
       background: 'none',
       border: 'none',
-      fontSize: '18px',
+      fontSize: '16px',
       cursor: 'pointer',
       color: '#6c757d'
     },
     modalBody: {
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px'
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px'
     },
     modalFooter: {
-      padding: isMobile ? '15px' : isTablet ? '18px' : '20px',
+      padding: isMobile ? '10px' : isTablet ? '12px' : '15px',
       borderTop: '1px solid #eaeaea',
       display: 'flex',
       justifyContent: 'flex-end',
-      gap: '10px',
+      gap: '6px',
       flexWrap: 'wrap'
     },
     button: {
-      padding: '10px 20px',
-      borderRadius: '8px',
+      padding: isMobile ? '8px 12px' : isTablet ? '9px 15px' : '10px 20px',
+      borderRadius: '6px',
       border: 'none',
-      fontSize: '14px',
+      fontSize: isMobile ? '12px' : isTablet ? '13px' : '14px',
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all 0.2s ease'
@@ -823,19 +822,33 @@ const CareDashboard = () => {
       backgroundColor: '#f5f5f5',
       color: '#333333'
     },
+    passButton: {
+      backgroundColor: '#28a745',
+      color: '#ffffff',
+      padding: '8px 16px',
+      borderRadius: '6px',
+      border: 'none',
+      fontSize: '14px',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px'
+    },
     emptyState: {
       textAlign: 'center',
-      padding: '40px',
+      padding: '30px',
       color: '#6c757d'
     },
     emptyStateIcon: {
-      fontSize: '48px',
-      marginBottom: '15px',
+      fontSize: '36px',
+      marginBottom: '10px',
       color: '#cccccc'
     },
     emptyStateText: {
-      fontSize: '16px',
-      marginBottom: '10px'
+      fontSize: '14px',
+      marginBottom: '8px'
     },
     // Signature canvas styles - Fixed for better touch support
     signatureCanvasContainer: {
@@ -845,25 +858,31 @@ const CareDashboard = () => {
       overflow: 'hidden',
       backgroundColor: '#fff',
       cursor: 'crosshair',
-      touchAction: 'none' // Prevents scrolling when drawing on touch devices
+      touchAction: 'none'
     },
     signatureCanvas: {
       display: 'block',
       backgroundColor: '#fff',
       cursor: 'crosshair',
-      touchAction: 'none' // Prevents scrolling when drawing on touch devices
+      touchAction: 'none',
+      width: '100%',
+      height: '120px'
     }
   };
 
-  // Start Form Modal Component
-  const StartFormModal = ({ form, onClose, onSave }) => {
+  // Start Form Modal Component - Removed Keep button
+  const StartFormModal = ({ form, onClose, onSave, onPass }) => {
     const [formData, setFormData] = useState({});
     const [currentStep, setCurrentStep] = useState(0);
     const [autoSave, setAutoSave] = useState(true);
 
     const handleSave = () => {
-      // Simulate saving
       onSave(form.id, formData);
+      onClose();
+    };
+
+    const handlePass = () => {
+      onPass(form.id);
       onClose();
     };
 
@@ -876,15 +895,15 @@ const CareDashboard = () => {
               style={styles.closeButton}
               onClick={onClose}
             >
-              <FaTimes size={20} />
+              <FaTimes size={16} />
             </button>
           </div>
           
           <div style={styles.modalBody}>
-            <div style={{marginBottom: '20px'}}>
+            <div style={{marginBottom: '15px'}}>
               <h4>Form Introduction</h4>
               <p>This form contains following sections:</p>
-              <ul style={{paddingLeft: '20px'}}>
+              <ul style={{paddingLeft: '15px', fontSize: '12px'}}>
                 <li>Personal Information</li>
                 <li>Medical History</li>
                 <li>Emergency Contacts</li>
@@ -893,8 +912,8 @@ const CareDashboard = () => {
               <p>Estimated time to complete: 15-20 minutes</p>
             </div>
             
-            <div style={{marginBottom: '20px'}}>
-              <label style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+            <div style={{marginBottom: '15px'}}>
+              <label style={{display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px'}}>
                 <input 
                   type="checkbox" 
                   checked={autoSave}
@@ -904,9 +923,9 @@ const CareDashboard = () => {
               </label>
             </div>
 
-            <div style={{backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px'}}>
+            <div style={{backgroundColor: '#f5f5f5', padding: '12px', borderRadius: '4px', fontSize: '12px'}}>
               <h5>Important Notes:</h5>
-              <ul style={{paddingLeft: '20px', fontSize: '14px'}}>
+              <ul style={{paddingLeft: '15px', fontSize: '11px'}}>
                 <li>All fields marked with * are required</li>
                 <li>Your progress will be saved automatically</li>
                 <li>You can return to complete form later</li>
@@ -922,6 +941,12 @@ const CareDashboard = () => {
               Cancel
             </button>
             <button 
+              style={{...styles.passButton}}
+              onClick={handlePass}
+            >
+              <FaForward /> Pass
+            </button>
+            <button 
               style={{...styles.button, ...styles.primaryButton}} 
               onClick={handleSave}
             >
@@ -933,8 +958,8 @@ const CareDashboard = () => {
     );
   };
 
-  // Resume Form Modal Component
-  const ResumeFormModal = ({ form, onClose, onSave, onRestart }) => {
+  // Resume Form Modal Component - Removed Keep button
+  const ResumeFormModal = ({ form, onClose, onSave, onRestart, onPass }) => {
     const progress = 65; // Mock progress percentage
     const existingData = form.lastSavedData || {};
 
@@ -948,6 +973,11 @@ const CareDashboard = () => {
       onClose();
     };
 
+    const handlePass = () => {
+      onPass(form.id);
+      onClose();
+    };
+
     return (
       <div style={styles.modalOverlay}>
         <div style={styles.modalContent}>
@@ -957,24 +987,24 @@ const CareDashboard = () => {
               style={styles.closeButton}
               onClick={onClose}
             >
-              <FaTimes size={20} />
+              <FaTimes size={16} />
             </button>
           </div>
           
           <div style={styles.modalBody}>
-            <div style={{marginBottom: '20px'}}>
+            <div style={{marginBottom: '15px'}}>
               <h4>Form Progress</h4>
-              <div style={{backgroundColor: '#eaeaea', height: '10px', borderRadius: '5px', marginBottom: '10px'}}>
-                <div style={{backgroundColor: '#4caf50', height: '100%', width: `${progress}%`, borderRadius: '5px'}}></div>
+              <div style={{backgroundColor: '#eaeaea', height: '8px', borderRadius: '4px', marginBottom: '8px'}}>
+                <div style={{backgroundColor: '#4caf50', height: '100%', width: `${progress}%`, borderRadius: '4px'}}></div>
               </div>
               <p>Completed: {progress}%</p>
               <p>Last edited: 2 days ago</p>
               <p>Current section: Medical History</p>
             </div>
 
-            <div style={{backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px'}}>
+            <div style={{backgroundColor: '#f5f5f5', padding: '12px', borderRadius: '4px', fontSize: '12px'}}>
               <h5>Saved Information:</h5>
-              <ul style={{paddingLeft: '20px', fontSize: '14px'}}>
+              <ul style={{paddingLeft: '15px', fontSize: '11px'}}>
                 <li>Personal Information: Completed</li>
                 <li>Medical History: In Progress</li>
                 <li>Emergency Contacts: Not Started</li>
@@ -997,6 +1027,12 @@ const CareDashboard = () => {
               Restart Form
             </button>
             <button 
+              style={{...styles.passButton}}
+              onClick={handlePass}
+            >
+              <FaForward /> Pass
+            </button>
+            <button 
               style={{...styles.button, ...styles.primaryButton}} 
               onClick={handleResume}
             >
@@ -1008,26 +1044,111 @@ const CareDashboard = () => {
     );
   };
 
-  // Sign Form Modal Component - Fixed signature functionality
-  const SignFormModal = ({ form, onClose, onSign }) => {
+  // Sign Form Modal Component - Removed Keep button
+  const SignFormModal = ({ form, onClose, onSign, onPass }) => {
     const [signatureType, setSignatureType] = useState('draw');
     const [typedSignature, setTypedSignature] = useState('');
     const [agreed, setAgreed] = useState(false);
-    const [canvasSize, setCanvasSize] = useState({ width: 400, height: 150 });
+    const [canvasSize, setCanvasSize] = useState({ width: 400, height: 120 });
+    const [hasDrawn, setHasDrawn] = useState(false);
+    const signatureRef = useRef(null);
     
     // Update canvas size based on window width
     useEffect(() => {
       if (isMobile) {
-        setCanvasSize({ width: windowWidth - 60, height: 150 });
+        setCanvasSize({ width: windowWidth - 40, height: 120 });
       } else {
-        setCanvasSize({ width: 400, height: 150 });
+        setCanvasSize({ width: 400, height: 120 });
       }
     }, [windowWidth, isMobile]);
+    
+    // Initialize canvas when component mounts or when signature type changes
+    useEffect(() => {
+      if (signatureRef.current && signatureType === 'draw') {
+        const canvas = signatureRef.current;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#000';
+      }
+    }, [signatureType, canvasSize]);
 
     const handleSign = () => {
       const signature = signatureType === 'type' ? typedSignature : 'drawn_signature';
       onSign(form.id, signature);
       onClose();
+    };
+
+    const handlePass = () => {
+      onPass(form.id);
+      onClose();
+    };
+
+    // Improved signature pad handlers
+    const getCoordinates = (e) => {
+      if (!signatureRef.current) return { x: 0, y: 0 };
+      
+      const canvas = signatureRef.current;
+      const rect = canvas.getBoundingClientRect();
+      
+      let clientX, clientY;
+      if (e.type.includes('touch')) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    };
+    
+    const handleStart = (e) => {
+      if (!signatureRef.current) return;
+      
+      e.preventDefault();
+      setIsDrawing(true);
+      setHasDrawn(true);
+      
+      const canvas = signatureRef.current;
+      const ctx = canvas.getContext('2d');
+      const { x, y } = getCoordinates(e);
+      
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    };
+    
+    const handleMove = (e) => {
+      if (!isDrawing || !signatureRef.current) return;
+      
+      e.preventDefault();
+      
+      const canvas = signatureRef.current;
+      const ctx = canvas.getContext('2d');
+      const { x, y } = getCoordinates(e);
+      
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    };
+    
+    const handleEnd = (e) => {
+      if (e) e.preventDefault();
+      setIsDrawing(false);
+    };
+    
+    const clearSignature = () => {
+      if (!signatureRef.current) return;
+      
+      const canvas = signatureRef.current;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setHasDrawn(false);
     };
 
     return (
@@ -1039,22 +1160,22 @@ const CareDashboard = () => {
               style={styles.closeButton}
               onClick={onClose}
             >
-              <FaTimes size={20} />
+              <FaTimes size={16} />
             </button>
           </div>
           
           <div style={styles.modalBody}>
-            <div style={{marginBottom: '20px'}}>
+            <div style={{marginBottom: '15px'}}>
               <h4>Document Preview</h4>
-              <div style={{backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px', height: '200px', overflow: 'auto'}}>
-                <p>This is a preview of Privacy Agreement document...</p>
+              <div style={{backgroundColor: '#f5f5f5', padding: '12px', borderRadius: '4px', height: '150px', overflow: 'auto', fontSize: '12px'}}>
+                <p>This is a preview of document...</p>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
                 <p>By signing this document, you agree to our terms and conditions...</p>
               </div>
             </div>
 
-            <div style={{marginBottom: '20px'}}>
-              <label style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+            <div style={{marginBottom: '15px'}}>
+              <label style={{display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px'}}>
                 <input 
                   type="checkbox" 
                   checked={agreed}
@@ -1064,15 +1185,15 @@ const CareDashboard = () => {
               </label>
             </div>
 
-            <div style={{marginBottom: '20px'}}>
+            <div style={{marginBottom: '15px'}}>
               <h4>Signature Type</h4>
-              <div style={{display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap'}}>
+              <div style={{display: 'flex', gap: '8px', marginBottom: '10px', flexWrap: 'wrap'}}>
                 <button 
                   style={{
                     ...styles.button,
                     backgroundColor: signatureType === 'draw' ? '#1976d2' : '#f5f5f5',
                     color: signatureType === 'draw' ? '#ffffff' : '#333333',
-                    padding: isMobile ? '8px 15px' : '10px 20px'
+                    padding: '6px 12px'
                   }}
                   onClick={() => setSignatureType('draw')}
                 >
@@ -1083,7 +1204,7 @@ const CareDashboard = () => {
                     ...styles.button,
                     backgroundColor: signatureType === 'type' ? '#1976d2' : '#f5f5f5',
                     color: signatureType === 'type' ? '#ffffff' : '#333333',
-                    padding: isMobile ? '8px 15px' : '10px 20px'
+                    padding: '6px 12px'
                   }}
                   onClick={() => setSignatureType('type')}
                 >
@@ -1094,28 +1215,27 @@ const CareDashboard = () => {
               {signatureType === 'draw' ? (
                 <div style={styles.signatureCanvasContainer}>
                   <canvas 
-                    ref={signaturePadRef}
+                    ref={signatureRef}
                     width={canvasSize.width}
                     height={canvasSize.height}
                     style={styles.signatureCanvas}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseLeave={stopDrawing}
-                    onTouchStart={startDrawing}
-                    onTouchMove={draw}
-                    onTouchEnd={stopDrawing}
+                    onMouseDown={handleStart}
+                    onMouseMove={handleMove}
+                    onMouseUp={handleEnd}
+                    onTouchStart={handleStart}
+                    onTouchMove={handleMove}
+                    onTouchEnd={handleEnd}
                   />
                   <button 
                     style={{
                       position: 'absolute',
-                      top: '10px',
-                      right: '10px',
+                      top: '8px',
+                      right: '8px',
                       background: '#ffffff',
                       border: '1px solid #eaeaea',
                       borderRadius: '4px',
-                      padding: '5px 10px',
-                      fontSize: '12px',
+                      padding: '4px 8px',
+                      fontSize: '10px',
                       cursor: 'pointer',
                       zIndex: 10
                     }}
@@ -1132,16 +1252,16 @@ const CareDashboard = () => {
                   placeholder="Type your full name"
                   style={{
                     width: '100%', 
-                    padding: '10px', 
+                    padding: '8px', 
                     border: '1px solid #ccc', 
                     borderRadius: '4px',
-                    fontSize: '16px' // Larger font size for better mobile experience
+                    fontSize: '14px'
                   }}
                 />
               )}
             </div>
 
-            <div style={{fontSize: '12px', color: '#666'}}>
+            <div style={{fontSize: '12px', color: '#666', marginTop: '5px'}}>
               Signature Date: {new Date().toLocaleDateString()}
             </div>
           </div>
@@ -1154,9 +1274,20 @@ const CareDashboard = () => {
               Cancel
             </button>
             <button 
-              style={{...styles.button, ...styles.primaryButton}} 
+              style={{...styles.passButton}}
+              onClick={handlePass}
+            >
+              <FaForward /> Pass
+            </button>
+            <button 
+              style={{
+                ...styles.button, 
+                ...styles.primaryButton,
+                opacity: (!agreed || (signatureType === 'draw' && !hasDrawn) || (signatureType === 'type' && !typedSignature)) ? 0.5 : 1,
+                cursor: (!agreed || (signatureType === 'draw' && !hasDrawn) || (signatureType === 'type' && !typedSignature)) ? 'not-allowed' : 'pointer'
+              }} 
               onClick={handleSign}
-              disabled={!agreed || (signatureType === 'type' && !typedSignature)}
+              disabled={!agreed || (signatureType === 'draw' && !hasDrawn) || (signatureType === 'type' && !typedSignature)}
             >
               Submit Signature
             </button>
@@ -1166,8 +1297,8 @@ const CareDashboard = () => {
     );
   };
 
-  // View Form Modal Component
-  const ViewFormModal = ({ form, onClose, onPrint, onDownload }) => {
+  // View Form Modal Component - PRINT BUTTON REMOVED
+  const ViewFormModal = ({ form, onClose, onDownload }) => {
     return (
       <div style={styles.modalOverlay}>
         <div style={styles.modalContent}>
@@ -1177,32 +1308,29 @@ const CareDashboard = () => {
               style={styles.closeButton}
               onClick={onClose}
             >
-              <FaTimes size={20} />
+              <FaTimes size={16} />
             </button>
           </div>
           
           <div style={styles.modalBody}>
-            <div style={{marginBottom: '20px'}}>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-                <h4>Form Details</h4>
+            <div style={{marginBottom: '15px'}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
+                <h4 style={{margin: 0}}>Form Details</h4>
                 <span style={{...styles.statusBadge, ...getStatusBadgeStyle(form.status)}}>
                   {form.status}
                 </span>
               </div>
               
-              <div style={{backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px', height: '300px', overflow: 'auto'}}>
-                <h5>Background Check Form</h5>
+              <div style={{backgroundColor: '#f5f5f5', padding: '12px', borderRadius: '4px', height: '250px', overflow: 'auto', fontSize: '12px'}}>
+                <h5>Form Content</h5>
                 <p><strong>Name:</strong> John Doe</p>
                 <p><strong>Date of Birth:</strong> 01/01/1980</p>
                 <p><strong>Address:</strong> 123 Main St, City, State</p>
                 <p><strong>Phone:</strong> (555) 123-4567</p>
                 <p><strong>Email:</strong> john.doe@example.com</p>
-                <hr style={{margin: '15px 0'}} />
-                <h5>Background Check Results</h5>
-                <p><strong>Criminal Record:</strong> Clear</p>
-                <p><strong>Reference Check:</strong> Passed</p>
-                <p><strong>Employment Verification:</strong> Verified</p>
-                <hr style={{margin: '15px 0'}} />
+                <hr style={{margin: '10px 0'}} />
+                <h5>Form Results</h5>
+                <p><strong>Status:</strong> {form.status}</p>
                 <p><strong>Submitted on:</strong> {form.submissionDate}</p>
                 <p><strong>Approved by:</strong> Admin User</p>
               </div>
@@ -1216,13 +1344,7 @@ const CareDashboard = () => {
             >
               Close
             </button>
-            <button 
-              style={{...styles.button, ...styles.secondaryButton}} 
-              onClick={() => onPrint(form.id)}
-            >
-              <FaPrint style={{marginRight: '5px'}} />
-              Print
-            </button>
+            {/* PRINT BUTTON REMOVED HERE */}
             <button 
               style={{...styles.button, ...styles.primaryButton}} 
               onClick={() => onDownload(form.id)}
@@ -1340,19 +1462,11 @@ const CareDashboard = () => {
         <h1 style={styles.pageTitle}>Care Worker Dashboard</h1>
         <div style={styles.userProfile}>
           <div style={styles.userAvatar}>
-            <FaUser size={isMobile ? 18 : 20} />
+            <FaUser size={isMobile ? 16 : 18} />
           </div>
           <span style={styles.userName}>John Doe</span>
         </div>
       </header>
-
-      {/* Mobile View Indicator */}
-      {/* {isMobile && (
-        <div style={styles.mobileIndicator}>
-          <FaMobileAlt style={{marginRight: '5px'}} />
-          Mobile View - Scroll to see more
-        </div>
-      )} */}
 
       <main>
         {/* Summary Cards Section */}
@@ -1360,16 +1474,16 @@ const CareDashboard = () => {
           <div 
             style={styles.summaryCard}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
             }}
           >
             <div style={{...styles.summaryIcon, ...styles.formsCompletedIcon}}>
-              <FaCheckCircle size={isMobile ? 24 : 28} />
+              <FaCheckCircle size={isMobile ? 20 : 24} />
             </div>
             <div style={styles.summaryInfo}>
               <h3 style={styles.summaryTitle}>Forms Completed</h3>
@@ -1380,16 +1494,16 @@ const CareDashboard = () => {
           <div 
             style={styles.summaryCard}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
             }}
           >
             <div style={{...styles.summaryIcon, ...styles.formsPendingIcon}}>
-              <FaClock size={isMobile ? 24 : 28} />
+              <FaClock size={isMobile ? 20 : 24} />
             </div>
             <div style={styles.summaryInfo}>
               <h3 style={styles.summaryTitle}>Forms Pending</h3>
@@ -1400,16 +1514,16 @@ const CareDashboard = () => {
           <div 
             style={styles.summaryCard}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
             }}
           >
             <div style={{...styles.summaryIcon, ...styles.signaturesNeededIcon}}>
-              <FaPen size={isMobile ? 24 : 28} />
+              <FaPen size={isMobile ? 20 : 24} />
             </div>
             <div style={styles.summaryInfo}>
               <h3 style={styles.summaryTitle}>Signatures Needed</h3>
@@ -1420,16 +1534,16 @@ const CareDashboard = () => {
           <div 
             style={styles.summaryCard}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
             }}
           >
             <div style={{...styles.summaryIcon, ...styles.profileStatusIcon}}>
-              <FaUser size={isMobile ? 24 : 28} />
+              <FaUser size={isMobile ? 20 : 24} />
             </div>
             <div style={styles.summaryInfo}>
               <h3 style={styles.summaryTitle}>Profile Status</h3>
@@ -1480,7 +1594,7 @@ const CareDashboard = () => {
           
           {/* Search and Filter Controls */}
           <div style={styles.filterContainer}>
-            <div style={{display: 'flex', gap: '10px', alignItems: 'center', flex: 1}}>
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center', flex: 1}}>
               <FaSearch style={{color: '#6c757d'}} />
               <input
                 type="text"
@@ -1490,7 +1604,7 @@ const CareDashboard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
               <FaFilter style={{color: '#6c757d'}} />
               <select
                 style={styles.filterSelect}
@@ -1531,8 +1645,8 @@ const CareDashboard = () => {
                     </span>
                   </td>
                   <td style={styles.tableCell}>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-                      <FaCalendarAlt style={{color: '#6c757d', fontSize: '14px'}} />
+                    <div style={{display: 'flex', alignItems: 'center', gap: '3px'}}>
+                      <FaCalendarAlt style={{color: '#6c757d', fontSize: '12px'}} />
                       {form.dueDate}
                     </div>
                   </td>
@@ -1544,11 +1658,11 @@ const CareDashboard = () => {
                       }}
                       onClick={() => handleFormAction(form.id, form.action)}
                     >
-                      {form.action === 'Start' && <FaPlay size={12} />}
-                      {form.action === 'Resume' && <FaEdit size={12} />}
-                      {form.action === 'Sign' && <FaSignature size={12} />}
-                      {form.action === 'View' && <FaFileAlt size={12} />}
-                      {form.action}
+                      {form.action === 'Start' && <FaPlay size={10} />}
+                      {form.action === 'Resume' && <FaEdit size={10} />}
+                      {form.action === 'Sign' && <FaSignature size={10} />}
+                      {form.action === 'View' && <FaFileAlt size={10} />}
+                      {form.action === 'Pass' && <FaForward size={10} />}
                     </button>
                   </td>
                 </tr>
@@ -1565,7 +1679,7 @@ const CareDashboard = () => {
           
           {/* Search and Filter Controls */}
           <div style={styles.filterContainer}>
-            <div style={{display: 'flex', gap: '10px', alignItems: 'center', flex: 1}}>
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center', flex: 1}}>
               <FaSearch style={{color: '#6c757d'}} />
               <input
                 type="text"
@@ -1575,7 +1689,7 @@ const CareDashboard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
               <FaFilter style={{color: '#6c757d'}} />
               <select
                 style={styles.filterSelect}
@@ -1621,11 +1735,11 @@ const CareDashboard = () => {
                   }}
                   onClick={() => handleFormAction(form.id, form.action)}
                 >
-                  {form.action === 'Start' && <FaPlay size={12} />}
-                  {form.action === 'Resume' && <FaEdit size={12} />}
-                  {form.action === 'Sign' && <FaSignature size={12} />}
-                  {form.action === 'View' && <FaFileAlt size={12} />}
-                  {form.action}
+                  {form.action === 'Start' && <FaPlay size={10} />}
+                  {form.action === 'Resume' && <FaEdit size={10} />}
+                  {form.action === 'Sign' && <FaSignature size={10} />}
+                  {form.action === 'View' && <FaFileAlt size={10} />}
+                  {form.action === 'Pass' && <FaForward size={10} />}
                 </button>
               </div>
             </div>
@@ -1645,6 +1759,13 @@ const CareDashboard = () => {
               f.id === formId ? {...f, status: 'In Progress', action: 'Resume'} : f
             ));
           }}
+          onPass={(formId) => {
+            console.log('Passing form:', formId);
+            // Update form status in formsData
+            setFormsData(prev => prev.map(f => 
+              f.id === formId ? {...f, status: 'Completed', action: 'View'} : f
+            ));
+          }}
         />
       )}
 
@@ -1662,6 +1783,13 @@ const CareDashboard = () => {
               f.id === formId ? {...f, status: 'In Progress', action: 'Resume'} : f
             ));
           }}
+          onPass={(formId) => {
+            console.log('Passing form:', formId);
+            // Update form status in formsData
+            setFormsData(prev => prev.map(f => 
+              f.id === formId ? {...f, status: 'Completed', action: 'View'} : f
+            ));
+          }}
         />
       )}
 
@@ -1676,6 +1804,13 @@ const CareDashboard = () => {
               f.id === formId ? {...f, status: 'Completed', action: 'View'} : f
             ));
           }}
+          onPass={(formId) => {
+            console.log('Passing form:', formId);
+            // Update form status in formsData
+            setFormsData(prev => prev.map(f => 
+              f.id === formId ? {...f, status: 'Completed', action: 'View'} : f
+            ));
+          }}
         />
       )}
 
@@ -1683,10 +1818,6 @@ const CareDashboard = () => {
         <ViewFormModal 
           form={selectedForm}
           onClose={() => setActiveModal(null)}
-          onPrint={(formId) => {
-            console.log('Printing form:', formId);
-            window.print();
-          }}
           onDownload={(formId) => {
             console.log('Downloading form:', formId);
             // Generate and download PDF
