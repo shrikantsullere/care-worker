@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   FaUsers, FaFileAlt, FaCheckCircle, FaDownload, FaShieldAlt,
   FaCalendarAlt, FaArrowRight, FaBars, FaTimes, FaStar,
-  FaLaptop, FaMobileAlt, FaUserCheck, FaClipboardList, FaUserFriends
+  FaLaptop, FaMobileAlt, FaUserCheck, FaClipboardList, FaUserFriends,
+  FaClock, FaLock, FaChartLine, FaHandshake, FaRegSmile, FaRegPaperPlane,
+  FaCloudDownloadAlt, FaFileSignature, FaBell, FaSearch, FaCogs,
+  FaRegLightbulb, FaRegIdCard, FaRegFileAlt, FaRegCheckCircle,
+  FaFacebook, FaTwitter, FaLinkedin
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LendingPage.css';
@@ -13,6 +17,7 @@ const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [expandedTerms, setExpandedTerms] = useState({});
+  const [activeTab, setActiveTab] = useState('application');
 
   // Toggle function for terms
   const toggleTerm = (index) => {
@@ -40,30 +45,14 @@ const LandingPage = () => {
       question: "How is my data protected and secured?",
       answer: "We take data security seriously: 1) All data is encrypted using SSL/TLS protocols, 2) We comply with GDPR and UK data protection laws, 3) Regular security audits and penetration testing, 4) Secure data centers with 24/7 monitoring, 5) Role-based access control, 6) Automatic data backups, 7) We never share your data with third parties without explicit consent."
     },
-    // {
-    //   question: "What happens to my data if I cancel my subscription?",
-    //   answer: "If you cancel: 1) You have 30 days to download all your data, 2) After 30 days, your account and data will be permanently deleted, 3) We retain only anonymized usage statistics for service improvement, 4) You can reactivate your account within 30 days to restore all data, 5) We provide data export in multiple formats for easy migration."
-    // },
-    // {
-    //   question: "Can I customize the forms and policies?",
-    //   answer: "Yes, customization is available: 1) Add your organization's branding and logo, 2) Customize form fields to match your requirements, 3) Upload your own policies and documents, 4) Create custom workflows for different roles, 5) Set up automated email templates, 6) Professional Plan and above includes full customization support."
-    // },
-    // {
-    //   question: "How do you handle compliance and regulatory requirements?",
-    //   answer: "We ensure compliance through: 1) Regular updates to reflect CQC and regulatory changes, 2) Timestamped records of all acknowledgments, 3) Audit trails for all activities, 4) Secure document storage for required retention periods, 5) Easy generation of compliance reports, 6) Integration with existing compliance systems available on Enterprise plans."
-    // },
-    // {
-    //   question: "What kind of support do you provide?",
-    //   answer: "We offer comprehensive support: 1) 24/7 email support for all plans, 2) Phone support for Professional and Enterprise plans, 3) Dedicated account manager for Enterprise customers, 4) Extensive knowledge base and video tutorials, 5) Regular training webinars, 6) Priority response times based on your plan level."
-    // },
-    // {
-    //   question: "Can I integrate CareOnboard with other systems?",
-    //   answer: "Integration capabilities include: 1) API access for custom integrations, 2) Integration with popular HR and payroll systems, 3) Single Sign-On (SSO) support, 4) Zapier integration for 3000+ apps, 5) Webhook support for real-time data sync, 6) Custom integration services available for Enterprise customers."
-    // },
-    // {
-    //   question: "What is your refund and cancellation policy?",
-    //   answer: "Our policy is transparent: 1) 30-day money-back guarantee for new customers, 2) Cancel anytime with no penalties, 3) Refunds for unused portion of annual plans, 4) No long-term contracts, 5) Prorated refunds available in special circumstances, 6) Clear communication of any policy changes 30 days in advance."
-    // }
+    {
+      question: "What happens to my data if I cancel my subscription?",
+      answer: "If you cancel: 1) You have 30 days to download all your data, 2) After 30 days, your account and data will be permanently deleted, 3) We retain only anonymized usage statistics for service improvement, 4) You can reactivate your account within 30 days to restore all data, 5) We provide data export in multiple formats for easy migration."
+    },
+    {
+      question: "Can I customize the forms and policies?",
+      answer: "Yes, customization is available: 1) Add your organization's branding and logo, 2) Customize form fields to match your requirements, 3) Upload your own policies and documents, 4) Create custom workflows for different roles, 5) Set up automated email templates, 6) Professional Plan and above includes full customization support."
+    }
   ];
 
   // All 26 sections from your handbook
@@ -96,6 +85,31 @@ const LandingPage = () => {
     "Waste Disposal"
   ];
 
+  // Testimonials
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      position: "Director of Care",
+      organization: "Sunrise Care Homes",
+      image: "https://picsum.photos/seed/sarah/100/100.jpg",
+      text: "CareOnboard has transformed our onboarding process. What used to take weeks now takes days, and our compliance tracking is flawless."
+    },
+    {
+      name: "Michael Chen",
+      position: "Operations Manager",
+      organization: "Comfort Living Care",
+      image: "https://picsum.photos/seed/michael/100/100.jpg",
+      text: "The automated reference collection feature alone saved us hours of administrative work. The platform is intuitive and our staff love using it."
+    },
+    {
+      name: "Emma Williams",
+      position: "HR Manager",
+      organization: "ElderCare Solutions",
+      image: "https://picsum.photos/seed/emma/100/100.jpg",
+      text: "We've reduced our paper usage by 100% since implementing CareOnboard. The compliance reporting has made our inspections stress-free."
+    }
+  ];
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -108,30 +122,20 @@ const LandingPage = () => {
     setMobileMenuOpen(false);
   };
 
+  const handleEmailSubmit = (e) => {
+    e.preventDefault();
+    // Handle email submission
+    console.log('Email submitted:', email);
+    setEmail('');
+    // Show success message or redirect
+    alert('Thank you for your interest! We will contact you soon.');
+  };
+
   return (
     <div className="app">
       {/* Header */}
-      <div className="header">
-        {/* Navigation with inline CSS */}
-        <nav 
-          style={{
-            backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            boxShadow: isScrolled ? '0 4px 6px rgba(0,0,0,0.1)' : '0 2px 6px rgba(0,0,0,0.08)',
-            borderRadius: '50px',
-            margin: '0 20px',
-            padding: '10px 20px',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            right: '0',
-            zIndex: '1000',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+        <nav className="navbar">
           <div className="container">
             <div className="nav-content">
               <div className="logo">
@@ -139,81 +143,32 @@ const LandingPage = () => {
                 <span className="logo-subtitle">Digital Onboarding for Care Workers</span>
               </div>
 
-              <div 
-                className="nav-menu d-none d-lg-flex"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2rem'
-                }}
-              >
+              <div className="nav-menu d-none d-lg-flex">
                 <a 
                   href="#features" 
                   className="nav-item"
-                  style={{
-                    position: 'relative',
-                    color: '#1A1A1A',
-                    textDecoration: 'none',
-                    fontWeight: '500',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    cursor: 'pointer',
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}
                   onClick={() => scrollToSection('features')}
                 >
                   Features
                 </a>
                 <a 
+                  href="#testimonials" 
+                  className="nav-item"
+                  onClick={() => scrollToSection('testimonials')}
+                >
+                  Testimonials
+                </a>
+                <a 
                   href="#terms" 
                   className="nav-item"
-                  style={{
-                    position: 'relative',
-                    color: '#1A1A1A',
-                    textDecoration: 'none',
-                    fontWeight: '500',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    cursor: 'pointer',
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}
                   onClick={() => scrollToSection('terms')}
                 >
-                  Terms & Conditions
+                  FAQ
                 </a>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="nav-buttons">
                   <button 
                     className="login-btn"
-                    style={{
-                      background: 'transparent',
-                      border: '2px solid #3182CE',
-                      padding: '8px 18px',
-                      borderRadius: '8px',
-                      color: '#3182CE',
-                      fontWeight: '600',
-                      transition: '0.25s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#3182CE';
-                      e.target.style.color = '#FFFFFF';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                      e.target.style.color = '#3182CE';
-                    }}
                     onClick={() => window.location.href = "/login"}
                   >
                     Login
@@ -221,23 +176,6 @@ const LandingPage = () => {
                   
                   <button 
                     className="signup-btn"
-                    style={{
-                      background: '#3182CE',
-                      border: '2px solid #3182CE',
-                      padding: '8px 18px',
-                      borderRadius: '8px',
-                      color: 'white',
-                      fontWeight: '600',
-                      transition: '0.25s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#2563EB';
-                      e.target.style.borderColor = '#2563EB';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = '#3182CE';
-                      e.target.style.borderColor = '#3182CE';
-                    }}
                     onClick={() => window.location.href = "/signup"}
                   >
                     Sign Up
@@ -247,17 +185,6 @@ const LandingPage = () => {
 
               <button 
                 className="mobile-menu-btn d-lg-none"
-                style={{
-                  display: 'none',
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  color: '#1A1A1A',
-                  cursor: 'pointer',
-                  padding: '0.5rem',
-                  borderRadius: '8px',
-                  transition: 'all 0.3s ease'
-                }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <FaTimes /> : <FaBars />}
@@ -265,13 +192,14 @@ const LandingPage = () => {
             </div>
           </div>
         </nav>
-      </div>
+      </header>
       
       {/* Mobile Menu */}
       <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-menu-content">
           <a href="#features" onClick={() => scrollToSection('features')}>Features</a>
-          <a href="#terms" onClick={() => scrollToSection('terms')}>Terms & Conditions</a>
+          <a href="#testimonials" onClick={() => scrollToSection('testimonials')}>Testimonials</a>
+          <a href="#terms" onClick={() => scrollToSection('terms')}>FAQ</a>
 
           <button 
             className="login-btn mobile-login-btn"
@@ -285,13 +213,6 @@ const LandingPage = () => {
             onClick={() => window.location.href = "/signup"}
           >
             Sign Up
-          </button>
-
-          <button 
-            className="btn btn-primary mobile-demo-btn"
-            onClick={() => scrollToSection('demo')}
-          >
-            Book a Demo
           </button>
         </div>
       </div>
@@ -310,7 +231,7 @@ const LandingPage = () => {
                   Digital Onboarding for Care Workers
                 </h1>
                 <p className="hero-subtitle">
-                  Employment forms, references, and all  health & safety policies — completed digitally, downloadable in PDF, Word & Excel.
+                  Employment forms, references, and all health & safety policies — completed digitally, downloadable in PDF, Word & Excel.
                 </p>
 
                 <div className="hero-buttons">
@@ -319,15 +240,29 @@ const LandingPage = () => {
                     onClick={() => scrollToSection('demo')}
                   >
                     <FaCalendarAlt className="me-2" />
-                    See Live Demo
+                    Request a Demo
                   </button>
                   <button 
                     className="btn btn-outline-secondary btn-lg"
-                    onClick={() => scrollToSection('terms')}
+                    onClick={() => scrollToSection('how-it-works')}
                   >
-                    View Terms & Conditions
                     <FaArrowRight className="ms-2" />
                   </button>
+                </div>
+
+                <div className="hero-stats">
+                  <div className="stat-item">
+                    <h3>500+</h3>
+                    <p>Care Organizations</p>
+                  </div>
+                  <div className="stat-item">
+                    <h3>10,000+</h3>
+                    <p>Care Workers Onboarded</p>
+                  </div>
+                  <div className="stat-item">
+                    <h3>98%</h3>
+                    <p>Customer Satisfaction</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -357,25 +292,146 @@ const LandingPage = () => {
           <div className="row">
             <div className="col-md-4 mb-4">
               <div className="feature-card">
-                <FaFileAlt className="feature-icon text-primary" />
+                <div className="feature-icon-wrapper">
+                  <FaFileAlt className="feature-icon text-primary" />
+                </div>
                 <h3>Employment Application</h3>
                 <p>Digital form for personal info, experience, emergency contact & e-signature</p>
+                <ul className="feature-list">
+                  <li>Customizable form fields</li>
+                  <li>Auto-save functionality</li>
+                  <li>Document upload capability</li>
+                </ul>
               </div>
             </div>
             <div className="col-md-4 mb-4">
               <div className="feature-card">
-                <FaUserFriends className="feature-icon text-success" />
+                <div className="feature-icon-wrapper">
+                  <FaUserFriends className="feature-icon text-success" />
+                </div>
                 <h3>Auto Reference Collection</h3>
                 <p>Care Workers add referee emails → system auto-sends form → tracks completion</p>
+                <ul className="feature-list">
+                  <li>Automated reminders</li>
+                  <li>Reference verification</li>
+                  <li>Status tracking dashboard</li>
+                </ul>
               </div>
             </div>
             <div className="col-md-4 mb-4">
               <div className="feature-card">
-                <FaShieldAlt className="feature-icon text-orange" />
+                <div className="feature-icon-wrapper">
+                  <FaShieldAlt className="feature-icon text-orange" />
+                </div>
                 <h3>Safety Policies</h3>
                 <p>All sections from your handbook as digital acknowledgments with e-signature</p>
+                <ul className="feature-list">
+                  <li>26 compliance sections</li>
+                  <li>Timestamped records</li>
+                  <li>Audit-ready reports</li>
+                </ul>
               </div>
             </div>
+          </div>
+
+          <div className="row mt-4">
+            <div className="col-md-4 mb-4">
+              <div className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <FaCloudDownloadAlt className="feature-icon text-info" />
+                </div>
+                <h3>Document Generation</h3>
+                <p>Generate and download documents in multiple formats</p>
+                <ul className="feature-list">
+                  <li>PDF, Word & Excel formats</li>
+                  <li>Custom templates</li>
+                  <li>Bulk download option</li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-md-4 mb-4">
+              <div className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <FaBell className="feature-icon text-warning" />
+                </div>
+                <h3>Automated Reminders</h3>
+                <p>Automatic notifications for incomplete tasks</p>
+                <ul className="feature-list">
+                  <li>Email notifications</li>
+                  <li>Customizable schedule</li>
+                  <li>Escalation alerts</li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-md-4 mb-4">
+              <div className="feature-card">
+                <div className="feature-icon-wrapper">
+                  <FaLock className="feature-icon text-danger" />
+                </div>
+                <h3>Data Security</h3>
+                <p>Enterprise-grade security for all your data</p>
+                <ul className="feature-list">
+                  <li>SSL/TLS encryption</li>
+                  <li>GDPR compliant</li>
+                  <li>Regular security audits</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Compliance Sections */}
+      <section id="compliance" className="compliance-section py-5">
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2 className="section-title">Complete Compliance Coverage</h2>
+            <p className="section-subtitle">All 26 sections from your health and safety handbook included</p>
+          </div>
+
+          <div className="compliance-grid">
+            {complianceSections.map((section, index) => (
+              <div key={index} className="compliance-item">
+                <div className="compliance-icon">
+                  <FaRegCheckCircle />
+                </div>
+                <div className="compliance-text">{section}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="testimonials-section py-5">
+        <div className="container">
+          <div className="text-center mb-5">
+            <h2 className="section-title">What Our Customers Say</h2>
+            <p className="section-subtitle">Trusted by care organizations across UK</p>
+          </div>
+
+          <div className="row testimonials-slider">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="col-md-4 mb-4">
+                <div className="testimonial-card">
+                  <div className="testimonial-content">
+                    <div className="testimonial-stars">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar key={i} className="text-warning" />
+                      ))}
+                    </div>
+                    <p className="testimonial-text">"{testimonial.text}"</p>
+                  </div>
+                  <div className="testimonial-author">
+                    <img src={testimonial.image} alt={testimonial.name} className="author-image" />
+                    <div className="author-info">
+                      <h5>{testimonial.name}</h5>
+                      <p>{testimonial.position}, {testimonial.organization}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -384,8 +440,8 @@ const LandingPage = () => {
       <section id="terms" className="terms-section py-5">
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="section-title">Terms & Conditions</h2>
-            <p className="section-subtitle">Frequently asked questions about our service</p>
+            <h2 className="section-title">Frequently Asked Questions</h2>
+            <p className="section-subtitle">Everything you need to know about CareOnboard</p>
           </div>
           
           <div className="terms-container">
@@ -406,24 +462,32 @@ const LandingPage = () => {
               </div>
             ))}
           </div>
-
-       
         </div>
       </section>
 
       {/* CTA */}
-      <section className="cta-section py-5">
+      <section id="demo" className="cta-section py-5">
         <div className="container">
           <div className="cta-card text-center">
             <h2>Ready to Eliminate Paper Onboarding?</h2>
-            <p>Get a fully digital portal for care worker onboarding — with all 26 compliance forms.</p>
-            <button 
-              className="btn btn-primary btn-lg"
-              onClick={() => scrollToSection('demo')}
-            >
-              <FaCalendarAlt className="me-2" />
-              Book Your Demo
-            </button>
+            <p>Get a fully digital portal for care worker onboarding — with all compliance forms.</p>
+            <form className="cta-form" onSubmit={handleEmailSubmit}>
+              <div className="input-group">
+                <input 
+                  type="email" 
+                  className="form-control" 
+                  placeholder="Enter your email address" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <button className="btn btn-primary" type="submit">
+                  <FaRegPaperPlane className="me-2" />
+                  Request Demo
+                </button>
+              </div>
+            </form>
+            <p className="form-note">No credit card required. 30-day free trial.</p>
           </div>
         </div>
       </section>
@@ -431,16 +495,49 @@ const LandingPage = () => {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <div className="text-center py-4">
-            <h4>CareOnboard</h4>
-            <p>Digital Onboarding for Care Workers • Zero Paper • Full Compliance</p>
-            <div className="footer-links">
-              <a href="#terms" onClick={() => scrollToSection('terms')}>Terms & Conditions</a>
-              <a href="mailto:support@careonboard.com">support@careonboard.com</a>
+          <div className="row">
+            <div className="col-md-4 mb-4">
+              <h4>CareOnboard</h4>
+              <p>Digital Onboarding for Care Workers • Zero Paper • Full Compliance</p>
+              <div className="social-links">
+                <a href="#" className="social-link"><FaFacebook /></a>
+                <a href="#" className="social-link"><FaTwitter /></a>
+                <a href="#" className="social-link"><FaLinkedin /></a>
+              </div>
             </div>
-            <div className="copyright mt-3">
-              © 2025 CareOnboard. All rights reserved.
+            <div className="col-md-2 mb-4">
+              <h5>Product</h5>
+              <ul className="footer-links">
+                <li><a href="#features" onClick={() => scrollToSection('features')}>Features</a></li>
+              </ul>
             </div>
+            <div className="col-md-2 mb-4">
+              <h5>Company</h5>
+              <ul className="footer-links">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#careers">Careers</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div className="col-md-2 mb-4">
+              <h5>Resources</h5>
+              <ul className="footer-links">
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#help">Help Center</a></li>
+                <li><a href="#terms" onClick={() => scrollToSection('terms')}>FAQ</a></li>
+              </ul>
+            </div>
+            <div className="col-md-2 mb-4">
+              <h5>Legal</h5>
+              <ul className="footer-links">
+                <li><a href="#privacy">Privacy Policy</a></li>
+                <li><a href="#terms">Terms of Service</a></li>
+                <li><a href="#cookies">Cookie Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="copyright mt-4 text-center">
+            © 2025 CareOnboard. All rights reserved.
           </div>
         </div>
       </footer>
