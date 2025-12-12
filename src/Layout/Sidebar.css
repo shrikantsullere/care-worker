@@ -1,0 +1,77 @@
+/* 🌐 SaaS Sidebar */
+.sidebar-container {
+  width: 240px;
+  height: 100vh;
+  background: #F4F7FB; /* 🧊 Ice Gray SaaS BG */
+  color: #1A1A1A;
+  transition: 0.3s;
+  overflow: hidden;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+
+}
+
+.sidebar-container.collapsed {
+  width: 80px;
+}
+
+.sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 6px;
+}
+
+/* Scrollbar */
+.menu::-webkit-scrollbar { width: 6px; }
+.menu::-webkit-scrollbar-thumb { background: #3182CE; border-radius: 20px; }
+.menu::-webkit-scrollbar-track { background: transparent; }
+
+.menu-item {
+  margin-bottom: 4px;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1A1A1A;
+}
+
+.menu-link:hover {
+  background: rgba(49, 130, 206, 0.15); /* 🔹 Soft Blue Hover */
+  color: #3182CE;
+}
+
+.menu-icon {
+  margin-right: 14px;
+  font-size: 18px;
+  color: #3182CE;
+}
+
+/* Active Route */
+.menu-link.active {
+  background: #3182CE; /* 🔥 SaaS Active Blue */
+  color: white;
+  box-shadow: 0px 3px 8px rgba(49, 130, 206, 0.38);
+}
+
+.menu-link.active .menu-icon {
+  color: white;
+}
+
+/* Settings Bottom */
+.settings-section {
+  margin: 10px;
+  border-top: 1px solid #D7E2F1; /* subtle SaaS divider */
+  padding-top: 14px;
+}
