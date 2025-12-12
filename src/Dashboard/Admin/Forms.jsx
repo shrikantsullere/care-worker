@@ -47,6 +47,11 @@ const Forms = () => {
     { id: 17, name: "Application Form", route: "/admin/forms/application", type: "Input", version: "1.0" },
     { id: 18, name: "Medication Management", route: "/admin/forms/medication-management-form", type: "Input", version: "1.0" },
     { id: 19, name: "Care Worker Shadowing", route: "/admin/forms/care-worker-shadowing", type: "Input", version: "1.0" },
+    { id: 20, name: "Care Plan", route: "/admin/forms/care-plan", type: "Input", version: "1.0" },
+    { id: 21, name: "Training Matrix", route: "/admin/forms/training-matrix", type: "Input", version: "1.0" },
+    { id: 22, name: "Client Profile", route: "/admin/forms/client-profile-form", type: "Input", version: "1.0" },
+    { id: 23, name: "Unite Care Ltd", route: "/admin/forms/unite-care-ltd-form", type: "Input", version: "1.0" },
+    { id: 24, name: "Induction Checklist", route: "/admin/forms/induction-checklist-form", type: "Input", version: "1.0" },
   ]);
 
   // Sample submitted forms data
