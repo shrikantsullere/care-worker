@@ -2,14 +2,18 @@
 .sidebar-container {
   width: 240px;
   height: 100vh;
-  background: #F4F7FB; /* 🧊 Ice Gray SaaS BG */
+  background: #F4F7FB; /* Ice Gray SaaS BG */
   color: #1A1A1A;
-  transition: 0.3s;
+  transition: width 0.3s ease, left 0.3s ease;
   overflow: hidden;
   box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-
+  position: fixed;
+  left: 0;
+  top: 10;
+  z-index: 999;
 }
 
+/* Sidebar Collapsed */
 .sidebar-container.collapsed {
   width: 80px;
 }
@@ -35,6 +39,7 @@
   margin-bottom: 4px;
 }
 
+/* MAIN MENU LINK */
 .menu-link {
   display: flex;
   align-items: center;
@@ -48,7 +53,7 @@
 }
 
 .menu-link:hover {
-  background: rgba(49, 130, 206, 0.15); /* 🔹 Soft Blue Hover */
+  background: rgba(49, 130, 206, 0.15);
   color: #3182CE;
 }
 
@@ -58,9 +63,9 @@
   color: #3182CE;
 }
 
-/* Active Route */
+/* ACTIVE ROUTE */
 .menu-link.active {
-  background: #3182CE; /* 🔥 SaaS Active Blue */
+  background: #3182CE;
   color: white;
   box-shadow: 0px 3px 8px rgba(49, 130, 206, 0.38);
 }
@@ -69,9 +74,92 @@
   color: white;
 }
 
-/* Settings Bottom */
+/* =============================== */
+/*         SUBMENU SECTION         */
+/* =============================== */
+
+.submenu {
+  padding-left: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.submenu-item {
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #4b5563;
+  transition: 0.2s ease;
+}
+
+.submenu-item:hover {
+  background: rgba(49, 130, 206, 0.15);
+  color: #3182CE;
+}
+
+/* ACTIVE SUBMENU */
+.active-sub {
+  background: #e0ecff;
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* SUBMENU ARROW */
+.submenu-arrow {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6c757d;
+  transition: transform 0.25s ease;
+}
+
+/* Rotate arrow when open menu */
+.menu-link.open .submenu-arrow {
+  transform: rotate(180deg);
+}
+
+/* =============================== */
+/*      COLLAPSED MODE BEHAVIOR    */
+/* =============================== */
+
+.sidebar-container.collapsed .menu-text {
+  display: none;
+}
+
+.sidebar-container.collapsed .submenu,
+.sidebar-container.collapsed .submenu-item {
+  display: none !important;
+}
+
+.sidebar-container.collapsed .submenu-arrow {
+  display: none;
+}
+
+/* SETTINGS BOTTOM SECTION */
 .settings-section {
   margin: 10px;
-  border-top: 1px solid #D7E2F1; /* subtle SaaS divider */
+  border-top: 1px solid #D7E2F1;
   padding-top: 14px;
+}
+
+/* =============================== */
+/*        MOBILE RESPONSIVE        */
+/* =============================== */
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    left: -260px;
+    width: 240px;
+  }
+
+  /* Sidebar slide in on mobile */
+  .sidebar-container.open {
+    left: 0;
+  }
+
+  .menu {
+    padding-bottom: 120px;
+  }
 }
