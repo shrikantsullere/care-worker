@@ -18,7 +18,7 @@ import {
 
 import "./Sidebar.css";
 
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ collapsed, setCollapsed, isOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,7 +34,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
   const handleNavigate = (path) => {
     navigate(path);
-    if (window.innerWidth <= 768) setCollapsed(true);
+    if (window.innerWidth <= 768) setCollapsed(true); // auto-close mobile
   };
 
   const toggleSubMenu = (menuName) => {
@@ -79,7 +79,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const userMenus = userRole ? allMenus[userRole] : allMenus.ADMIN;
 
   return (
-    <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
+    <div
+      className={`sidebar-container 
+        ${collapsed ? "collapsed" : ""} 
+        ${isOpen ? "open" : ""}`}
+    >
       <div className="sidebar">
         <ul className="menu">
 
@@ -94,6 +98,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <FontAwesomeIcon icon={menu.icon} className="menu-icon" />
                     {!collapsed && <span className="menu-text">{menu.name}</span>}
+
                     {!collapsed && (
                       <FontAwesomeIcon
                         icon={openMenus[menu.name] ? faChevronUp : faChevronDown}
