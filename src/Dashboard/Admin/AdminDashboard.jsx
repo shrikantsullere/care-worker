@@ -319,32 +319,7 @@ const AdminDashboard = () => {
           </button>
         ) : (
           <div style={styles.navButtons}>
-            <button 
-              onClick={navigateToHome}
-              style={{
-                background: "none",
-                border: "none",
-                fontSize: "18px",
-                color: colors.textDark,
-                cursor: "pointer"
-              }}
-              title="Home"
-            >
-              <FaHome />
-            </button>
-            <button 
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                fontSize: "18px",
-                color: colors.textDark,
-                cursor: "pointer"
-              }}
-              title="Logout"
-            >
-              <FaSignOutAlt />
-            </button>
+            
           </div>
         )}
       </div>
