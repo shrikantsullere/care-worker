@@ -1,301 +1,383 @@
-// /src/Dashboard/Admin/AllForms/AppraisalForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AppraisalForm() {
   const navigate = useNavigate();
 
+  // Full Rating List from PDF
   const ratingKeys = [
-    "Time-keeping",
-    "Punctuality",
-    "Appearance",
-    "Compassion",
-    "Work Quality",
-    "Teamwork",
-    "Problem solving",
-    "Responsibility",
+    // PERSONAL QUALITIES
+    "Time-keeping (shift hours)",
+    "Punctuality (during work)",
+    "Sickness absence",
+    "Other authorised absence",
+    "Unauthorised absence",
+    "Appearance / smartness",
+    "Manner / politeness",
+    "Compassion / attitude towards service users",
+    "Honesty / integrity",
+
+    // PROFESSIONAL QUALITIES
+    "Care knowledge",
+    "Quantity of work",
+    "Quality of work",
+    "Flexibility towards duties",
+    "Ability to work on own initiative",
+    "Ability to work as a team",
+    "Ability to deal with problems",
+    "Willingness to learn",
+    "Planning & organisational activity",
+    "Leadership (support & supervision)",
+    "Achievement of targets",
+    "Acceptance of responsibility",
+    "Attitude towards fellow staff",
+    "Knowledge of job-related policies",
+    "Disciplinary record",
   ];
 
-  // Form data state
+  // Form Data
   const [formData, setFormData] = useState({
     employeeName: "",
     jobPosition: "",
     appraisalDate: "",
+
     selfAssessment: {
       achievements: "",
       problems: "",
       actionsNeeded: "",
       objectives: "",
       trainingRequired: "",
-      comments: "",
+      generalComments: "",
+      employeeSignature: "",
+      employeeSignatureDate: "",
     },
+
     supervisorRatings: ratingKeys.reduce((acc, key) => {
       acc[key] = 0;
       return acc;
     }, {}),
+
     supervisorComments: {
       strengths: "",
       weaknesses: "",
       targetsAchieved: "",
+      problemsEncountered: "",
+      disciplinaryComments: "",
       trainingRequirements: "",
+      otherComments: "",
     },
-    employeeSignature: "",
-    supervisorSignature: "",
+
+    // End Signatures
+    employeeEndName: "",
+    employeeEndSignature: "",
+    employeeEndDate: "",
+    supervisorEndName: "",
+    supervisorEndSignature: "",
+    supervisorEndDate: "",
+    nextAppraisalDate: "",
   });
 
-  // Handlers
+  // Input Handler
   const handleChange = (e, group, key) => {
-    const { value, type, name } = e.target;
-    const val = type === 'number' ? parseInt(value) : value;
+    const { value, name, type } = e.target;
 
     if (group && key) {
       setFormData(prev => ({
         ...prev,
         [group]: {
           ...prev[group],
-          [key]: val,
+          [key]: value
         },
       }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      return;
     }
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSave = () => {
-    console.log("Appraisal Form Submitted:", formData);
-    alert("Appraisal Form saved successfully!");
+    console.log("Appraisal Form:", formData);
+    alert("Appraisal saved successfully!");
     navigate("/admin/forms");
   };
 
-  // Styles (consistent with SpotCheckForm)
+  // Styles
   const formStyle = {
     maxWidth: "100vw",
     margin: "0 auto",
-    fontFamily: "Segoe UI",
     padding: "20px",
-    backgroundColor: "#f9f9f9",
+    background: "#f9f9f9",
+    fontFamily: "Segoe UI",
+    borderRadius: 8,
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    borderRadius: "8px"
   };
 
-  const inputStyle = {
+  const label = { fontWeight: 600, marginBottom: 4, display: "block" };
+
+  const input = {
     width: "100%",
-    padding: "10px",
-    borderRadius: "4px",
+    padding: 10,
     border: "1px solid #ccc",
-    marginBottom: "10px",
-    backgroundColor: "white",
+    borderRadius: 4,
+    marginBottom: 12,
+    background: "white",
   };
 
-  const labelStyle = {
-    fontWeight: 600,
-    marginBottom: "4px",
-    display: "block"
-  };
-
-  const sectionStyle = {
+  const section = {
     fontWeight: 700,
-    margin: "16px 0 8px",
-    color: "#00264D",
-    fontSize: "16px",
+    margin: "18px 0 8px",
     borderBottom: "1px solid #ccc",
-    paddingBottom: "3px"
+    color: "#00264D",
+    paddingBottom: 4,
   };
 
-  const buttonStyle = {
-    padding: "12px",
-    borderRadius: "6px",
-    fontSize: "16px",
-    cursor: "pointer",
-    fontWeight: 600,
-  };
-
-  const saveBtn = { 
-    ...buttonStyle, 
-    backgroundColor: "#00264D", 
-    color: "#fff", 
-    border: "none",
-    width: "100%"
-  };
-  
-  const backBtn = { 
-    ...buttonStyle, 
-    backgroundColor: "#3A8DFF", 
-    color: "#fff", 
-    border: "none", 
-    marginBottom: "15px",
-    padding: "6px 14px",
-    fontSize: "14px"
-  };
-
-  const rowStyle = {
-    display: "flex", 
-    gap: "12px", 
-    flexWrap: "wrap"
-  };
+  const row = { display: "flex", gap: 12, flexWrap: "wrap" };
 
   return (
     <form style={formStyle}>
-      {/* Top Back Button */}
-      <button type="button" onClick={() => navigate("/admin/forms")} style={backBtn}>
+      
+      {/* Back Button */}
+      <button
+        type="button"
+        onClick={() => navigate("/admin/forms")}
+        style={{
+          background: "#3A8DFF",
+          color: "#fff",
+          padding: "6px 14px",
+          borderRadius: 4,
+          border: "none",
+          marginBottom: 15,
+          cursor: "pointer",
+        }}
+      >
         ← Back
       </button>
 
-      <h2 style={{ color: "#00264D", marginBottom: "20px" }}>Staff Appraisal Form</h2>
+      <h2 style={{ color: "#00264D", marginBottom: 20 }}>
+        Staff Appraisal Form
+      </h2>
 
       {/* Employee Details */}
-      <div style={sectionStyle}>Employee Details</div>
-      <div style={rowStyle}>
+      <div style={section}>Employee Details</div>
+      <div style={row}>
         <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Employee Name</label>
-          <input
-            type="text"
-            name="employeeName"
-            value={formData.employeeName}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <label style={label}>Employee Name</label>
+          <input style={input} name="employeeName" value={formData.employeeName}
+            onChange={handleChange} />
         </div>
         <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Job Position</label>
-          <input
-            type="text"
-            name="jobPosition"
-            value={formData.jobPosition}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <label style={label}>Job Position</label>
+          <input style={input} name="jobPosition" value={formData.jobPosition}
+            onChange={handleChange} />
         </div>
         <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Appraisal Date</label>
-          <input
-            type="date"
-            name="appraisalDate"
-            value={formData.appraisalDate}
-            onChange={handleChange}
-            style={inputStyle}
+          <label style={label}>Appraisal Date</label>
+          <input type="date" style={input} name="appraisalDate"
+            value={formData.appraisalDate} onChange={handleChange} />
+        </div>
+      </div>
+
+      {/* SELF ASSESSMENT */}
+      <div style={section}>A: Pre-Appraisal Questionnaire</div>
+
+      <textarea style={input} placeholder="Achievements"
+        value={formData.selfAssessment.achievements}
+        onChange={(e) => handleChange(e, "selfAssessment", "achievements")}
+      />
+
+      <textarea style={input} placeholder="Problems"
+        value={formData.selfAssessment.problems}
+        onChange={(e) => handleChange(e, "selfAssessment", "problems")}
+      />
+
+      <textarea style={input} placeholder="Actions Needed"
+        value={formData.selfAssessment.actionsNeeded}
+        onChange={(e) => handleChange(e, "selfAssessment", "actionsNeeded")}
+      />
+
+      <textarea style={input} placeholder="Objectives"
+        value={formData.selfAssessment.objectives}
+        onChange={(e) => handleChange(e, "selfAssessment", "objectives")}
+      />
+
+      <textarea style={input} placeholder="Training Required"
+        value={formData.selfAssessment.trainingRequired}
+        onChange={(e) => handleChange(e, "selfAssessment", "trainingRequired")}
+      />
+
+      <textarea style={input} placeholder="General Comments"
+        value={formData.selfAssessment.generalComments}
+        onChange={(e) => handleChange(e, "selfAssessment", "generalComments")}
+      />
+
+      {/* Employee signature for Self Appraisal */}
+      <div style={row}>
+        <div style={{ flex: 1 }}>
+          <label style={label}>Employee Signature</label>
+          <input style={input}
+            value={formData.selfAssessment.employeeSignature}
+            onChange={(e) => handleChange(e, "selfAssessment", "employeeSignature")}
+          />
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <label style={label}>Date</label>
+          <input type="date" style={input}
+            value={formData.selfAssessment.employeeSignatureDate}
+            onChange={(e) => handleChange(e, "selfAssessment", "employeeSignatureDate")}
           />
         </div>
       </div>
 
-      {/* Self Assessment */}
-      <div style={sectionStyle}>Self Assessment</div>
-      <textarea
-        placeholder="Achievements"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.achievements}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'achievements')}
-      />
-      <textarea
-        placeholder="Problems"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.problems}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'problems')}
-      />
-      <textarea
-        placeholder="Actions Needed"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.actionsNeeded}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'actionsNeeded')}
-      />
-      <textarea
-        placeholder="Objectives"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.objectives}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'objectives')}
-      />
-      <textarea
-        placeholder="Training Required"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.trainingRequired}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'trainingRequired')}
-      />
-      <textarea
-        placeholder="Comments"
-        style={{ ...inputStyle, minHeight: '70px' }}
-        value={formData.selfAssessment.comments}
-        onChange={(e) => handleChange(e, 'selfAssessment', 'comments')}
-      />
+      {/* SUPERVISOR RATINGS */}
+      <div style={section}>B: Appraisal Record (Supervisor Ratings)</div>
 
-      {/* Supervisor Ratings */}
-      <div style={sectionStyle}>Supervisor Ratings</div>
       {ratingKeys.map((key) => (
-        <div key={key} style={{ marginBottom: "12px" }}>
+        <div key={key} style={{ marginBottom: 12 }}>
           <b>{key}</b>
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
             {[1, 2, 3, 4, 5].map((n) => (
-              <label key={n}>
+              <label key={n} style={{ fontSize: 14 }}>
                 <input
                   type="radio"
                   name={`rating-${key}`}
                   value={n}
                   checked={formData.supervisorRatings[key] === n}
-                  onChange={(e) => handleChange(e, 'supervisorRatings', key)}
-                /> {n}
+                  onChange={(e) =>
+                    handleChange(e, "supervisorRatings", key)
+                  }
+                />{" "}
+                {n}
               </label>
             ))}
           </div>
         </div>
       ))}
 
-      {/* Supervisor Comments */}
-      <div style={sectionStyle}>Supervisor Comments</div>
-      <textarea
-        placeholder="Strengths"
-        style={{ ...inputStyle, minHeight: '70px' }}
+      {/* SUPERVISOR COMMENTS */}
+      <div style={section}>Supervisor Comments</div>
+
+      <textarea style={input} placeholder="Strengths"
         value={formData.supervisorComments.strengths}
-        onChange={(e) => handleChange(e, 'supervisorComments', 'strengths')}
+        onChange={(e) => handleChange(e, "supervisorComments", "strengths")}
       />
-      <textarea
-        placeholder="Weaknesses"
-        style={{ ...inputStyle, minHeight: '70px' }}
+
+      <textarea style={input} placeholder="Weaknesses"
         value={formData.supervisorComments.weaknesses}
-        onChange={(e) => handleChange(e, 'supervisorComments', 'weaknesses')}
+        onChange={(e) => handleChange(e, "supervisorComments", "weaknesses")}
       />
-      <textarea
-        placeholder="Targets Achieved"
-        style={{ ...inputStyle, minHeight: '70px' }}
+
+      <textarea style={input} placeholder="Targets Achieved"
         value={formData.supervisorComments.targetsAchieved}
-        onChange={(e) => handleChange(e, 'supervisorComments', 'targetsAchieved')}
+        onChange={(e) => handleChange(e, "supervisorComments", "targetsAchieved")}
       />
-      <textarea
-        placeholder="Training Requirements"
-        style={{ ...inputStyle, minHeight: '70px' }}
+
+      <textarea style={input} placeholder="Problems Encountered"
+        value={formData.supervisorComments.problemsEncountered}
+        onChange={(e) => handleChange(e, "supervisorComments", "problemsEncountered")}
+      />
+
+      <textarea style={input} placeholder="Disciplinary Record Comments"
+        value={formData.supervisorComments.disciplinaryComments}
+        onChange={(e) => handleChange(e, "supervisorComments", "disciplinaryComments")}
+      />
+
+      <textarea style={input} placeholder="Training Requirements"
         value={formData.supervisorComments.trainingRequirements}
-        onChange={(e) => handleChange(e, 'supervisorComments', 'trainingRequirements')}
+        onChange={(e) => handleChange(e, "supervisorComments", "trainingRequirements")}
       />
 
-      {/* Signatures */}
-      <div style={sectionStyle}>Signatures</div>
-      <div style={rowStyle}>
+      <textarea style={input} placeholder="Other Comments / Issues"
+        value={formData.supervisorComments.otherComments}
+        onChange={(e) => handleChange(e, "supervisorComments", "otherComments")}
+      />
+
+      {/* SIGNATURE BLOCK */}
+      <div style={section}>Signatures</div>
+
+      <div style={row}>
         <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Employee Signature</label>
-          <input
-            type="text"
-            name="employeeSignature"
-            value={formData.employeeSignature}
+          <label style={label}>Employee Name</label>
+          <input style={input}
+            name="employeeEndName"
+            value={formData.employeeEndName}
             onChange={handleChange}
-            style={inputStyle}
           />
         </div>
+
         <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Supervisor Signature</label>
-          <input
-            type="text"
-            name="supervisorSignature"
-            value={formData.supervisorSignature}
+          <label style={label}>Employee Signature</label>
+          <input style={input}
+            name="employeeEndSignature"
+            value={formData.employeeEndSignature}
             onChange={handleChange}
-            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <label style={label}>Date</label>
+          <input type="date" style={input}
+            name="employeeEndDate"
+            value={formData.employeeEndDate}
+            onChange={handleChange}
           />
         </div>
       </div>
 
-      {/* Save Button */}
-      <div style={{ marginTop: "20px" }}>
-        <button type="button" onClick={handleSave} style={saveBtn}>
-          Save Form
-        </button>
+      <div style={row}>
+        <div style={{ flex: 1 }}>
+          <label style={label}>Supervisor Name</label>
+          <input style={input}
+            name="supervisorEndName"
+            value={formData.supervisorEndName}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <label style={label}>Supervisor Signature</label>
+          <input style={input}
+            name="supervisorEndSignature"
+            value={formData.supervisorEndSignature}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <label style={label}>Date</label>
+          <input type="date" style={input}
+            name="supervisorEndDate"
+            value={formData.supervisorEndDate}
+            onChange={handleChange}
+          />
+        </div>
       </div>
+
+      {/* Next Appraisal */}
+      <label style={label}>Date of Next Appraisal</label>
+      <input type="date" style={input}
+        name="nextAppraisalDate"
+        value={formData.nextAppraisalDate}
+        onChange={handleChange}
+      />
+
+      {/* Save */}
+      <button
+        type="button"
+        onClick={handleSave}
+        style={{
+          background: "#00264D",
+          color: "#fff",
+          padding: 14,
+          width: "100%",
+          marginTop: 20,
+          borderRadius: 6,
+          cursor: "pointer",
+          border: "none",
+          fontWeight: 600,
+        }}
+      >
+        Save Form
+      </button>
     </form>
   );
 }
