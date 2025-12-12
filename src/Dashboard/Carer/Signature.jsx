@@ -90,12 +90,14 @@ const SignaturesPage = () => {
   
   // Handle sign document
   const handleSignDocument = (signature) => {
+    console.log('Signing document:', signature); // Debug log
     setSelectedSignature(signature);
     setShowSignatureModal(true);
   };
   
   // Handle signature submission
   const handleSignatureSubmit = () => {
+    console.log('Submitting signature'); // Debug log
     // Check if signature is provided
     if (signaturePadRef.current && !signaturePadRef.current.isEmpty()) {
       // Update signature status to Completed
@@ -512,8 +514,7 @@ const SignaturesPage = () => {
     signaturePad: {
       width: '100%',
       height: isMobile ? '150px' : '200px',
-      cursor: 'crosshair',
-      touchAction: 'none' // Prevent scrolling while drawing
+      cursor: 'crosshair'
     },
     clearButton: {
       position: 'absolute',
@@ -701,14 +702,6 @@ const SignaturesPage = () => {
         </div>
       </section>
       
-      {/* Mobile View Indicator */}
-      {/* {isMobile && (
-        <div style={styles.mobileIndicator}>
-          <FaMobileAlt style={{marginRight: '5px'}} />
-          Mobile View - Scroll to see more
-        </div>
-      )} */}
-      
       {/* Signatures Table for Desktop */}
       <section style={styles.signaturesTableContainer}>
         {filteredSignatures.length > 0 ? (
@@ -836,7 +829,10 @@ const SignaturesPage = () => {
               <h2 style={styles.modalTitle}>Sign Document: {selectedSignature?.name}</h2>
               <button 
                 style={styles.closeButton}
-                onClick={() => setShowSignatureModal(false)}
+                onClick={() => {
+                  setShowSignatureModal(false);
+                  setSelectedSignature(null);
+                }}
               >
                 <FaTimes />
               </button>
@@ -864,9 +860,10 @@ const SignaturesPage = () => {
                   <div style={styles.signaturePadContainer}>
                     <SignatureCanvas
                       ref={signaturePadRef}
+                      penColor="black"
                       canvasProps={{
-                        style: styles.signaturePad,
-                        touchAction: 'none' // Prevent scrolling while drawing
+                        className: 'signature-canvas',
+                        style: styles.signaturePad
                       }}
                     />
                     <button 
@@ -882,7 +879,10 @@ const SignaturesPage = () => {
             <div style={styles.modalFooter}>
               <button 
                 style={styles.cancelButton}
-                onClick={() => setShowSignatureModal(false)}
+                onClick={() => {
+                  setShowSignatureModal(false);
+                  setSelectedSignature(null);
+                }}
               >
                 Cancel
               </button>
