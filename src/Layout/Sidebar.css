@@ -2,18 +2,14 @@
 .sidebar-container {
   width: 240px;
   height: 100vh;
-  background: #F4F7FB;
+  background: #F4F7FB; /* 🧊 Ice Gray SaaS BG */
   color: #1A1A1A;
-  transition: width 0.3s ease, left 0.3s ease;
+  transition: 0.3s;
   overflow: hidden;
   box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-  position: fixed;
-  left: 0;
-  top: 10;
-  z-index: 999;
+
 }
 
-/* Collapsed */
 .sidebar-container.collapsed {
   width: 80px;
 }
@@ -24,7 +20,6 @@
   flex-direction: column;
 }
 
-/* Menu */
 .menu {
   flex: 1;
   overflow-y: auto;
@@ -34,8 +29,12 @@
 /* Scrollbar */
 .menu::-webkit-scrollbar { width: 6px; }
 .menu::-webkit-scrollbar-thumb { background: #3182CE; border-radius: 20px; }
+.menu::-webkit-scrollbar-track { background: transparent; }
 
-/* Menu Item */
+.menu-item {
+  margin-bottom: 4px;
+}
+
 .menu-link {
   display: flex;
   align-items: center;
@@ -45,10 +44,11 @@
   transition: 0.2s;
   font-size: 15px;
   font-weight: 500;
+  color: #1A1A1A;
 }
 
 .menu-link:hover {
-  background: rgba(49, 130, 206, 0.15);
+  background: rgba(49, 130, 206, 0.15); /* 🔹 Soft Blue Hover */
   color: #3182CE;
 }
 
@@ -58,30 +58,44 @@
   color: #3182CE;
 }
 
-/* Active */
+/* Active Route */
 .menu-link.active {
-  background: #3182CE;
-  color: white !important;
+  background: #3182CE; /* 🔥 SaaS Active Blue */
+  color: white;
+  box-shadow: 0px 3px 8px rgba(49, 130, 206, 0.38);
 }
 
 .menu-link.active .menu-icon {
   color: white;
 }
 
-/* Submenu */
+/* Settings Bottom */
+.settings-section {
+  margin: 10px;
+  border-top: 1px solid #D7E2F1; /* subtle SaaS divider */
+  padding-top: 14px;
+}
+/* =============================== */
+/*        CARERS SUBMENU FIX       */
+/* =============================== */
+
 .submenu {
-  padding-left: 35px;
-  margin-top: 6px;
+  padding-left: 32px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  margin-top: 4px;
+  transition: all 0.25s ease-in-out;
 }
 
 .submenu-item {
   font-size: 14px;
-  padding: 8px 10px;
-  cursor: pointer;
+  padding: 8px 12px;
   border-radius: 6px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: 0.2s;
+  background: transparent;
 }
 
 .submenu-item:hover {
@@ -95,32 +109,41 @@
   font-weight: 600;
 }
 
-/* Arrow */
+/* Dropdown arrow icon */
 .submenu-arrow {
   margin-left: auto;
   font-size: 12px;
-  transition: 0.25s ease;
+  color: #6c757d;
+  transition: transform 0.25s ease;
 }
 
 .menu-link.open .submenu-arrow {
   transform: rotate(180deg);
 }
 
-/* COLLAPSED MODE */
-.sidebar-container.collapsed .menu-text,
+/* COLLAPSED MODE — hide submenu */
 .sidebar-container.collapsed .submenu,
 .sidebar-container.collapsed .submenu-item,
-.sidebar-container.collapsed .submenu-arrow {
+.sidebar-container.collapsed .submenu-arrow,
+.sidebar-container.collapsed .menu-text {
   display: none !important;
 }
 
-/* MOBILE MODE */
+/* =============================== */
+/*      MOBILE RESPONSIVENESS      */
+/* =============================== */
+
 @media (max-width: 768px) {
-  .sidebar-container {
-    left: -260px;
+  .submenu {
+    padding-left: 26px;     /* tighter spacing for small screen */
   }
 
-  .sidebar-container.open {
-    left: 0; /* slide in */
+  .submenu-item {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .active-sub {
+    font-size: 14px;
   }
 }
