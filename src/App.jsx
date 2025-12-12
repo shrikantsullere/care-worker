@@ -14,12 +14,15 @@ import ForgotPassword from "./Auth/ForgotPassword";
 
 // ---------------- ADMIN ----------------
 import AdminDashboard from "./Dashboard/Admin/AdminDashboard";
-import Carers from "./Dashboard/Admin/Carers";
 import Forms from "./Dashboard/Admin/Forms";
 import FormAssign from "./Dashboard/Admin/FormAssign";
 import PayrollList from "./Dashboard/Admin/PayrollList";
 import Download from "./Dashboard/Admin/Download";
 import Settings from "./Dashboard/Admin/Settings";
+import CarersList from "./Dashboard/Admin/Carers/CarersList";
+import YearlyOverview from "./Dashboard/Admin/Carers/YearlyOverview";
+import SpotCheck from "./Dashboard/Admin/Carers/SpotCheck";
+import Supervision from "./Dashboard/Admin/Carers/Supervision";
 
 // ---------------- CARE WORKER ----------------
 import CareDashboard from "./Dashboard/Carer/CareDashboard";
@@ -90,12 +93,16 @@ function App() {
           <Routes>
             {/* ---------------- ADMIN ---------------- */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/carers" element={<Carers />} />
             <Route path="/admin/forms" element={<Forms />} />
             <Route path="/admin/form-assign" element={<FormAssign />} />
             <Route path="/admin/payroll-list" element={<PayrollList />} />
             <Route path="/admin/downloads" element={<Download />} />
             <Route path="/admin/settings" element={<Settings />} />
+            {/* carers  */}
+            <Route path="/admin/carers" element={<CarersList />} />
+            <Route path="/admin/carers/yearly-overview" element={<YearlyOverview />} />
+            <Route path="/admin/carers/spot-check" element={<SpotCheck />} />
+            <Route path="/admin/carers/supervision" element={<Supervision />} />
 
             {/* ---------------- CARE WORKER ---------------- */}
             <Route path="/carer/dashboard" element={<CareDashboard />} />
