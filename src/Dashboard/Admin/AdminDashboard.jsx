@@ -17,6 +17,7 @@ const AdminDashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth > 768 && window.innerWidth <= 1024);
   
   const [carers, setCarers] = useState([
     { id: "CW001", name: "Sarah Johnson", status: "Active", progress: 85, pendingSignatures: 2, email: "sarah.johnson@example.com", phone: "+44 7700 900123" },
@@ -40,6 +41,7 @@ const AdminDashboard = () => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
       setIsMobile(window.innerWidth <= 768);
+      setIsTablet(window.innerWidth > 768 && window.innerWidth <= 1024);
     };
     
     window.addEventListener('resize', handleResize);
@@ -133,24 +135,24 @@ const AdminDashboard = () => {
   // Responsive styles
   const styles = {
     container: {
-      padding: isMobile ? "10px" : "12px 16px",
+      padding: isMobile ? "10px" : isTablet ? "12px" : "16px",
       fontFamily: "Segoe UI",
       minHeight: "100vh",
       backgroundColor: colors.bgLight,
-      paddingTop: "70px" // Added padding to account for fixed navbar
+      paddingTop: isMobile ? "60px" : "70px" // Adjusted for mobile
     },
     header: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: "20px",
+      marginBottom: isMobile ? "15px" : "20px",
       padding: isMobile ? "10px" : "0",
       position: "relative",
       zIndex: 900 // Lower than modal z-index
     },
     title: {
       color: colors.textDark,
-      fontSize: isMobile ? 22 : 26,
+      fontSize: isMobile ? 20 : isTablet ? 24 : 26,
       margin: 0
     },
     navButtons: {
@@ -159,13 +161,15 @@ const AdminDashboard = () => {
     },
     statsGrid: {
       display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(210px, 1fr))",
-      gap: isMobile ? "10px" : "12px",
+      gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : isTablet ? "repeat(2, 1fr)" : "repeat(auto-fit, minmax(210px, 1fr))",
+      gap: isMobile ? "8px" : "12px",
       marginTop: "10px"
     },
     tableContainer: {
       overflowX: "auto",
-      marginTop: "10px"
+      marginTop: "10px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      borderRadius: "8px"
     },
     table: {
       width: "100%",
@@ -176,15 +180,16 @@ const AdminDashboard = () => {
       boxShadow: "0 1px 5px rgba(0,0,0,0.05)"
     },
     th: {
-      padding: isMobile ? "8px 6px" : "6px 8px",
+      padding: isMobile ? "10px 8px" : isTablet ? "8px 10px" : "6px 8px",
       color: colors.textLight,
       borderBottom: `1px solid ${colors.border}`,
       fontSize: isMobile ? 12 : 14,
       textAlign: "left",
-      backgroundColor: "#f9f9f9"
+      backgroundColor: "#f9f9f9",
+      whiteSpace: "nowrap"
     },
     td: {
-      padding: isMobile ? "8px 6px" : "6px 8px",
+      padding: isMobile ? "10px 8px" : isTablet ? "8px 10px" : "6px 8px",
       color: colors.textDark,
       borderBottom: `1px solid ${colors.border}`,
       fontSize: isMobile ? 12 : 14
@@ -199,7 +204,7 @@ const AdminDashboard = () => {
     },
     formsGrid: {
       display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(250px,1fr))",
+      gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(auto-fit, minmax(250px,1fr))",
       gap: isMobile ? "10px" : "12px"
     },
     card: {
@@ -254,14 +259,14 @@ const AdminDashboard = () => {
       display: "flex",
       gap: "10px",
       marginTop: "15px",
-      justifyContent: "flex-end"
+      justifyContent: "flex-end",
+      flexWrap: "wrap"
     },
     mobileMenu: {
       position: "fixed",
       top: "0",
       right: isMenuOpen ? "0" : "-100%",
-      width: "80%",
-      maxWidth: "300px",
+      width: isMobile ? "80%" : "300px",
       height: "100vh",
       backgroundColor: colors.bg,
       boxShadow: "-2px 0 10px rgba(0, 0, 0, 0.1)",
@@ -295,6 +300,45 @@ const AdminDashboard = () => {
       textAlign: "right",
       position: "relative",
       zIndex: 1
+    },
+    mobileTableCard: {
+      background: colors.bg,
+      borderRadius: "8px",
+      padding: "12px",
+      marginBottom: "10px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+    },
+    mobileTableCardHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: "8px",
+      borderBottom: `1px solid ${colors.border}`,
+      paddingBottom: "8px"
+    },
+    mobileTableCardContent: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "8px"
+    },
+    mobileTableCardItem: {
+      display: "flex",
+      flexDirection: "column"
+    },
+    mobileTableCardLabel: {
+      fontSize: "11px",
+      color: colors.textLight,
+      marginBottom: "2px"
+    },
+    mobileTableCardValue: {
+      fontSize: "13px",
+      color: colors.textDark
+    },
+    mobileTableCardActions: {
+      display: "flex",
+      justifyContent: "flex-end",
+      marginTop: "10px",
+      paddingTop: "8px",
+      borderTop: `1px solid ${colors.border}`
     }
   };
 
@@ -303,25 +347,6 @@ const AdminDashboard = () => {
       {/* Header with Navigation */}
       <div style={styles.header}>
         <h1 style={styles.title}>Admin Dashboard</h1>
-        
-        {isMobile ? (
-          <button 
-            onClick={() => setIsMenuOpen(true)}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "18px",
-              color: colors.textDark,
-              cursor: "pointer"
-            }}
-          >
-            <FaBars />
-          </button>
-        ) : (
-          <div style={styles.navButtons}>
-            
-          </div>
-        )}
       </div>
 
       {/* Mobile Menu */}
@@ -386,61 +411,121 @@ const AdminDashboard = () => {
         />
       </div>
 
-      {/* Carers Table */}
-      <Section title="Recent Carers" isMobile={isMobile}>
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                {["Name", "ID", "Progress", "Pending", "Action"].map(t => (
-                  <th key={t} style={styles.th}>{t}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {carers.map((c) => (
-                <tr key={c.id} style={styles.row}>
-                  <td style={styles.td}>{c.name}</td>
-                  <td style={styles.td}>{c.id}</td>
-                  <td style={styles.td}>{c.progress}%</td>
-                  <td style={styles.td}>{c.pendingSignatures}</td>
-                  <td style={styles.td}>
-                    <div style={styles.actionButtons}>
-                      <Btn 
-                        onClick={() => setProfileModal(c)} 
-                        icon={<FaEye />} 
-                        title="View Profile"
-                      />
-                      <Btn 
-                        onClick={() => setEditCarer(c)} 
-                        icon={<FaEdit />} 
-                        title="Edit Carer"
-                      />
-                      <Btn 
-                        onClick={() => deleteCarer(c.id)} 
-                        icon={<FaTrash />} 
-                        color={colors.danger} 
-                        title="Delete Carer"
-                      />
-                    </div>
-                  </td>
+      {/* Carers Table - Desktop View */}
+      {!isMobile && (
+        <Section title="Recent Carers" isMobile={isMobile}>
+          <div style={styles.tableContainer}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  {["Name", "ID", "Progress", "Pending", "Action"].map(t => (
+                    <th key={t} style={styles.th}>{t}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Section>
+              </thead>
+              <tbody>
+                {carers.map((c) => (
+                  <tr key={c.id} style={styles.row}>
+                    <td style={styles.td}>{c.name}</td>
+                    <td style={styles.td}>{c.id}</td>
+                    <td style={styles.td}>{c.progress}%</td>
+                    <td style={styles.td}>{c.pendingSignatures}</td>
+                    <td style={styles.td}>
+                      <div style={styles.actionButtons}>
+                        <Btn 
+                          onClick={() => setProfileModal(c)} 
+                          icon={<FaEye />} 
+                          title="View Profile"
+                        />
+                        <Btn 
+                          onClick={() => setEditCarer(c)} 
+                          icon={<FaEdit />} 
+                          title="Edit Carer"
+                        />
+                        <Btn 
+                          onClick={() => deleteCarer(c.id)} 
+                          icon={<FaTrash />} 
+                          color={colors.danger} 
+                          title="Delete Carer"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+      )}
+
+      {/* Carers Cards - Mobile View */}
+      {isMobile && (
+        <Section title="Recent Carers" isMobile={isMobile}>
+          {carers.map((c) => (
+            <div key={c.id} style={styles.mobileTableCard}>
+              <div style={styles.mobileTableCardHeader}>
+                <span style={{ fontWeight: "bold" }}>{c.name}</span>
+                <span style={{ 
+                  backgroundColor: c.status === "Active" ? colors.success : colors.warning,
+                  color: "white",
+                  padding: "2px 8px",
+                  borderRadius: "12px",
+                  fontSize: "11px"
+                }}>
+                  {c.status}
+                </span>
+              </div>
+              <div style={styles.mobileTableCardContent}>
+                <div style={styles.mobileTableCardItem}>
+                  <span style={styles.mobileTableCardLabel}>ID</span>
+                  <span style={styles.mobileTableCardValue}>{c.id}</span>
+                </div>
+                <div style={styles.mobileTableCardItem}>
+                  <span style={styles.mobileTableCardLabel}>Progress</span>
+                  <span style={styles.mobileTableCardValue}>{c.progress}%</span>
+                </div>
+                <div style={styles.mobileTableCardItem}>
+                  <span style={styles.mobileTableCardLabel}>Pending Signatures</span>
+                  <span style={styles.mobileTableCardValue}>{c.pendingSignatures}</span>
+                </div>
+                <div style={styles.mobileTableCardItem}>
+                  <span style={styles.mobileTableCardLabel}>Email</span>
+                  <span style={styles.mobileTableCardValue}>{c.email.split('@')[0]}...</span>
+                </div>
+              </div>
+              <div style={styles.mobileTableCardActions}>
+                <Btn 
+                  onClick={() => setProfileModal(c)} 
+                  icon={<FaEye />} 
+                  title="View Profile"
+                />
+                <Btn 
+                  onClick={() => setEditCarer(c)} 
+                  icon={<FaEdit />} 
+                  title="Edit Carer"
+                />
+                <Btn 
+                  onClick={() => deleteCarer(c.id)} 
+                  icon={<FaTrash />} 
+                  color={colors.danger} 
+                  title="Delete Carer"
+                />
+              </div>
+            </div>
+          ))}
+        </Section>
+      )}
 
       {/* Forms */}
       <Section title="Forms / Templates" isMobile={isMobile}>
         <div style={styles.formsGrid}>
           {forms.map((f) => (
             <div key={f.id} style={styles.card}>
-              <h3 style={{ margin: 0, fontSize: 16 }}>{f.name}</h3>
-              <p style={{ margin: "4px 0 10px", color: colors.textLight, fontSize: 13 }}>
+              <h3 style={{ margin: 0, fontSize: isMobile ? 14 : 16 }}>{f.name}</h3>
+              <p style={{ margin: "4px 0 10px", color: colors.textLight, fontSize: isMobile ? 12 : 13 }}>
                 Version: {f.version}
               </p>
-              <p style={{ margin: "4px 0 10px", color: colors.textLight, fontSize: 13 }}>
+              <p style={{ margin: "4px 0 10px", color: colors.textLight, fontSize: isMobile ? 12 : 13 }}>
                 {f.description}
               </p>
               <div style={styles.actionButtons}>
