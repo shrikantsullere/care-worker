@@ -6,7 +6,7 @@ const Settings = () => {
   const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isPhotoHovered, setIsPhotoHovered] = useState(false); // State for hover effect
+  const [isPhotoHovered, setIsPhotoHovered] = useState(false);
   
   const [profile, setProfile] = useState({
     photo: "",
@@ -52,7 +52,7 @@ const Settings = () => {
     navigate('/login');
   };
 
-  // Responsive styles
+  // Responsive styles with reduced spacing
   const styles = {
     // Layout
     pageContainer: {
@@ -60,8 +60,8 @@ const Settings = () => {
       backgroundColor: '#F4F7FB',
       color: '#333333',
       minHeight: '100vh',
-      paddingTop: '80px', // Added padding to account for fixed navbar
-      padding: isMobile ? '15px' : isTablet ? '20px' : '26px'
+      paddingTop: '60px', // Reduced padding
+      padding: isMobile ? '10px' : isTablet ? '15px' : '20px' // Reduced padding
     },
     // Navigation
     navBar: {
@@ -73,8 +73,8 @@ const Settings = () => {
       backgroundColor: '#ffffff',
       borderRadius: isMobile ? '0' : '12px',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-      padding: isMobile ? '10px 15px' : '15px 20px',
-      marginBottom: isMobile ? '15px' : '20px',
+      padding: isMobile ? '8px 12px' : '10px 15px', // Reduced padding
+      marginBottom: isMobile ? '10px' : '15px', // Reduced margin
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
@@ -94,7 +94,7 @@ const Settings = () => {
     navActions: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px'
+      gap: '10px' // Reduced gap
     },
     navButton: {
       background: 'none',
@@ -102,7 +102,7 @@ const Settings = () => {
       fontSize: isMobile ? '16px' : '18px',
       color: '#6B7280',
       cursor: 'pointer',
-      padding: '8px',
+      padding: '6px', // Reduced padding
       borderRadius: '8px',
       display: 'flex',
       alignItems: 'center',
@@ -121,13 +121,13 @@ const Settings = () => {
       zIndex: '1000',
       display: 'flex',
       flexDirection: 'column',
-      padding: '20px'
+      padding: '15px' // Reduced padding
     },
     mobileMenuItem: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px',
-      padding: '15px 0',
+      gap: '12px', // Reduced gap
+      padding: '12px 0', // Reduced padding
       borderBottom: '1px solid #eaeaea',
       cursor: 'pointer',
       color: '#1A1A1A',
@@ -135,8 +135,8 @@ const Settings = () => {
     },
     mobileMenuClose: {
       position: 'absolute',
-      top: '15px',
-      right: '15px',
+      top: '12px', // Reduced top
+      right: '12px', // Reduced right
       background: 'none',
       border: 'none',
       fontSize: '20px',
@@ -144,13 +144,13 @@ const Settings = () => {
     },
     // Page Header
     pageHeader: {
-      marginBottom: isMobile ? '20px' : '30px',
+      marginBottom: isMobile ? '15px' : '20px', // Reduced margin
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
     },
     pageTitle: {
-      fontSize: isMobile ? '24px' : '28px',
+      fontSize: isMobile ? '22px' : '26px', // Reduced font size
       fontWeight: '600',
       color: '#2c3e50',
       margin: '0'
@@ -158,11 +158,11 @@ const Settings = () => {
     userProfile: {
       display: 'flex',
       alignItems: 'center',
-      gap: '15px'
+      gap: '12px' // Reduced gap
     },
     userAvatar: {
-      width: isMobile ? '35px' : '40px',
-      height: isMobile ? '35px' : '40px',
+      width: isMobile ? '32px' : '36px', // Reduced size
+      height: isMobile ? '32px' : '36px', // Reduced size
       borderRadius: '50%',
       backgroundColor: '#e3f2fd',
       display: 'flex',
@@ -178,61 +178,61 @@ const Settings = () => {
     },
     // Section Styles
     heading: {
-      fontSize: isMobile ? '24px' : '28px',
-      marginBottom: isMobile ? '15px' : '20px',
+      fontSize: isMobile ? '22px' : '26px', // Reduced font size
+      marginBottom: isMobile ? '12px' : '15px', // Reduced margin
       fontWeight: '600'
     },
     subHeading: {
-      marginTop: isMobile ? '25px' : '30px',
-      marginBottom: isMobile ? '15px' : '20px',
-      fontSize: isMobile ? '18px' : '20px',
+      marginTop: isMobile ? '20px' : '25px', // Reduced margin
+      marginBottom: isMobile ? '12px' : '15px', // Reduced margin
+      fontSize: isMobile ? '16px' : '18px', // Reduced font size
       fontWeight: '600'
     },
     section: {
       background: '#fff',
       borderRadius: isMobile ? '8px' : '8px',
-      padding: isMobile ? '20px' : '25px',
+      padding: isMobile ? '15px' : '20px', // Reduced padding
       width: '100%',
       boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
-      marginBottom: isMobile ? '20px' : '25px'
+      marginBottom: isMobile ? '15px' : '20px' // Reduced margin
     },
     // Form Styles
     grid: {
       display: 'grid',
-      gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: isMobile ? '20px' : '20px',
-      marginTop: isMobile ? '20px' : '20px'
+      gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(280px, 1fr))', // Reduced minmax
+      gap: isMobile ? '15px' : '15px', // Reduced gap
+      marginTop: isMobile ? '15px' : '15px' // Reduced margin
     },
     field: {
       display: 'flex',
       flexDirection: 'column',
-      marginBottom: isMobile ? '15px' : '20px'
+      marginBottom: isMobile ? '12px' : '15px' // Reduced margin
     },
     label: {
       fontWeight: '600',
-      fontSize: isMobile ? '14px' : '14px',
-      marginBottom: '8px',
+      fontSize: isMobile ? '13px' : '13px', // Reduced font size
+      marginBottom: '6px', // Reduced margin
       color: '#4b5563'
     },
     input: {
-      padding: isMobile ? '12px' : '12px',
+      padding: isMobile ? '10px' : '10px', // Reduced padding
       borderRadius: '6px',
       border: '1px solid #d1d1d1',
       fontSize: isMobile ? '14px' : '14px',
       width: '100%',
       boxSizing: 'border-box',
-      height: isMobile ? '45px' : '45px' // Increased height for better touch experience
+      height: isMobile ? '40px' : '40px' // Reduced height
     },
-    // Photo Styles - Fixed
+    // Photo Styles
     photoSection: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      marginBottom: isMobile ? '25px' : '30px'
+      marginBottom: isMobile ? '20px' : '25px' // Reduced margin
     },
     photoBox: {
-      width: isMobile ? '120px' : '150px',
-      height: isMobile ? '120px' : '150px',
+      width: isMobile ? '100px' : '120px', // Reduced size
+      height: isMobile ? '100px' : '120px', // Reduced size
       borderRadius: '50%',
       overflow: 'hidden',
       background: '#eee',
@@ -258,53 +258,53 @@ const Settings = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      opacity: isPhotoHovered ? 1 : 0, // Use state to control opacity
+      opacity: isPhotoHovered ? 1 : 0,
       transition: 'opacity 0.3s ease'
     },
     uploadIcon: {
       color: '#fff',
-      fontSize: isMobile ? '24px' : '28px'
+      fontSize: isMobile ? '20px' : '24px' // Reduced size
     },
     uploadText: {
-      fontSize: isMobile ? '14px' : '16px',
+      fontSize: isMobile ? '13px' : '14px', // Reduced font size
       color: '#4b5563',
       textAlign: 'center',
-      marginTop: '10px'
+      marginTop: '8px' // Reduced margin
     },
     // Button Styles
     btnRow: {
-      marginTop: isMobile ? '20px' : '25px',
+      marginTop: isMobile ? '15px' : '20px', // Reduced margin
       textAlign: 'right'
     },
     saveBtn: {
       background: '#3A8DFF',
       border: 'none',
       color: '#fff',
-      padding: isMobile ? '10px 16px' : '12px 20px',
+      padding: isMobile ? '8px 14px' : '10px 16px', // Reduced padding
       borderRadius: '6px',
       cursor: 'pointer',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '8px',
-      fontSize: isMobile ? '14px' : '16px',
+      gap: '6px', // Reduced gap
+      fontSize: isMobile ? '13px' : '15px', // Reduced font size
       transition: 'all 0.2s ease',
       fontWeight: '500'
     },
     deleteWrapper: {
       textAlign: 'center',
-      marginTop: isMobile ? '30px' : '40px'
+      marginTop: isMobile ? '25px' : '30px' // Reduced margin
     },
     deleteBtn: {
       background: '#D7263D',
       border: 'none',
       color: '#fff',
-      padding: isMobile ? '10px 16px' : '12px 20px',
+      padding: isMobile ? '8px 14px' : '10px 16px', // Reduced padding
       borderRadius: '6px',
       cursor: 'pointer',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '8px',
-      fontSize: isMobile ? '14px' : '16px',
+      gap: '6px', // Reduced gap
+      fontSize: isMobile ? '13px' : '15px', // Reduced font size
       transition: 'all 0.2s ease',
       fontWeight: '500'
     },
@@ -313,12 +313,12 @@ const Settings = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: '10px',
+      padding: '8px', // Reduced padding
       backgroundColor: '#f5f5f5',
       borderRadius: '8px',
-      marginBottom: '20px',
+      marginBottom: '15px', // Reduced margin
       color: '#6c757d',
-      fontSize: '14px'
+      fontSize: '13px' // Reduced font size
     }
   };
 
@@ -389,17 +389,6 @@ const Settings = () => {
         </div>
       )}
       
-      {/* Page Header */}
-      <header style={styles.pageHeader}>
-        <h1 style={styles.pageTitle}>Profile Settings</h1>
-        <div style={styles.userProfile}>
-          <div style={styles.userAvatar}>
-            <FaUser size={isMobile ? 18 : 20} />
-          </div>
-          <span style={styles.userName}>Admin User</span>
-        </div>
-      </header>
-
       {/* Mobile View Indicator */}
       {isMobile && (
         <div style={styles.mobileIndicator}>
@@ -411,7 +400,7 @@ const Settings = () => {
       <div style={styles.section}>
         <h2 style={styles.heading}>Profile Information</h2>
         
-        {/* Fixed Photo Upload Section */}
+        {/* Photo Upload Section */}
         <div style={styles.photoSection}>
           <label 
             htmlFor="photo-upload" 
@@ -422,7 +411,7 @@ const Settings = () => {
             {profile.photo ? (
               <img src={profile.photo} alt="Profile" style={styles.photoImg} />
             ) : (
-              <span style={{ fontSize: isMobile ? 40 : 50 }}>👤</span>
+              <span style={{ fontSize: isMobile ? 32 : 40 }}>👤</span>
             )}
             <div style={styles.photoOverlay}>
               <FaCamera style={styles.uploadIcon} />
