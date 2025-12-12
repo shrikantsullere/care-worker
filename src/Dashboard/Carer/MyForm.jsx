@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SignaturePad from "react-signature-canvas";
-
+import { FaTimes } from 'react-icons/fa'; // Import the X icon
 
 const MyFormsPage = () => {
   // State for forms data
@@ -152,15 +152,31 @@ const renderModalContent = () => {
     setModalType(''); // reset modal
   };
 
+  // Common close button for all modals
+  const CloseButton = () => (
+    <button
+      style={styles.closeButton}
+      onClick={closeModal}
+      aria-label="Close"
+    >
+      <FaTimes />
+    </button>
+  );
+
   // Full form view
   if (modalType === 'formView') {
     return (
       <div style={styles.modalContent}>
-        <h3 style={styles.modalTitle}>Form: {selectedForm.name}</h3>
-        <p><strong>Type:</strong> {selectedForm.type}</p>
-        <p><strong>Phase:</strong> {selectedForm.phase}</p>
-        <p><strong>Status:</strong> {selectedForm.status}</p>
-        <p><strong>Progress:</strong> {selectedForm.progress}%</p>
+        <div style={styles.modalHeader}>
+          <h3 style={styles.modalTitle}>Form: {selectedForm.name}</h3>
+          <CloseButton />
+        </div>
+        <div style={styles.modalBody}>
+          <p><strong>Type:</strong> {selectedForm.type}</p>
+          <p><strong>Phase:</strong> {selectedForm.phase}</p>
+          <p><strong>Status:</strong> {selectedForm.status}</p>
+          <p><strong>Progress:</strong> {selectedForm.progress}%</p>
+        </div>
 
         <div style={styles.modalActions}>
           <button style={styles.primaryButton} onClick={closeModal}>
@@ -175,8 +191,13 @@ const renderModalContent = () => {
   if (modalType === 'blank') {
     return (
       <div style={styles.modalContent}>
-        <h3 style={styles.modalTitle}>Start New Form</h3>
-        <p>You are about to start a new form: <strong>{selectedForm.name}</strong></p>
+        <div style={styles.modalHeader}>
+          <h3 style={styles.modalTitle}>Start New Form</h3>
+          <CloseButton />
+        </div>
+        <div style={styles.modalBody}>
+          <p>You are about to start a new form: <strong>{selectedForm.name}</strong></p>
+        </div>
 
         <div style={styles.modalActions}>
           <button
@@ -207,9 +228,14 @@ const renderModalContent = () => {
   if (modalType === 'draft') {
     return (
       <div style={styles.modalContent}>
-        <h3 style={styles.modalTitle}>Resume Draft</h3>
-        <p>You are about to resume draft for: <strong>{selectedForm.name}</strong></p>
-        <p>Your progress: {selectedForm.progress}%</p>
+        <div style={styles.modalHeader}>
+          <h3 style={styles.modalTitle}>Resume Draft</h3>
+          <CloseButton />
+        </div>
+        <div style={styles.modalBody}>
+          <p>You are about to resume draft for: <strong>{selectedForm.name}</strong></p>
+          <p>Your progress: {selectedForm.progress}%</p>
+        </div>
 
         <div style={styles.modalActions}>
           <button
@@ -233,22 +259,27 @@ const renderModalContent = () => {
   if (modalType === 'signature') {
     return (
       <div style={styles.modalContent}>
-        <h3 style={styles.modalTitle}>Signature Required</h3>
-        <p>Please sign: <strong>{selectedForm.name}</strong></p>
+        <div style={styles.modalHeader}>
+          <h3 style={styles.modalTitle}>Signature Required</h3>
+          <CloseButton />
+        </div>
+        <div style={styles.modalBody}>
+          <p>Please sign: <strong>{selectedForm.name}</strong></p>
 
-        <SignaturePad
-          ref={sigPad}
-          canvasProps={{
-            style: {
-              width: "100%",
-              height: "200px",
-              border: "1px solid #ddd",
-              borderRadius: "4px"
-            }
-          }}
-        />
+          <SignaturePad
+            ref={sigPad}
+            canvasProps={{
+              style: {
+                width: "100%",
+                height: "200px",
+                border: "1px solid #ddd",
+                borderRadius: "4px"
+              }
+            }}
+          />
+        </div>
 
-        <div style={{ marginTop: "10px", textAlign: "right" }}>
+        <div style={styles.modalActions}>
           <button
             style={{
               background: "#f44336",
@@ -292,64 +323,68 @@ const renderModalContent = () => {
   if (modalType === 'formEdit') {
     return (
       <div style={styles.modalContent}>
-        <h3 style={styles.modalTitle}>{selectedForm.name}</h3>
-        
-        {/* Mock form fields - in real app, this would be dynamic based on form type */}
-        <div style={styles.formContainer}>
-          <div style={styles.formSection}>
-            <h4 style={styles.sectionTitle}>Personal Information</h4>
-            <div style={styles.formField}>
-              <label style={styles.formLabel}>Full Name</label>
-              <input
-                type="text"
-                style={styles.formInput}
-                defaultValue="John Doe"
-                onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-              />
+        <div style={styles.modalHeader}>
+          <h3 style={styles.modalTitle}>{selectedForm.name}</h3>
+          <CloseButton />
+        </div>
+        <div style={styles.modalBody}>
+          {/* Mock form fields - in real app, this would be dynamic based on form type */}
+          <div style={styles.formContainer}>
+            <div style={styles.formSection}>
+              <h4 style={styles.sectionTitle}>Personal Information</h4>
+              <div style={styles.formField}>
+                <label style={styles.formLabel}>Full Name</label>
+                <input
+                  type="text"
+                  style={styles.formInput}
+                  defaultValue="John Doe"
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                />
+              </div>
+              <div style={styles.formField}>
+                <label style={styles.formLabel}>Email</label>
+                <input
+                  type="email"
+                  style={styles.formInput}
+                  defaultValue="john.doe@example.com"
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                />
+              </div>
+              <div style={styles.formField}>
+                <label style={styles.formLabel}>Phone</label>
+                <input
+                  type="tel"
+                  style={styles.formInput}
+                  defaultValue="+1 234 567 8900"
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                />
+              </div>
             </div>
-            <div style={styles.formField}>
-              <label style={styles.formLabel}>Email</label>
-              <input
-                type="email"
-                style={styles.formInput}
-                defaultValue="john.doe@example.com"
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
-            </div>
-            <div style={styles.formField}>
-              <label style={styles.formLabel}>Phone</label>
-              <input
-                type="tel"
-                style={styles.formInput}
-                defaultValue="+1 234 567 8900"
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              />
-            </div>
-          </div>
-          
-          <div style={styles.formSection}>
-            <h4 style={styles.sectionTitle}>Additional Information</h4>
-            <div style={styles.formField}>
-              <label style={styles.formLabel}>Department</label>
-              <select
-                style={styles.formSelect}
-                defaultValue="IT"
-                onChange={(e) => setFormData({...formData, department: e.target.value})}
-              >
-                <option value="IT">IT</option>
-                <option value="HR">HR</option>
-                <option value="Finance">Finance</option>
-                <option value="Operations">Operations</option>
-              </select>
-            </div>
-            <div style={styles.formField}>
-              <label style={styles.formLabel}>Comments</label>
-              <textarea
-                style={styles.formTextarea}
-                rows="4"
-                placeholder="Enter any additional comments..."
-                onChange={(e) => setFormData({...formData, comments: e.target.value})}
-              ></textarea>
+            
+            <div style={styles.formSection}>
+              <h4 style={styles.sectionTitle}>Additional Information</h4>
+              <div style={styles.formField}>
+                <label style={styles.formLabel}>Department</label>
+                <select
+                  style={styles.formSelect}
+                  defaultValue="IT"
+                  onChange={(e) => setFormData({...formData, department: e.target.value})}
+                >
+                  <option value="IT">IT</option>
+                  <option value="HR">HR</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Operations">Operations</option>
+                </select>
+              </div>
+              <div style={styles.formField}>
+                <label style={styles.formLabel}>Comments</label>
+                <textarea
+                  style={styles.formTextarea}
+                  rows="4"
+                  placeholder="Enter any additional comments..."
+                  onChange={(e) => setFormData({...formData, comments: e.target.value})}
+                ></textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -565,7 +600,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    backgroundColor: '#ffffff', // Added white background color
+    backgroundColor: '#ffffff',
   },
   cardHeader: {
     padding: '15px',
@@ -678,18 +713,41 @@ const styles = {
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: '20px',
     borderRadius: '8px',
     width: '90%',
     maxWidth: '500px',
     boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
     maxHeight: '80vh',
     overflow: 'auto',
+    position: 'relative',
+  },
+  modalHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '15px 20px',
+    borderBottom: '1px solid #eee',
+  },
+  modalBody: {
+    padding: '20px',
   },
   modalTitle: {
-    marginTop: '0',
-    marginBottom: '15px',
+    margin: '0',
     color: '#333',
+  },
+  closeButton: {
+    background: 'none',
+    border: 'none',
+    fontSize: '18px',
+    cursor: 'pointer',
+    color: '#555',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    transition: 'background-color 0.2s',
   },
   signaturePad: {
     height: '150px',
@@ -704,7 +762,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'flex-end',
     gap: '10px',
-    marginTop: '20px',
+    padding: '15px 20px',
+    borderTop: '1px solid #eee',
   },
   primaryButton: {
     padding: '8px 16px',
