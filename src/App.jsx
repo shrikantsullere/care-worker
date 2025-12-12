@@ -19,6 +19,8 @@ import FormAssign from "./Dashboard/Admin/FormAssign";
 import PayrollList from "./Dashboard/Admin/PayrollList";
 import Download from "./Dashboard/Admin/Download";
 import Settings from "./Dashboard/Admin/Settings";
+
+// Carers Pages
 import CarersList from "./Dashboard/Admin/Carers/CarersList";
 import YearlyOverview from "./Dashboard/Admin/Carers/YearlyOverview";
 import SpotCheck from "./Dashboard/Admin/Carers/SpotCheck";
@@ -48,7 +50,6 @@ import SpotCheckForm from "./Dashboard/Admin/AllForms/SpotCheckForm";
 import SupervisionForm from "./Dashboard/Admin/AllForms/SupervisionForm";
 import TelephoneMonitoring from "./Dashboard/Admin/AllForms/TelephoneMonitoring";
 import AppraisalForm from "./Dashboard/Admin/AllForms/AppraisalForm";
-// import ApplicationForm from "./Dashboard/Admin/AllForms/ApplicationForm";
 import MedicationManagementForm from "./Dashboard/Admin/AllForms/MedicationManagementForm";
 import ApplicationForm from "./Dashboard/Admin/AllForms/ApplicationForm";
 import CareWorkerShadowingForm from "./Dashboard/Admin/AllForms/CareWorkerShadowingForm";
@@ -57,8 +58,6 @@ import TrainingMatrix from "./Dashboard/Admin/AllForms/TrainingMatrix";
 import ClientProfileForm from "./Dashboard/Admin/AllForms/ClientProfileForm";
 import UniteCareLtd from "./Dashboard/Admin/AllForms/UniteCareLtd";
 import InductionChecklist from "./Dashboard/Admin/AllForms/InductionChecklist";
-
-
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -98,11 +97,12 @@ function App() {
             <Route path="/admin/payroll-list" element={<PayrollList />} />
             <Route path="/admin/downloads" element={<Download />} />
             <Route path="/admin/settings" element={<Settings />} />
-            {/* carers  */}
+
+            {/* CARERS */}
             <Route path="/admin/carers" element={<CarersList />} />
             <Route path="/admin/carers/yearly-overview" element={<YearlyOverview />} />
-            <Route path="/admin/carers/spot-check" element={<SpotCheck />} />
-            <Route path="/admin/carers/supervision" element={<Supervision />} />
+            <Route path="/admin/carers/spot-checks" element={<SpotCheck />} />
+            <Route path="/admin/carers/supervisions" element={<Supervision />} />
 
             {/* ---------------- CARE WORKER ---------------- */}
             <Route path="/carer/dashboard" element={<CareDashboard />} />
@@ -111,7 +111,7 @@ function App() {
             <Route path="/carer/documents" element={<Documents />} />
             <Route path="/carer/signature" element={<Signature />} />
 
-            {/* ---------------- ADMIN → INDIVIDUAL FORMS ROUTES ---------------- */}
+            {/* ---------------- ADMIN → INDIVIDUAL FORMS ---------------- */}
             <Route path="/admin/forms/character-reference" element={<CharacterReferenceForm />} />
             <Route path="/admin/forms/declaration-of-health" element={<DeclarationOfHealthForm />} />
             <Route path="/admin/forms/employment-application" element={<EmploymentApplicationForm />} />
@@ -136,7 +136,6 @@ function App() {
             <Route path="/admin/forms/client-profile-form" element={<ClientProfileForm />} />
             <Route path="/admin/forms/unite-care-ltd-form" element={<UniteCareLtd />} />
             <Route path="/admin/forms/induction-checklist-form" element={<InductionChecklist />} />
-
 
             {/* fallback */}
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />

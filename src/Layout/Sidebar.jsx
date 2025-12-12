@@ -23,7 +23,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const location = useLocation();
 
   const [userRole, setUserRole] = useState(null);
-  const [openMenus, setOpenMenus] = useState({}); // For submenu toggle
+  const [openMenus, setOpenMenus] = useState({});
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
@@ -44,7 +44,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     }));
   };
 
-  // 🔥 FINAL CLEAN MENU STRUCTURE
   const allMenus = {
     ADMIN: [
       { name: "Dashboard", icon: faChartBar, path: "/admin/dashboard" },
@@ -87,13 +86,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           {userMenus.map((menu, index) => (
             <li key={index} className="menu-item">
 
-              {/* 🔥 Check if menu has submenu */}
               {menu.children ? (
                 <>
                   <div
-                    className={`menu-link ${
-                      openMenus[menu.name] ? "open" : ""
-                    }`}
+                    className={`menu-link ${openMenus[menu.name] ? "open" : ""}`}
                     onClick={() => toggleSubMenu(menu.name)}
                   >
                     <FontAwesomeIcon icon={menu.icon} className="menu-icon" />
@@ -106,7 +102,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     )}
                   </div>
 
-                  {/* Submenu */}
                   {openMenus[menu.name] && !collapsed && (
                     <ul className="submenu">
                       {menu.children.map((sub, subIndex) => (
@@ -117,14 +112,13 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                           }`}
                           onClick={() => handleNavigate(sub.path)}
                         >
-                          <span>{sub.name}</span>
+                          {sub.name}
                         </li>
                       ))}
                     </ul>
                   )}
                 </>
               ) : (
-                // Simple menu
                 <div
                   className={`menu-link ${isActive(menu.path) ? "active" : ""}`}
                   onClick={() => handleNavigate(menu.path)}
@@ -133,8 +127,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                   {!collapsed && <span className="menu-text">{menu.name}</span>}
                 </div>
               )}
+
             </li>
           ))}
+
         </ul>
       </div>
     </div>
