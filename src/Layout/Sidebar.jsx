@@ -12,6 +12,8 @@ import {
   faPills,
   faFileSignature,
   faExclamationTriangle,
+  faChevronDown,
+  faChevronUp
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./Sidebar.css";
@@ -19,7 +21,9 @@ import "./Sidebar.css";
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [userRole, setUserRole] = useState(null);
+  const [openMenus, setOpenMenus] = useState({}); // For submenu toggle
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
@@ -33,15 +37,35 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     if (window.innerWidth <= 768) setCollapsed(true);
   };
 
+  const toggleSubMenu = (menuName) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [menuName]: !prev[menuName],
+    }));
+  };
+
+  // 🔥 FINAL CLEAN MENU STRUCTURE
   const allMenus = {
     ADMIN: [
       { name: "Dashboard", icon: faChartBar, path: "/admin/dashboard" },
-      { name: "Carers", icon: faUserNurse, path: "/admin/carers" },
+
+      {
+        name: "Carers",
+        icon: faUserNurse,
+        path: "/admin/carers",
+        children: [
+          { name: "Carer List", path: "/admin/carers" },
+          { name: "Yearly Overview", path: "/admin/carers/yearly-overview" },
+          { name: "Supervisions", path: "/admin/carers/supervisions" },
+          { name: "Spot Checks", path: "/admin/carers/spot-checks" },
+        ],
+      },
+
       { name: "Forms / Templates", icon: faUsers, path: "/admin/forms" },
       { name: "Form Assign", icon: faUsers, path: "/admin/form-assign" },
       { name: "Payroll List", icon: faCalendarDay, path: "/admin/payroll-list" },
       { name: "Downloads", icon: faCalendarCheck, path: "/admin/downloads" },
-      { name: "Setting", icon: faClipboardList, path: "/admin/settings" },
+      { name: "Settings", icon: faClipboardList, path: "/admin/settings" },
     ],
 
     CARE_WORKER: [
@@ -55,35 +79,63 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
   const userMenus = userRole ? allMenus[userRole] : allMenus.ADMIN;
 
-  const mainMenus = userMenus.filter((item) => item.name !== "Settings");
-  const settingsMenu = userMenus.find((item) => item.name === "Settings");
-
   return (
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar">
         <ul className="menu">
-          {mainMenus.map((menu, index) => (
+
+          {userMenus.map((menu, index) => (
             <li key={index} className="menu-item">
-              <div
-                className={`menu-link ${isActive(menu.path) ? "active" : ""}`}
-                onClick={() => handleNavigate(menu.path)}
-              >
-                <FontAwesomeIcon icon={menu.icon} className="menu-icon" />
-                {!collapsed && <span className="menu-text">{menu.name}</span>}
-              </div>
+
+              {/* 🔥 Check if menu has submenu */}
+              {menu.children ? (
+                <>
+                  <div
+                    className={`menu-link ${
+                      openMenus[menu.name] ? "open" : ""
+                    }`}
+                    onClick={() => toggleSubMenu(menu.name)}
+                  >
+                    <FontAwesomeIcon icon={menu.icon} className="menu-icon" />
+                    {!collapsed && <span className="menu-text">{menu.name}</span>}
+                    {!collapsed && (
+                      <FontAwesomeIcon
+                        icon={openMenus[menu.name] ? faChevronUp : faChevronDown}
+                        className="submenu-arrow"
+                      />
+                    )}
+                  </div>
+
+                  {/* Submenu */}
+                  {openMenus[menu.name] && !collapsed && (
+                    <ul className="submenu">
+                      {menu.children.map((sub, subIndex) => (
+                        <li
+                          key={subIndex}
+                          className={`submenu-item ${
+                            isActive(sub.path) ? "active-sub" : ""
+                          }`}
+                          onClick={() => handleNavigate(sub.path)}
+                        >
+                          <span>{sub.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : (
+                // Simple menu
+                <div
+                  className={`menu-link ${isActive(menu.path) ? "active" : ""}`}
+                  onClick={() => handleNavigate(menu.path)}
+                >
+                  <FontAwesomeIcon icon={menu.icon} className="menu-icon" />
+                  {!collapsed && <span className="menu-text">{menu.name}</span>}
+                </div>
+              )}
             </li>
           ))}
         </ul>
-
-        {settingsMenu && (
-          <div
-            className={`menu-link settings-section ${isActive(settingsMenu.path) ? "active" : ""}`}
-            onClick={() => handleNavigate(settingsMenu.path)}
-          >
-            <FontAwesomeIcon icon={settingsMenu.icon} className="menu-icon" />
-            {!collapsed && <span className="menu-text">{settingsMenu.name}</span>}
-          </div>
-        )}
       </div>
     </div>
   );
