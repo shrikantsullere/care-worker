@@ -8,10 +8,29 @@ const ReviewForm = () => {
     serviceUserName: "",
     serviceUserId: "",
     reviewType: "planned",
+    requestedBy: "",
+    dateDue: "",
+    dateCarriedOut: "",
     carePlanChanges: "",
     riskChanges: "",
+    carriedOutWith: {
+      localAuthority: false,
+      serviceUser: false,
+      relatives: false,
+      observations: false,
+      mhProfessional: false,
+      healthProfessional: false,
+      hospital: false,
+      other: false,
+      otherText: ""
+    },
     reviewCarriedBy: "",
-    signature: ""
+    reviewCarriedSignature: "",
+    otherPresent1: "",
+    otherPresent1Signature: "",
+    otherPresent2: "",
+    otherPresent2Signature: "",
+    professionalsInformed: ""
   });
 
   const handleChange = (e) => {
@@ -19,9 +38,19 @@ const ReviewForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleCheckboxGroup = (field) => {
+    setFormData(prev => ({
+      ...prev,
+      carriedOutWith: {
+        ...prev.carriedOutWith,
+        [field]: !prev.carriedOutWith[field]
+      }
+    }));
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
-    console.log("Form data saved:", formData);
+    console.log("Saved Data:", formData);
     alert("Review form saved successfully!");
     navigate("/admin/forms");
   };
@@ -29,7 +58,7 @@ const ReviewForm = () => {
   return (
     <div
       style={{
-        maxWidth: "100vw",
+        maxWidth: "900px",
         margin: "0 auto",
         fontFamily: "Segoe UI",
         padding: "20px",
@@ -50,9 +79,6 @@ const ReviewForm = () => {
           fontSize: "14px",
           cursor: "pointer",
           marginBottom: "15px",
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
         }}
       >
         ← Back
@@ -63,7 +89,8 @@ const ReviewForm = () => {
       </h2>
 
       <form onSubmit={handleSave}>
-        {/* Service User Name & ID */}
+
+        {/* USER NAME + ID */}
         <div style={{ marginBottom: "16px" }}>
           <label style={{ fontWeight: 600 }}>Service User Name</label>
           <input
@@ -73,36 +100,28 @@ const ReviewForm = () => {
             onChange={handleChange}
             required
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           />
         </div>
 
         <div style={{ marginBottom: "16px" }}>
-          <label style={{ fontWeight: 600 }}>Service User ID (Optional)</label>
+          <label style={{ fontWeight: 600 }}>Service User ID</label>
           <input
             type="text"
             name="serviceUserId"
             value={formData.serviceUserId}
             onChange={handleChange}
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           />
         </div>
 
-        {/* Review Type */}
+        {/* REVIEW TYPE */}
         <div style={{ marginBottom: "16px" }}>
-          <label style={{ fontWeight: 600, display: "block", marginBottom: "6px" }}>Review Type</label>
-          <div style={{ display: "flex", gap: "16px" }}>
+          <label style={{ fontWeight: 600 }}>Review Type</label>
+          <div style={{ display: "flex", gap: "16px", marginTop: "6px" }}>
             {["planned", "unplanned", "requested"].map(type => (
               <label key={type} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 <input
@@ -116,45 +135,124 @@ const ReviewForm = () => {
               </label>
             ))}
           </div>
+
+          {formData.reviewType === "requested" && (
+            <input
+              type="text"
+              name="requestedBy"
+              placeholder="Requested by whom?"
+              value={formData.requestedBy}
+              onChange={handleChange}
+              style={{
+                marginTop: "10px", width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+              }}
+            />
+          )}
         </div>
 
-        {/* Care Plan Changes */}
+        {/* DATE DUE + DATE CARRIED OUT */}
         <div style={{ marginBottom: "16px" }}>
-          <label style={{ fontWeight: 600 }}>Changes to Care Plan</label>
+          <label style={{ fontWeight: 600 }}>Date Due</label>
+          <input
+            type="date"
+            name="dateDue"
+            value={formData.dateDue}
+            onChange={handleChange}
+            style={{
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ fontWeight: 600 }}>Date Carried Out</label>
+          <input
+            type="date"
+            name="dateCarriedOut"
+            value={formData.dateCarriedOut}
+            onChange={handleChange}
+            style={{
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+        </div>
+
+        {/* CARE PLAN CHANGES */}
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ fontWeight: 600 }}>Changes to Service (Care Plan)</label>
           <textarea
             name="carePlanChanges"
             value={formData.carePlanChanges}
             onChange={handleChange}
-            rows="2"
+            rows="3"
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           ></textarea>
         </div>
 
-        {/* Risk Changes */}
+        {/* RISK CHANGES */}
         <div style={{ marginBottom: "16px" }}>
           <label style={{ fontWeight: 600 }}>Changes to Risks</label>
           <textarea
             name="riskChanges"
             value={formData.riskChanges}
             onChange={handleChange}
-            rows="2"
+            rows="3"
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           ></textarea>
         </div>
 
-        {/* Review Carried By / Signature */}
+        {/* CARRIED OUT WITH */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ fontWeight: 600 }}>Carried Out With</label>
+
+          {[
+            ["localAuthority", "Local Authority"],
+            ["serviceUser", "Service User"],
+            ["relatives", "Relative(s)"],
+            ["observations", "Our own Observations / Assessment"],
+            ["mhProfessional", "MH Professional"],
+            ["healthProfessional", "Health Professional (GP / DN)"],
+            ["hospital", "Hospital (NHS)"],
+            ["other", "Other"]
+          ].map(([field, label]) => (
+            <label key={field} style={{ display: "flex", gap: "8px", marginTop: "6px" }}>
+              <input
+                type="checkbox"
+                checked={formData.carriedOutWith[field]}
+                onChange={() => handleCheckboxGroup(field)}
+              />
+              {label}
+            </label>
+          ))}
+
+          {formData.carriedOutWith.other && (
+            <input
+              type="text"
+              name="otherText"
+              placeholder="Please specify"
+              value={formData.carriedOutWith.otherText}
+              onChange={(e) =>
+                setFormData(prev => ({
+                  ...prev,
+                  carriedOutWith: { ...prev.carriedOutWith, otherText: e.target.value }
+                }))
+              }
+              style={{
+                marginTop: "10px",
+                width: "100%",
+                padding: "10px",
+                borderRadius: "4px",
+                border: "1px solid #ccc"
+              }}
+            />
+          )}
+        </div>
+
+        {/* REVIEW CARRIED OUT BY */}
         <div style={{ marginBottom: "16px" }}>
           <label style={{ fontWeight: 600 }}>Review Carried Out By</label>
           <input
@@ -163,31 +261,90 @@ const ReviewForm = () => {
             value={formData.reviewCarriedBy}
             onChange={handleChange}
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
-              marginBottom: "8px"
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           />
+
           <input
             type="text"
-            name="signature"
-            value={formData.signature}
+            name="reviewCarriedSignature"
+            value={formData.reviewCarriedSignature}
             onChange={handleChange}
             placeholder="Signature"
             style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
+              marginTop: "8px",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
             }}
           />
         </div>
 
-        {/* Save Button */}
+        {/* OTHER PRESENT #1 */}
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ fontWeight: 600 }}>Other Present (1)</label>
+          <input
+            type="text"
+            name="otherPresent1"
+            value={formData.otherPresent1}
+            onChange={handleChange}
+            style={{
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+
+          <input
+            type="text"
+            name="otherPresent1Signature"
+            value={formData.otherPresent1Signature}
+            placeholder="Signature"
+            onChange={handleChange}
+            style={{
+              marginTop: "8px",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+        </div>
+
+        {/* OTHER PRESENT #2 */}
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ fontWeight: 600 }}>Other Present (2)</label>
+          <input
+            type="text"
+            name="otherPresent2"
+            value={formData.otherPresent2}
+            onChange={handleChange}
+            style={{
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+
+          <input
+            type="text"
+            name="otherPresent2Signature"
+            value={formData.otherPresent2Signature}
+            placeholder="Signature"
+            onChange={handleChange}
+            style={{
+              marginTop: "8px",
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          />
+        </div>
+
+        {/* PROFESSIONALS INFORMED */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ fontWeight: 600 }}>Other Professionals Informed of Changes</label>
+          <textarea
+            name="professionalsInformed"
+            value={formData.professionalsInformed}
+            onChange={handleChange}
+            rows="3"
+            style={{
+              width: "100%", padding: "10px", borderRadius: "4px", border: "1px solid #ccc"
+            }}
+          ></textarea>
+        </div>
+
+        {/* SAVE BUTTON */}
         <button
           type="submit"
           style={{

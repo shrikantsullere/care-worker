@@ -5,7 +5,7 @@ export default function MedicationManagementForm() {
   const navigate = useNavigate();
   
   const yesNo = ["Yes", "No"];
-  const yesNoNA = ["Yes", "No", "Not seen"];
+  const yesNoNA = ["Yes", "No", "Not seen this time"];
 
   const [form, setForm] = useState({
     careWorkerName: "",
@@ -22,7 +22,12 @@ export default function MedicationManagementForm() {
     advice: {},
     errors: {},
     outcome: "",
-    actions: [{}, {}, {}, {}],
+    actions: [
+      { action: "", byWhen: "", byWhom: "" },
+      { action: "", byWhen: "", byWhom: "" },
+      { action: "", byWhen: "", byWhom: "" },
+      { action: "", byWhen: "", byWhom: "" },
+    ],
     signatures: {
       careWorker: {},
       supervisor: {},
@@ -30,32 +35,35 @@ export default function MedicationManagementForm() {
     }
   });
 
-  const toggleMulti = (section, value) => {
-    setForm((prev) => {
-      const arr = prev[section];
-      return {
-        ...prev,
-        [section]: arr.includes(value)
-          ? arr.filter((v) => v !== value)
-          : [...arr, value],
-      };
-    });
-  };
-
   const updateField = (section, field, value) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       [section]: { ...prev[section], [field]: value },
     }));
   };
 
   const updateSignature = (person, field, value) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       signatures: {
         ...prev.signatures,
         [person]: { ...prev.signatures[person], [field]: value },
       },
+    }));
+  };
+
+  const updateAction = (index, field, value) => {
+    const newActions = [...form.actions];
+    newActions[index][field] = value;
+    setForm(prev => ({ ...prev, actions: newActions }));
+  };
+
+  const toggleMulti = (section, value) => {
+    setForm(prev => ({
+      ...prev,
+      [section]: prev[section].includes(value)
+        ? prev[section].filter(v => v !== value)
+        : [...prev[section], value],
     }));
   };
 
@@ -81,145 +89,113 @@ export default function MedicationManagementForm() {
 
   return (
     <div style={{
-      maxWidth: "100vw",
+      maxWidth: "900px",
       margin: "0 auto",
       fontFamily: "Segoe UI",
-      padding: "20px",
+      padding: "16px",
       backgroundColor: "#f9f9f9",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       borderRadius: "8px"
     }}>
+      
       {/* Back Button */}
       <button
         onClick={() => navigate("/admin/forms")}
         style={{
           background: "#3A8DFF",
-          border: "1px solid #999",
-          color: "#ffffff",
+          color: "#fff",
           padding: "6px 14px",
           borderRadius: "4px",
           cursor: "pointer",
-          fontSize: "14px",
-          marginBottom: "12px"
+          marginBottom: "14px",
+          border: "none"
         }}
       >
         ← Back
       </button>
 
-      <h2 style={{ color: "#00264D", marginBottom: "15px" }}>Care Worker – Medication Management Form</h2>
+      <h2 style={{ color: "#00264D", marginBottom: "12px" }}>
+        Care Worker – Medication Management Assessment
+      </h2>
 
       {/* BASIC INFO */}
       <Section title="Basic Information" />
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Care Worker Name</label>
-          <input
-            style={inputStyle}
-            value={form.careWorkerName}
-            onChange={(e) => setForm({ ...form, careWorkerName: e.target.value })}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Date</label>
-          <input
-            type="date"
-            style={inputStyle}
-            value={form.date}
-            onChange={(e) => setForm({ ...form, date: e.target.value })}
-          />
-        </div>
-      </div>
+      <ResponsiveTwoCol>
+        <Input label="Care Worker Name" value={form.careWorkerName} 
+          onChange={(v) => setForm({ ...form, careWorkerName: v })} />
+        <Input label="Date" type="date" value={form.date}
+          onChange={(v) => setForm({ ...form, date: v })} />
+      </ResponsiveTwoCol>
 
-      {/* ADMINISTRATION OF MEDICINE */}
-      <Section title="Administration of Medicines" />
+      {/* ADMINISTRATION OF MEDICINES */}
+      <Section title="Administration of Medicines – Preparation & Hygiene" />
       {[
-        "Check care plan for level of support",
-        "Check care plan for medication location",
-        "Prepared drink / items before giving medication",
-        "Followed hygiene (washed hands, gloves)"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.administration[q]}
-          onChange={(v) => updateField("administration", q, v)}
-          options={yesNo}
-        />
+        "Checked care plan for level of support",
+        "Checked where medication is kept",
+        "Prepared drink / items before medication",
+        "Washed hands & used hygiene / gloves"
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.administration[q]}
+          onChange={(v) => updateField("administration", q, v)} options={yesNo} />
       ))}
 
       {/* PROMPTING */}
       <Section title="Prompting of Medication" />
       {[
         "Read instructions on packaging",
-        "Correct date / time before piercing seal",
+        "Checked date/time before piercing seal",
         "Observed service user take medication"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.prompting[q]}
-          onChange={(v) => updateField("prompting", q, v)}
-          options={yesNo}
-        />
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.prompting[q]}
+          onChange={(v) => updateField("prompting", q, v)} options={yesNo} />
       ))}
 
       {/* SELECTION & PREPARATION */}
       <Section title="Selection & Preparation of Medication" />
       {[
         "Read MAR chart accurately",
-        "Checked if dose already taken or cancelled",
-        "Clarified unclear directions",
+        "Checked if dose already taken / cancelled",
+        "Clarified unclear directions on MAR",
         "Medication matched MAR chart",
-        "Correct dose at correct time",
-        "Considered food/timing restrictions",
+        "MAR directions differed from label → took proper steps",
+        "Correct dose at correct time (considered food/timing)",
         "Prepared medication as per MAR"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.selection[q]}
-          onChange={(v) => updateField("selection", q, v)}
-          options={yesNo}
-        />
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.selection[q]}
+          onChange={(v) => updateField("selection", q, v)} options={yesNo} />
       ))}
 
       {/* CONSENT */}
       <Section title="Consent" />
       {[
         "Obtained service user consent",
-        "If no consent, followed protocol"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.consent[q]}
-          onChange={(v) => updateField("consent", q, v)}
-          options={yesNo}
-        />
+        "If no consent → followed protocol (best interest)"
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.consent[q]}
+          onChange={(v) => updateField("consent", q, v)} options={yesNo} />
       ))}
 
       {/* ADMINISTRATION PROCESS */}
       <Section title="Administration Process" />
       {[
-        "Followed user preference",
-        "Provided support & reassurance"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.administrationProcess[q]}
-          onChange={(v) => updateField("administrationProcess", q, v)}
-          options={yesNo}
-        />
+        "Followed service user preference",
+        "Offered support & reassurance",
+        "Offered water where appropriate",
+        "Witnessed the service user take all medication",
+        "Recorded immediately on MAR",
+        "If left for later → followed plan correctly",
+        "If not taken → advice sought & documented"
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.administrationProcess[q]}
+          onChange={(v) => updateField("administrationProcess", q, v)} 
+          options={yesNoNA} />
       ))}
 
-      {/* MEDICATION TYPES */}
-      <Section title="Medication Types Administered" />
-      <div style={{ marginBottom: "16px", backgroundColor: "#fff", padding: "10px", borderRadius: "4px" }}>
-        {medsList.map((m, i) => (
-          <label key={i} style={{ display: "block", marginBottom: "5px" }}>
-            <input
-              type="checkbox"
+      {/* MEDICATION FORMS */}
+      <Section title="Medication Forms Administered" />
+      <div style={box}>
+        {medsList.map(m => (
+          <label key={m} style={{ display: "block", marginBottom: 4 }}>
+            <input type="checkbox"
               checked={form.medsTypes.includes(m)}
               onChange={() => toggleMulti("medsTypes", m)}
             />{" "}
@@ -233,64 +209,44 @@ export default function MedicationManagementForm() {
       {[
         "Signed MAR chart immediately",
         "Entered correct code if not given",
-        "Returned MAR chart to file"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.recordKeeping[q]}
-          onChange={(v) => updateField("recordKeeping", q, v)}
-          options={yesNo}
-        />
+        "Returned MAR to file"
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.recordKeeping[q]}
+          onChange={(v) => updateField("recordKeeping", q, v)} options={yesNo} />
       ))}
 
       {/* STOCK CONTROL */}
       <Section title="Stock Control" />
       {[
         "Stock available for 1 week",
-        "Action taken if shortage",
-        "Medication placed back properly",
+        "Appropriate action taken if shortage",
+        "Medication returned properly",
         "Checked storage requirements"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.stockControl[q]}
-          onChange={(v) => updateField("stockControl", q, v)}
-          options={yesNo}
-        />
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.stockControl[q]}
+          onChange={(v) => updateField("stockControl", q, v)} options={yesNo} />
       ))}
 
-      {/* ORDERING & DISPOSAL */}
+      {/* ORDERING */}
       <Section title="Ordering, Receipt & Disposal" />
       {[
         "Recorded medication received",
         "Placed new meds correctly",
-        "Ordered meds if required",
+        "Ordered meds if needed",
         "Disposed expired meds correctly"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.ordering[q]}
-          onChange={(v) => updateField("ordering", q, v)}
-          options={yesNoNA}
-        />
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.ordering[q]}
+          onChange={(v) => updateField("ordering", q, v)} options={yesNoNA} />
       ))}
 
       {/* ADVICE */}
       <Section title="Advice & Information" />
       {[
         "Knows who to contact for advice",
-        "Referred user to leaflet or professional"
-      ].map((q, i) => (
-        <YesNoRow
-          key={i}
-          label={q}
-          value={form.advice[q]}
-          onChange={(v) => updateField("advice", q, v)}
-          options={yesNoNA}
-        />
+        "Referred user to leaflet / professional"
+      ].map(q => (
+        <YesNoRow key={q} label={q} value={form.advice[q]}
+          onChange={(v) => updateField("advice", q, v)} options={yesNoNA} />
       ))}
 
       {/* ERRORS */}
@@ -304,23 +260,44 @@ export default function MedicationManagementForm() {
 
       {/* OUTCOME */}
       <Section title="Outcome of Assessment" />
-      <div style={{ marginBottom: "16px", backgroundColor: "#fff", padding: "10px", borderRadius: "4px" }}>
+      <div style={box}>
         {[
           "Competent unsupervised",
           "Competent with exceptions",
           "Needs further supervision"
-        ].map((o, i) => (
-          <label key={i} style={{ display: "block", marginBottom: "5px" }}>
-            <input
-              type="radio"
-              name="outcome"
-              checked={form.outcome === o}
-              onChange={() => setForm({ ...form, outcome: o })}
+        ].map(opt => (
+          <label key={opt} style={{ display: "block", marginBottom: 4 }}>
+            <input type="radio" name="outcome"
+              checked={form.outcome === opt}
+              onChange={() => setForm({ ...form, outcome: opt })}
             />{" "}
-            {o}
+            {opt}
           </label>
         ))}
       </div>
+
+      {/* ACTIONS */}
+      <Section title="Actions / Exceptions Identified" />
+      {form.actions.map((row, i) => (
+        <div key={i} style={actionRow}>
+          <InputCompact
+            placeholder="Action"
+            value={row.action}
+            onChange={(v) => updateAction(i, "action", v)}
+          />
+          <InputCompact
+            placeholder="By When"
+            type="date"
+            value={row.byWhen}
+            onChange={(v) => updateAction(i, "byWhen", v)}
+          />
+          <InputCompact
+            placeholder="By Whom"
+            value={row.byWhom}
+            onChange={(v) => updateAction(i, "byWhom", v)}
+          />
+        </div>
+      ))}
 
       {/* SIGNATURES */}
       <Section title="Signatures" />
@@ -340,114 +317,127 @@ export default function MedicationManagementForm() {
         onChange={(f, v) => updateSignature("manager", f, v)}
       />
 
-      {/* Save Button */}
-      <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
-        <button
-          onClick={handleSave}
-          style={{
-            background: "#00264D",
-            color: "#fff",
-            border: "none",
-            padding: "12px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: 600,
-            width: "100%",
-            fontSize: "16px"
-          }}
-        >
-          Save Form
-        </button>
-      </div>
+      {/* SAVE BUTTON */}
+      <button
+        onClick={handleSave}
+        style={{
+          background: "#00264D",
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "5px",
+          width: "100%",
+          marginTop: "18px",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        Save Form
+      </button>
     </div>
   );
 }
 
-/* SMALL COMPONENTS */
+/* ===== COMPONENTS ===== */
 
-const labelStyle = { fontWeight: 600, marginBottom: 4, display: "block" };
-const inputStyle = {
-  width: "100%",
-  padding: "9px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
+const box = {
+  background: "#fff",
+  padding: "10px",
+  borderRadius: "6px",
+  marginBottom: "16px"
+};
+
+const actionRow = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
   marginBottom: "10px"
 };
 
 const Section = ({ title }) => (
-  <div
-    style={{
-      fontWeight: 700,
-      margin: "16px 0 8px",
-      color: "#00264D",
-      fontSize: "16px",
-      borderBottom: "1px solid #ccc",
-      paddingBottom: "3px"
-    }}
-  >
+  <div style={{
+    fontWeight: 700,
+    marginTop: "18px",
+    marginBottom: "10px",
+    color: "#00264D",
+    fontSize: "17px",
+    borderBottom: "1px solid #ccc",
+    paddingBottom: "3px"
+  }}>
     {title}
   </div>
 );
 
 function YesNoRow({ label, value, onChange, options }) {
   return (
-    <div style={{ 
-      marginBottom: "10px",
-      backgroundColor: "#fff",
-      padding: "10px",
-      borderRadius: "4px"
-    }}>
-      <div style={{ fontWeight: 600, marginBottom: "5px" }}>{label}</div>
-      {options.map((o, i) => (
-        <label key={i} style={{ marginRight: 10 }}>
-          <input
-            type="radio"
-            checked={value === o}
-            onChange={() => onChange(o)}
-          />{" "}
-          {o}
+    <div style={box}>
+      <div style={{ fontWeight: 600, marginBottom: "6px" }}>{label}</div>
+      {options.map(opt => (
+        <label key={opt} style={{ marginRight: "14px" }}>
+          <input type="radio" checked={value === opt} onChange={() => onChange(opt)} /> {opt}
         </label>
       ))}
     </div>
   );
 }
 
+function Input({ label, value, onChange, type="text" }) {
+  return (
+    <div style={{ flex: 1 }}>
+      <label style={{ fontWeight: 600 }}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "9px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          marginTop: "4px",
+          background: "#fff"
+        }}
+      />
+    </div>
+  );
+}
+
+function InputCompact({ placeholder, value, onChange, type="text" }) {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      style={{
+        flex: 1,
+        padding: "9px",
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+        minWidth: "120px",
+        background: "#fff"
+      }}
+    />
+  );
+}
+
+function ResponsiveTwoCol({ children }) {
+  return (
+    <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+      {children}
+    </div>
+  );
+}
+
 function SignatureBlock({ title, data, onChange }) {
   return (
-    <div style={{
-      backgroundColor: "#fff",
-      padding: "10px",
-      borderRadius: "4px",
-      marginBottom: "16px"
-    }}>
+    <div style={box}>
       <strong>{title}</strong>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Name</label>
-          <input
-            style={inputStyle}
-            value={data.name || ""}
-            onChange={(e) => onChange("name", e.target.value)}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Signature</label>
-          <input
-            style={inputStyle}
-            value={data.sign || ""}
-            onChange={(e) => onChange("sign", e.target.value)}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Date</label>
-          <input
-            type="date"
-            style={inputStyle}
-            value={data.date || ""}
-            onChange={(e) => onChange("date", e.target.value)}
-          />
-        </div>
-      </div>
+      <ResponsiveTwoCol>
+        <Input label="Name" value={data.name || ""} onChange={(v) => onChange("name", v)} />
+        <Input label="Signature" value={data.sign || ""} onChange={(v) => onChange("sign", v)} />
+        <Input label="Date" type="date" value={data.date || ""} onChange={(v) => onChange("date", v)} />
+      </ResponsiveTwoCol>
     </div>
   );
 }
