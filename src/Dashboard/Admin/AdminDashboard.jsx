@@ -78,6 +78,12 @@ const AdminDashboard = () => {
     setEditCarer(null);
   };
 
+  // Handle form submission
+  const submitForm = () => {
+    alert("Form submitted successfully!");
+    setFormModal(null); // Close the modal after submission
+  };
+
   // Download report function
   const downloadReport = () => {
     // Create a simple text report
@@ -566,11 +572,10 @@ const AdminDashboard = () => {
           <p><b>Version:</b> {formModal.version}</p>
           <p><b>Description:</b> {formModal.description}</p>
           <div style={styles.formActions}>
-            <Button text="Submit" onClick={() => alert("Submitted")} />
+            <Button text="Submit" onClick={submitForm} />
           </div>
         </Modal>
       )}
-
       {editTemplate && (
         <Modal title="Edit Template" onClose={() => setEditTemplate(null)} isMobile={isMobile}>
           <div style={{ marginBottom: "10px" }}>
