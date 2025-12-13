@@ -570,6 +570,31 @@ const CarersList = () => {
       border: `1px solid ${colors.lightGray}`,
       borderRadius: 4,
       fontSize: 13
+    },
+    // Mobile buttons container
+    mobileButtonsContainer: {
+      display: isMobile ? "flex" : "none",
+      gap: 10,
+      width: "100%",
+      marginTop: 10,
+      marginBottom: 10
+    },
+    // Floating add button for mobile
+    floatingAddButton: {
+      display: isMobile ? "flex" : "none",
+      position: "fixed",
+      bottom: 20,
+      right: 20,
+      width: 56,
+      height: 56,
+      borderRadius: "50%",
+      backgroundColor: colors.primary,
+      color: colors.white,
+      justifyContent: "center",
+      alignItems: "center",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+      zIndex: 1000,
+      cursor: "pointer"
     }
   };
 
@@ -616,27 +641,44 @@ const CarersList = () => {
             <FaUserPlus /> Add Carer
           </button>
         )}
-        {isMobile && (
-          <div style={{ position: "relative" }}>
+      </div>
+
+      {/* Mobile buttons container */}
+      {isMobile && (
+        <div style={styles.mobileButtonsContainer}>
+          <button 
+            onClick={() => setAddModalOpen(true)} 
+            style={{ 
+              ...styles.button, 
+              ...styles.buttonPrimary,
+              flex: 1
+            }}
+          >
+            <FaUserPlus /> Add Carer
+          </button>
+          <div style={{ position: "relative", flex: 1 }}>
             <button 
               onClick={() => setFilterMenuOpen(!filterMenuOpen)} 
-              style={{ ...styles.button, backgroundColor: colors.lightGray, color: colors.textDark }}
+              style={{ 
+                ...styles.button, 
+                backgroundColor: colors.lightGray, 
+                color: colors.textDark,
+                width: "100%"
+              }}
             >
               <FaFilter /> Filter
             </button>
             {filterMenuOpen && (
               <div style={styles.filterMenu}>
-                <button 
-                  onClick={() => { setAddModalOpen(true); setFilterMenuOpen(false); }} 
-                  style={{ ...styles.button, ...styles.buttonPrimary, width: "100%", justifyContent: "center" }}
-                >
-                  <FaUserPlus /> Add Carer
-                </button>
+                <p style={{ margin: '0 0 10px 0', fontSize: 14, fontWeight: 600 }}>Filter Options</p>
+                <p style={{ margin: '0 0 5px 0', fontSize: 12, color: colors.textLight }}>
+                  Use the filter dropdowns above to narrow down results
+                </p>
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Table for Desktop, Cards for Mobile */}
       {!isMobile && (
@@ -794,6 +836,16 @@ const CarersList = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Floating Add Button for Mobile */}
+      {isMobile && (
+        <div 
+          style={styles.floatingAddButton}
+          onClick={() => setAddModalOpen(true)}
+        >
+          <FaUserPlus size={24} />
         </div>
       )}
 

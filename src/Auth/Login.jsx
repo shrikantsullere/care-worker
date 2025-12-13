@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const colors = {
-  bgLight: "#F4F7FB",          // SaaS Ice Gray 🔹
-  primary: "#3182CE",          // Corporate Soft Blue
-  success: "#4CAF50",          // Green CTA
+  bgLight: "#F4F7FB", // SaaS Ice Gray 🔹
+  primary: "#3182CE", // Corporate Soft Blue
+  success: "#4CAF50", // Green CTA
   white: "#FFFFFF",
   darkText: "#1A1A1A",
   gray: "#4A4A4A",
+  borderGray: "#ced4da", // Light Gray for borders
 };
 
 const buttonStyles = {
@@ -24,6 +25,15 @@ const buttonStyles = {
   fontFamily: "inherit",
 };
 const hoverStyles = { backgroundColor: "#2269b8" };
+
+const inputStyles = {
+  border: `1px solid ${colors.borderGray}`,
+  borderRadius: "6px",
+  padding: "10px 12px", // Consistent padding
+  fontSize: "16px",
+  width: "100%",
+  boxSizing: "border-box", // Ensures padding doesn't affect width
+};
 
 const Login = () => {
   const navigate = useNavigate();
@@ -96,7 +106,37 @@ const Login = () => {
           </div>
 
           {/* Right Login Form */}
-          <div className="col-md-6 d-flex align-items-center p-5">
+          <div className="col-md-6 d-flex align-items-center p-5 position-relative">
+            {/* Back Button to Landing Page */}
+            <button
+              className="btn"
+              style={{
+                position: "absolute",
+                top: "20px",
+                left: "20px",
+                background: "none",
+                border: "none",
+                padding: "5px",
+                cursor: "pointer",
+                color: colors.gray,
+              }}
+              onClick={() => navigate("/")}
+              aria-label="Go back to landing page"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style={{ transition: "color 0.2s ease-in-out" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = colors.primary)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = colors.gray)}
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
             <div className="w-100">
 
               <h2 className="fw-bold mb-3 text-center" style={{ color: colors.darkText }}>
@@ -137,6 +177,7 @@ const Login = () => {
                   <input
                     type="email"
                     className="form-control"
+                    style={inputStyles}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -145,17 +186,23 @@ const Login = () => {
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Password</label>
-                  <div className="input-group">
+                  <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className="form-control"
+                      className="form-control pe-5"
+                      style={inputStyles}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                     <button
                       type="button"
-                      className="btn btn-outline-secondary"
+                      className="btn position-absolute top-0 end-0 h-100 d-flex align-items-center justify-content-center"
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        paddingRight: "12px",
+                      }}
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? "🙈" : "👁️"}
@@ -165,17 +212,16 @@ const Login = () => {
                 </div>
 
                 {/* Submit */}
-            <button
-  type="submit"
-  className="btn w-100 py-2"
-  style={{ ...buttonStyles, backgroundColor: colors.primary }}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = "#2269b8")}
-  onMouseLeave={(e) => (e.target.style.backgroundColor = colors.primary)}
-  disabled={loading}
->
-  {loading ? "Logging in..." : "Login"}
-</button>
-
+                <button
+                  type="submit"
+                  className="btn w-100 py-2"
+                  style={{ ...buttonStyles, backgroundColor: colors.primary }}
+                  onMouseEnter={(e) => (e.target.style.backgroundColor = "#2269b8")}
+                  onMouseLeave={(e) => (e.target.style.backgroundColor = colors.primary)}
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Login"}
+                </button>
               </form>
 
             </div>

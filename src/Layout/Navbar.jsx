@@ -12,7 +12,8 @@ const Navbar = ({ toggleSidebar }) => {
         zIndex: 2000,
         width: "100%",
         padding: "0.5rem 1rem",
-        marginLeft: "-5px"  // Adjust if sidebar width changes
+        marginLeft: "-5px",  // Adjust if sidebar width changes
+        position: "fixed",
       }}
     >
       {/* Left */}

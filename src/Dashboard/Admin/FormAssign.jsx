@@ -20,7 +20,7 @@ const AdminViewAssignedForms = () => {
       id: 1,
       name: "John Doe",
       assignedForms: [
-        { formName: "Employment Application", status: "Completed" },
+        { formName: "Application Form", status: "Completed" },
         { formName: "Incident Report", status: "In Progress" },
         { formName: "Daily Visit Log", status: "Completed" }
       ]
