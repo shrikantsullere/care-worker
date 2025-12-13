@@ -448,7 +448,7 @@ const PayrollList = () => {
       padding: isMobile ? "10px" : "20px",
       backgroundColor: "#f5f7fa",
       minHeight: "100vh",
-      marginTop: showNavbar ? "12px" : "0" // Adjust margin based on navbar visibility
+      // marginTop: showNavbar ? "12px" : "0" // Adjust margin based on navbar visibility
     },
     header: {
       display: "flex",

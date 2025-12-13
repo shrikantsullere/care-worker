@@ -139,7 +139,7 @@ const AdminDashboard = () => {
       fontFamily: "Segoe UI",
       minHeight: "100vh",
       backgroundColor: colors.bgLight,
-      paddingTop: isMobile ? "60px" : "70px" // Adjusted for mobile
+      // paddingTop: isMobile ? "60px" : "70px" // Adjusted for mobile
     },
     header: {
       display: "flex",
