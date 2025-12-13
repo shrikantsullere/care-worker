@@ -2,16 +2,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * Complete updated Application Form component
- * - All fields from the uploaded PDF included
- * - Generic handleChange supports nested keys using dot notation (e.g. "reference1.manager")
- * - Courses array, mandatory training booleans, references, extended availability, medical questions, declaration
- * - Keeps your original styling and small components (Section, Input, Radio)
- *
- * Replace your existing component with this file.
- */
-
 const ApplicationForm = () => {
   const navigate = useNavigate();
 
@@ -162,6 +152,10 @@ const ApplicationForm = () => {
     fullName: "",
     signatureDate: "",
     declarationDate: "",
+
+    // Photo Upload
+    photo: null,
+    photoPreview: null,
   });
 
   // Generic setter for nested keys using dot notation
@@ -205,6 +199,24 @@ const ApplicationForm = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Handler for photo upload
+  const handlePhotoUpload = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Create a preview URL
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFormData(prev => ({
+          ...prev,
+          photo: file,
+          photoPreview: event.target.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Helpers to manage dynamic arrays (employmentHistory, courses)
@@ -288,9 +300,62 @@ const ApplicationForm = () => {
         APPLICATION FORM – UNITE CARE LTD
       </h2>
 
-      {/* Photo Placeholder */}
-      <div style={{ border: "1px dashed #ccc", padding: "20px", textAlign: "center", marginBottom: "20px" }}>
-        INSERT PHOTO HERE
+      {/* Photo Upload Section */}
+      <div style={{ marginBottom: "20px" }}>
+        <Section title="Photo" />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {formData.photoPreview ? (
+            <div style={{ marginBottom: "10px" }}>
+              <img 
+                src={formData.photoPreview} 
+                alt="Applicant" 
+                style={{ 
+                  width: "150px", 
+                  height: "150px", 
+                  objectFit: "cover", 
+                  border: "1px solid #ccc",
+                  borderRadius: "4px"
+                }} 
+              />
+            </div>
+          ) : (
+            <div 
+              style={{ 
+                width: "150px", 
+                height: "150px", 
+                border: "1px dashed #ccc", 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center",
+                marginBottom: "10px",
+                borderRadius: "4px",
+                color: "#888"
+              }}
+            >
+              No Photo
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            style={{ display: "none" }}
+            id="photo-upload"
+          />
+          <label 
+            htmlFor="photo-upload" 
+            style={{
+              background: "#3A8DFF",
+              color: "#fff",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px"
+            }}
+          >
+            {formData.photoPreview ? "Change Photo" : "Upload Photo"}
+          </label>
+        </div>
       </div>
 
       {/* Position Applied For */}

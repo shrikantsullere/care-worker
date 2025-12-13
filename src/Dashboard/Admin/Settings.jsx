@@ -392,7 +392,7 @@ const Settings = () => {
       {/* Mobile View Indicator */}
       {isMobile && (
         <div style={styles.mobileIndicator}>
-          Mobile View - Scroll to see more
+          {/* Mobile View - Scroll to see more */}
         </div>
       )}
 
