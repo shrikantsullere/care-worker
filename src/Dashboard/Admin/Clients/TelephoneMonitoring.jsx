@@ -62,7 +62,7 @@ export default function TelephoneMonitoringForm() {
   const handleSave = () => {
     console.log("Telephone Monitoring Form Submitted:", formData);
     alert("Telephone Monitoring Form saved successfully!");
-    navigate("/admin/forms");
+    navigate("/admin/clients"); // Changed from "/admin/forms" to "/admin/clients"
   };
 
   // Styles
@@ -129,7 +129,11 @@ export default function TelephoneMonitoringForm() {
   return (
     <div style={formStyle}>
       {/* Back Button */}
-      <button type="button" onClick={() => navigate("/admin/forms")} style={backBtn}>
+      <button 
+        type="button" 
+        onClick={() => navigate("/admin/clients")} 
+        style={backBtn}
+      >
         ← Back
       </button>
 

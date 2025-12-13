@@ -48,7 +48,6 @@ import ZeroHourContractForm from "./Dashboard/Admin/AllForms/ZeroHourContractFor
 import InformaionSheet from "./Dashboard/Admin/AllForms/InformaionSheet";
 import SpotCheckForm from "./Dashboard/Admin/AllForms/SpotCheckForm";
 import SupervisionForm from "./Dashboard/Admin/AllForms/SupervisionForm";
-import TelephoneMonitoring from "./Dashboard/Admin/AllForms/TelephoneMonitoring";
 import AppraisalForm from "./Dashboard/Admin/AllForms/AppraisalForm";
 import MedicationManagementForm from "./Dashboard/Admin/AllForms/MedicationManagementForm";
 import ApplicationForm from "./Dashboard/Admin/AllForms/ApplicationForm";
@@ -58,6 +57,12 @@ import TrainingMatrix from "./Dashboard/Admin/AllForms/TrainingMatrix";
 import ClientProfileForm from "./Dashboard/Admin/AllForms/ClientProfileForm";
 import UniteCareLtd from "./Dashboard/Admin/AllForms/UniteCareLtd";
 import InductionChecklist from "./Dashboard/Admin/AllForms/InductionChecklist";
+// client 
+import Client from "./Dashboard/Admin/Clients/client";
+import TelephoneMonitoringForm from "./Dashboard/Admin/Clients/TelephoneMonitoring";
+import CarePlan from "./Dashboard/Admin/Clients/CarePlan";
+import RiskManagement from "./Dashboard/Admin/Clients/RiskManagement";
+import Incident from "./Dashboard/Admin/Clients/Incident";
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -126,7 +131,6 @@ function App() {
             <Route path="/admin/forms/information-sheet" element={<InformaionSheet />} />
             <Route path="/admin/forms/spot-check-form" element={<SpotCheckForm />} />
             <Route path="/admin/forms/supervision-form" element={<SupervisionForm />} />
-            <Route path="/admin/forms/telephone-monitoring" element={<TelephoneMonitoring />} />
             <Route path="/admin/forms/appraisal-form" element={<AppraisalForm />} />
             <Route path="/admin/forms/application" element={<ApplicationForm />} />
             <Route path="/admin/forms/medication-management-form" element={<MedicationManagementForm />} />
@@ -136,6 +140,13 @@ function App() {
             <Route path="/admin/forms/client-profile-form" element={<ClientProfileForm />} />
             <Route path="/admin/forms/unite-care-ltd-form" element={<UniteCareLtd />} />
             <Route path="/admin/forms/induction-checklist-form" element={<InductionChecklist />} />
+            {/* clieny
+             */}
+            <Route path="/admin/clients" element={<Client />} />
+            <Route path="/admin/forms/telephone-monitoring-form" element={<TelephoneMonitoringForm />} />
+            <Route path="/admin/clients/care-plan" element={<CarePlan />} />
+            <Route path="/admin/clients/risk-management" element={<RiskManagement />} />
+            <Route path="/admin/clients/incident" element={<Incident />} />
 
             {/* fallback */}
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />

@@ -61,6 +61,7 @@ const Sidebar = ({ collapsed, setCollapsed, isOpen }) => {
       },
 
       { name: "Forms / Templates", icon: faUsers, path: "/admin/forms" },
+      { name: "Clients", icon: faUsers, path: "/admin/clients" },
       { name: "Form Assign", icon: faUsers, path: "/admin/form-assign" },
       { name: "Payroll List", icon: faCalendarDay, path: "/admin/payroll-list" },
       { name: "Downloads", icon: faCalendarCheck, path: "/admin/downloads" },
