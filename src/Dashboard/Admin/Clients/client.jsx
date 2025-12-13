@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { FaFile, FaEdit, FaTrash, FaEye, FaFilePdf, FaTh, FaTable, FaFilter, FaTimes, FaBars, FaSave, FaWindowClose, FaUpload, FaSearch, FaCloudUploadAlt, FaFileWord } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaFile, FaEdit, FaTrash, FaEye, FaFilePdf, FaTh, FaTable, FaFilter, FaTimes, FaBars, FaSave, FaWindowClose } from "react-icons/fa";
 import jsPDF from 'jspdf';
 
 const colors = {
@@ -12,11 +13,10 @@ const colors = {
   lightGray: "#E0E0E0",
   tabActive: "#1976D2",
   tabInactive: "#90CAF9",
-  orange: "#FF9800",
-  lightBlue: "#E3F2FD",
 };
 
 const Forms = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("forms"); // "forms" or "submitted"
   const [viewMode, setViewMode] = useState("card"); // "card" or "table"
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -28,24 +28,12 @@ const Forms = () => {
   const [dateFromFilter, setDateFromFilter] = useState("");
   const [dateToFilter, setDateToFilter] = useState("");
   const [submittedByFilter, setSubmittedByFilter] = useState("");
-  
-  // Search states
-  const [formsSearchQuery, setFormsSearchQuery] = useState("");
-  const [submittedFormsSearchQuery, setSubmittedFormsSearchQuery] = useState("");
 
   // Modal states
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showDualModeModal, setShowDualModeModal] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [editFormData, setEditFormData] = useState({});
-  const [uploadFormData, setUploadFormData] = useState({
-    file: null,
-    fileName: "",
-    uploadedBy: "",
-    notes: ""
-  });
 
   // Track window size for responsive design
   useEffect(() => {
@@ -59,169 +47,245 @@ const Forms = () => {
   const isTablet = windowWidth > 768 && windowWidth <= 1024;
   const isDesktop = windowWidth > 1024;
 
+  // Only 4 forms as requested
   const [formsList, setFormsList] = useState([
-    // { id: 1, name: "Employment Application", route: "/admin/forms/employment-application", type: "Input", version: "1.0" },
-    { id: 2, name: "Character Reference", route: "/admin/forms/character-reference", type: "Input", version: "1.0" },
-    { id: 3, name: "Health & Safety Handbook", route: "/admin/forms/health-and-safety-handbook", type: "Document", version: "2.0" },
-    { id: 4, name: "Job Description", route: "/admin/forms/job-description", type: "Document", version: "1.0" },
-    { id: 5, name: "Interview Scoring", route: "/admin/forms/interview-scoring", type: "Input", version: "1.0" },
-    { id: 6, name: "Declaration of Health", route: "/admin/forms/declaration-of-health", type: "Input", version: "1.0" },
-    { id: 7, name: "Induction Certificate 1", route: "/admin/forms/induction-certificate-1", type: "Document", version: "1.0" },
-    { id: 8, name: "Induction Certificate 2", route: "/admin/forms/induction-certificate-2", type: "Document", version: "1.0" },
-    { id: 9, name: "Medication Competency", route: "/admin/forms/medication-competency", type: "Input", version: "1.0" },
-    { id: 10, name: "Review Form", route: "/admin/forms/review-form", type: "Input", version: "1.0" },
-    { id: 11, name: "Zero Hour Contract", route: "/admin/forms/zero-hour-contract", type: "Document", version: "1.0" },
-    { id: 12, name: "Information Sheet", route: "/admin/forms/information-sheet", type: "Document", version: "1.0" },
-    { id: 13, name: "Spot Check Form", route: "/admin/forms/spot-check-form", type: "Input", version: "1.0" },
-    { id: 14, name: "Supervision Form", route: "/admin/forms/supervision-form", type: "Input", version: "1.0" },
-    // { id: 15, name: "Telephone Monitoring", route: "/admin/forms/telephone-monitoring", type: "Input", version: "1.0" },
-    { id: 16, name: "Appraisal Form", route: "/admin/forms/appraisal-form", type: "Input", version: "1.0" },
-    { id: 17, name: "Application Form", route: "/admin/forms/application", type: "Input", version: "1.0" },
-    { id: 18, name: "Medication Management", route: "/admin/forms/medication-management-form", type: "Input", version: "1.0" },
-    { id: 19, name: "Care Worker Shadowing", route: "/admin/forms/care-worker-shadowing", type: "Input", version: "1.0" },
-    // { id: 20, name: "Care Plan", route: "/admin/forms/care-plan", type: "Input", version: "1.0" },
-    { id: 21, name: "Training Matrix", route: "/admin/forms/training-matrix", type: "Input", version: "1.0" },
-    { id: 22, name: "Client Profile", route: "/admin/forms/client-profile-form", type: "Input", version: "1.0" },
-    { id: 23, name: "Unite Care Ltd", route: "/admin/forms/unite-care-ltd-form", type: "Input", version: "1.0" },
-    { id: 24, name: "Induction Checklist", route: "/admin/forms/induction-checklist-form", type: "Input", version: "1.0" },
+    { 
+      id: 1, 
+      name: "Telephone Monitoring", 
+      route: "/admin/forms/telephone-monitoring-form", 
+      type: "Input", 
+      version: "1.0",
+      description: "Form for monitoring telephone conversations with clients for quality assurance and compliance purposes."
+    },
+    { 
+      id: 2, 
+      name: "Care Plan", 
+      route: "/admin/clients/care-plan", 
+      type: "Input", 
+      version: "2.0",
+      description: "Comprehensive care planning document to address client needs, preferences, and support requirements."
+    },
+    { 
+      id: 3, 
+      name: "Risk Management", 
+      route: "/admin/clients/risk-management", 
+      type: "Input", 
+      version: "2.0",
+      description: "Document for identifying, assessing, and managing risks associated with client care and service delivery."
+    },
+    { 
+      id: 4, 
+      name: "Incident Form", 
+      route: "/admin/clients/incident", 
+      type: "Input", 
+      version: "1.0",
+      description: "Form for reporting and documenting any incidents that occur during service delivery."
+    },
   ]);
 
   // Sample submitted forms data
   const [submittedForms, setSubmittedForms] = useState([
     { 
       id: 101, 
-      name: "Employment Application", 
+      name: "Telephone Monitoring", 
       formId: 1,
       submittedDate: "2023-06-15", 
       submittedBy: "John Doe",
       status: "Approved",
       type: "Input",
       version: "1.0",
-      details: "This is a detailed description of employment application form. It includes personal information, employment history, and references.",
+      details: "Telephone monitoring form completed for quality assurance check.",
       formData: {
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        phone: "123-456-7890",
-        address: "123 Main St, Anytown, USA",
-        previousEmployment: "ABC Company",
-        references: "Jane Smith, Bob Johnson"
+        clientName: "Margaret Smith",
+        dateOfCall: "2023-06-15",
+        timeOfCall: "14:30",
+        duration: "12 minutes",
+        callPurpose: "Follow-up on medication changes",
+        callTaker: "John Doe",
+        monitoringOfficer: "Sarah Johnson",
+        qualityScore: "9/10",
+        notes: "Client expressed satisfaction with service. All protocol procedures followed correctly.",
+        improvementAreas: "None identified"
       }
     },
     { 
       id: 102, 
-      name: "Character Reference", 
+      name: "Care Plan", 
       formId: 2,
       submittedDate: "2023-06-18", 
       submittedBy: "Jane Smith",
-      status: "Pending",
+      status: "Approved",
       type: "Input",
-      version: "1.0",
-      details: "This is a detailed description of character reference form. It includes personal information and character references.",
+      version: "2.0",
+      details: "Comprehensive care plan developed for client with complex needs.",
       formData: {
-        applicantName: "Jane Smith",
-        relationship: "Manager",
-        yearsKnown: "5",
-        characterTraits: "Reliable, hardworking, team player",
-        recommendation: "Strongly recommend"
+        clientName: "Robert Johnson",
+        dateOfBirth: "1945-03-12",
+        nhsNumber: "1234567890",
+        address: "45 Oak Street, Anytown, UK",
+        phoneNumber: "01234-567890",
+        emergencyContact: "Mary Johnson (Daughter) - 01234-567891",
+        gpDetails: "Dr. Williams, Anytown Medical Practice",
+        diagnosis: "Early stage dementia, mobility issues",
+        allergies: "Penicillin, nuts",
+        medications: "Donepezil 5mg daily, Paracetamol as required",
+        mobilityAssistance: "Walker required, transfer assistance",
+        communicationNeeds: "Clear speech required, hearing aid in right ear",
+        personalCareAssistance: "Requires assistance with bathing and dressing",
+        nutritionalNeeds: "Soft diet, requires prompting with meals",
+        continenceNeeds: "Occasional accidents, uses pads",
+        sleepPattern: "Wakes frequently during night",
+        socialInterests: "Classical music, gardening (supervised)",
+        culturalNeeds: "Christian, attends church on Sundays",
+        riskAssessment: "Falls risk - high, wandering risk - medium",
+        reviewDate: "2023-09-18",
+        carePlanGoals: [
+          "Maintain independence in personal care for as long as possible",
+          "Reduce falls through appropriate interventions",
+          "Maintain social engagement and mental stimulation",
+          "Ensure medication compliance"
+        ],
+        interventions: [
+          "Daily personal care assistance",
+          "Mobility support with appropriate equipment",
+          "Medication management and administration",
+          "Regular social activities and engagement",
+          "Night-time support as needed"
+        ],
+        desiredOutcomes: [
+          "Client remains safe in their home environment",
+          "Client maintains quality of life",
+          "Client's physical and mental health needs are met",
+          "Family feels confident in care provided"
+        ]
       }
     },
     { 
       id: 103, 
-      name: "Health & Safety Handbook", 
+      name: "Risk Management", 
       formId: 3,
       submittedDate: "2023-06-20", 
       submittedBy: "Robert Johnson",
       status: "Approved",
-      type: "Document",
+      type: "Input",
       version: "2.0",
-      details: "This is a detailed description of health and safety handbook. It includes safety guidelines and procedures.",
+      details: "Comprehensive risk assessment and management plan completed for client.",
       formData: {
-        employeeName: "Robert Johnson",
-        department: "Operations",
-        handbookVersion: "2.0",
-        acknowledgmentDate: "2023-06-20",
-        emergencyContact: "Mary Johnson"
+        clientName: "Elizabeth Taylor",
+        dateOfBirth: "1952-07-08",
+        assessmentDate: "2023-06-20",
+        assessorName: "Robert Johnson",
+        nextReviewDate: "2023-12-20",
+        overallRiskLevel: "Medium",
+        risks: [
+          {
+            riskCategory: "Falls",
+            riskDescription: "Client has unsteady gait and previous history of falls",
+            likelihood: "Likely",
+            severity: "Major",
+            riskLevel: "High",
+            controlMeasures: [
+              "Ensure appropriate mobility aids are used",
+              "Remove trip hazards from home environment",
+              "Provide supervision when mobilizing",
+              "Ensure appropriate footwear is worn"
+            ],
+            responsiblePerson: "Care Team",
+            reviewDate: "2023-09-20"
+          },
+          {
+            riskCategory: "Medication Errors",
+            riskDescription: "Client takes multiple medications with potential for confusion",
+            likelihood: "Possible",
+            severity: "Moderate",
+            riskLevel: "Medium",
+            controlMeasures: [
+              "Implement medication administration record",
+              "Use dosette box for medication organization",
+              "Provide medication prompts and supervision",
+              "Regular medication review with GP"
+            ],
+            responsiblePerson: "Lead Carer",
+            reviewDate: "2023-08-20"
+          },
+          {
+            riskCategory: "Nutrition/Hydration",
+            riskDescription: "Client has poor appetite and may not consume adequate fluids",
+            likelihood: "Possible",
+            severity: "Moderate",
+            riskLevel: "Medium",
+            controlMeasures: [
+              "Monitor fluid intake and encourage regular drinks",
+              "Provide small, frequent meals of preferred foods",
+              "Consider nutritional supplements if weight loss continues",
+              "Record weight weekly"
+            ],
+            responsiblePerson: "Care Team",
+            reviewDate: "2023-07-20"
+          },
+          {
+            riskCategory: "Social Isolation",
+            riskDescription: "Client lives alone with limited social contact",
+            likelihood: "Likely",
+            severity: "Moderate",
+            riskLevel: "Medium",
+            controlMeasures: [
+              "Facilitate regular social activities",
+              "Encourage participation in community groups",
+              "Arrange regular contact with family members",
+              "Consider befriending service"
+            ],
+            responsiblePerson: "Social Coordinator",
+            reviewDate: "2023-09-20"
+          }
+        ],
+        emergencyProcedures: "In case of emergency, contact emergency services on 999, then inform next of kin and line manager",
+        signature: "Robert Johnson",
+        date: "2023-06-20"
       }
     },
     { 
       id: 104, 
-      name: "Interview Scoring", 
-      formId: 5,
+      name: "Incident Form", 
+      formId: 4,
       submittedDate: "2023-06-22", 
       submittedBy: "Emily Davis",
-      status: "Rejected",
-      type: "Input",
-      version: "1.0",
-      details: "This is a detailed description of interview scoring form. It includes interview questions and scoring criteria.",
-      formData: {
-        candidateName: "Emily Davis",
-        position: "Care Worker",
-        interviewDate: "2023-06-22",
-        interviewer: "John Smith",
-        scores: {
-          communication: 8,
-          experience: 7,
-          attitude: 9,
-          skills: 6
-        },
-        totalScore: "30/40",
-        recommendation: "Not suitable at this time"
-      }
-    },
-    { 
-      id: 105, 
-      name: "Medication Competency", 
-      formId: 9,
-      submittedDate: "2023-06-25", 
-      submittedBy: "Michael Wilson",
       status: "Pending",
       type: "Input",
       version: "1.0",
-      details: "This is a detailed description of medication competency form. It includes medication knowledge and competency assessment.",
+      details: "Incident report form completed for minor fall incident.",
       formData: {
-        employeeName: "Michael Wilson",
-        trainingDate: "2023-06-10",
-        assessor: "Dr. Sarah Johnson",
-        competencyAreas: {
-          medicationKnowledge: "Competent",
-          dosageCalculation: "Competent",
-          documentation: "Needs Improvement",
-          sideEffects: "Competent"
-        },
-        overallAssessment: "Competent with minor areas for improvement"
+        clientName: "James Wilson",
+        dateOfBirth: "1938-11-23",
+        incidentDate: "2023-06-22",
+        incidentTime: "10:15",
+        location: "Client's bedroom",
+        incidentType: "Fall",
+        description: "Client slipped when getting out of bed and fell onto carpeted floor",
+        immediateAction: "Checked for injuries, assisted client back to bed, notified line manager",
+        injuries: "Minor bruising to left forearm, no other injuries apparent",
+        witnesses: "Mary Brown (colleague)",
+        staffInvolved: "Emily Davis (carer), Mary Brown (carer)",
+        nextOfKinNotified: "Yes",
+        notifiedBy: "Emily Davis",
+        notificationTime: "10:45",
+        followUpActions: [
+          "Increased supervision when mobilizing",
+          "Review of bedroom environment for trip hazards",
+          "Referral to physiotherapist for mobility assessment",
+          "Complete incident investigation report"
+        ],
+        reporterName: "Emily Davis",
+        reporterSignature: "E. Davis",
+        managerSignature: "Pending",
+        dateReported: "2023-06-22"
       }
     },
   ]);
 
-  // Filter forms based on search query
-  const filteredForms = useMemo(() => {
-    if (!formsSearchQuery) return formsList;
-    
-    return formsList.filter(form => 
-      form.name.toLowerCase().includes(formsSearchQuery.toLowerCase()) ||
-      form.type.toLowerCase().includes(formsSearchQuery.toLowerCase()) ||
-      form.version.toLowerCase().includes(formsSearchQuery.toLowerCase())
-    );
-  }, [formsList, formsSearchQuery]);
-
-  // Filter submitted forms based on filter criteria and search query
+  // Filter submitted forms based on filter criteria
   const filteredSubmittedForms = useMemo(() => {
-    let filtered = submittedForms;
-    
-    // Apply search filter
-    if (submittedFormsSearchQuery) {
-      filtered = filtered.filter(form => 
-        form.name.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
-        form.type.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
-        form.version.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
-        form.submittedBy.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
-        form.status.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase())
-      );
-    }
-    
-    // Apply other filters
-    filtered = filtered.filter(form => {
+    return submittedForms.filter(form => {
       // Filter by status
       if (statusFilter !== "All" && form.status !== statusFilter) {
         return false;
@@ -242,9 +306,7 @@ const Forms = () => {
       
       return true;
     });
-    
-    return filtered;
-  }, [submittedForms, statusFilter, dateFromFilter, dateToFilter, submittedByFilter, submittedFormsSearchQuery]);
+  }, [submittedForms, statusFilter, dateFromFilter, dateToFilter, submittedByFilter]);
 
   // Reset filters
   const resetFilters = () => {
@@ -252,14 +314,20 @@ const Forms = () => {
     setDateFromFilter("");
     setDateToFilter("");
     setSubmittedByFilter("");
-    setSubmittedFormsSearchQuery("");
+  };
+
+  // Open form 
+  const handleOpen = (form) => {
+    console.log("Opening form:", form.route);
+    // Use React Router's navigate function instead of window.location.href
+    navigate(form.route);
   };
 
   // Edit form 
   const handleEdit = (form) => {
     console.log("Navigating to edit:", form.route);
-    // This still navigates to form editor for template forms
-    window.location.href = form.route;
+    // Use React Router's navigate function instead of window.location.href
+    navigate(form.route);
   };
 
   // Delete submitted form
@@ -277,77 +345,11 @@ const Forms = () => {
 
   // Edit submitted form - opens modal instead of navigating
   const handleEditSubmitted = (form) => {
-    setSelectedForm(form);
-    setEditFormData({...form.formData});
-    setShowEditModal(true);
-  };
-
-  // Open dual mode modal for form
-  const handleDualModeForm = (form) => {
-    setSelectedForm(form);
-    setShowDualModeModal(true);
-  };
-
-  // Open upload modal for form
-  const handleUploadForm = (form) => {
-    setSelectedForm(form);
-    setUploadFormData({
-      file: null,
-      fileName: "",
-      uploadedBy: "",
-      notes: ""
-    });
-    setShowUploadModal(true);
-  };
-
-  // Handle file change in upload modal
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUploadFormData(prev => ({
-        ...prev,
-        file: file,
-        fileName: file.name
-      }));
+    // Navigate to the form route for editing
+    const originalForm = formsList.find(f => f.id === form.formId);
+    if (originalForm) {
+      navigate(originalForm.route);
     }
-  };
-
-  // Save uploaded form
-  const handleSaveUpload = () => {
-    // Create a new submitted form entry
-    const newSubmittedForm = {
-      id: Date.now(), // Use timestamp as temporary ID
-      name: selectedForm.name,
-      formId: selectedForm.id,
-      submittedDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-      submittedBy: uploadFormData.uploadedBy,
-      status: "Pending",
-      type: selectedForm.type,
-      version: selectedForm.version,
-      details: `Manually uploaded ${selectedForm.name} form. ${uploadFormData.notes}`,
-      formData: {
-        fileName: uploadFormData.fileName,
-        uploadedBy: uploadFormData.uploadedBy,
-        notes: uploadFormData.notes,
-        uploadDate: new Date().toISOString()
-      }
-    };
-
-    // Add to submitted forms
-    setSubmittedForms(prev => [...prev, newSubmittedForm]);
-    
-    // Close modal and reset form
-    setShowUploadModal(false);
-    setSelectedForm(null);
-    setUploadFormData({
-      file: null,
-      fileName: "",
-      uploadedBy: "",
-      notes: ""
-    });
-    
-    // Show success message
-    alert("Form uploaded successfully!");
   };
 
   // Save edited form
@@ -388,33 +390,50 @@ const Forms = () => {
     doc.text("Form Data:", 20, yPos);
     yPos += 10;
     
-    Object.entries(form.formData).forEach(([key, value]) => {
-      if (typeof value === 'object') {
-        doc.text(`${key}:`, 20, yPos);
-        yPos += 7;
-        Object.entries(value).forEach(([subKey, subValue]) => {
-          doc.text(`  ${subKey}: ${subValue}`, 25, yPos);
-          yPos += 7;
-        });
-      } else {
-        const text = `${key}: ${value}`;
-        const splitText = doc.splitTextToSize(text, 170);
-        doc.text(splitText, 20, yPos);
-        yPos += splitText.length * 7;
-      }
-      
-      // Add new page if needed
-      if (yPos > 270) {
-        doc.addPage();
-        yPos = 20;
-      }
-    });
+    // Helper function to handle nested objects and arrays
+    const addFormDataToPDF = (data, indent = 0) => {
+      Object.entries(data).forEach(([key, value]) => {
+        if (typeof value === 'object' && value !== null) {
+          if (Array.isArray(value)) {
+            doc.text(`${' '.repeat(indent)}${key}:`, 20, yPos);
+            yPos += 7;
+            value.forEach((item, index) => {
+              if (typeof item === 'object' && item !== null) {
+                doc.text(`${' '.repeat(indent + 2)}${index + 1}.`, 20, yPos);
+                yPos += 7;
+                addFormDataToPDF(item, indent + 4);
+              } else {
+                doc.text(`${' '.repeat(indent + 2)}${index + 1}. ${item}`, 20, yPos);
+                yPos += 7;
+              }
+            });
+          } else {
+            doc.text(`${' '.repeat(indent)}${key}:`, 20, yPos);
+            yPos += 7;
+            addFormDataToPDF(value, indent + 2);
+          }
+        } else {
+          const text = `${' '.repeat(indent)}${key}: ${value}`;
+          const splitText = doc.splitTextToSize(text, 170 - indent * 5);
+          doc.text(splitText, 20, yPos);
+          yPos += splitText.length * 7;
+        }
+        
+        // Add new page if needed
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+      });
+    };
+    
+    addFormDataToPDF(form.formData);
     
     // Add footer
     doc.setFontSize(10);
     doc.text(`Generated on ${new Date().toLocaleDateString()}`, 20, 280);
     
-    // Save PDF
+    // Save the PDF
     doc.save(`${form.name.replace(/\s+/g, '_')}.pdf`);
   };
 
@@ -457,30 +476,6 @@ const Forms = () => {
       marginBottom: isMobile ? "10px" : "20px",
       flexWrap: "wrap",
       gap: "10px"
-    },
-    searchContainer: {
-      display: "flex",
-      alignItems: "center",
-      flex: isMobile ? "1 1 100%" : "1 1 300px",
-      position: "relative",
-    },
-    searchInput: {
-      width: "100%",
-      padding: isMobile ? "6px 10px 6px 35px" : "8px 12px 8px 35px",
-      border: `1px solid ${colors.lightGray}`,
-      borderRadius: "4px",
-      fontSize: isMobile ? "12px" : "14px",
-      outline: "none",
-      transition: "border-color 0.2s ease",
-    },
-    searchInputFocus: {
-      borderColor: colors.primary,
-    },
-    searchIcon: {
-      position: "absolute",
-      left: "10px",
-      color: colors.textLight,
-      fontSize: isMobile ? "14px" : "16px",
     },
     viewToggle: {
       display: "flex",
@@ -613,7 +608,7 @@ const Forms = () => {
         ? "1fr" 
         : isTablet 
           ? "repeat(2, 1fr)" 
-          : "repeat(auto-fill, minmax(280px, 1fr))",
+          : "repeat(auto-fill, minmax(250px, 1fr))",
       gap: isMobile ? "10px" : "15px",
       marginTop: isMobile ? "10px" : "20px",
     },
@@ -658,11 +653,6 @@ const Forms = () => {
       gap: 6, 
       marginTop: 12,
       flexWrap: "wrap"
-    },
-    threeButtonContainer: {
-      display: "flex", 
-      gap: 6, 
-      marginTop: 12,
     },
     twoButtonContainer: {
       display: "flex", 
@@ -727,10 +717,6 @@ const Forms = () => {
       display: "flex",
       gap: "5px",
       flexWrap: "wrap",
-    },
-    threeButtonTableContainer: {
-      display: "flex",
-      gap: "5px",
     },
     twoButtonTableContainer: {
       display: "flex",
@@ -903,149 +889,22 @@ const Forms = () => {
       alignItems: "center",
       gap: "5px",
     },
-    // Upload modal specific styles
-    uploadArea: {
-      border: `2px dashed ${colors.lightGray}`,
-      borderRadius: "8px",
-      padding: "20px",
-      textAlign: "center",
-      backgroundColor: "#f9f9f9",
-      marginBottom: "15px",
-      cursor: "pointer",
-      transition: "border-color 0.2s ease",
-    },
-    uploadAreaActive: {
-      borderColor: colors.primary,
-    },
-    uploadIcon: {
-      fontSize: "48px",
-      color: colors.textLight,
-      marginBottom: "10px",
-    },
-    uploadText: {
-      fontSize: isMobile ? "14px" : "16px",
-      color: colors.textDark,
-      marginBottom: "5px",
-    },
-    uploadSubtext: {
-      fontSize: isMobile ? "12px" : "14px",
-      color: colors.textLight,
-    },
-    fileInfo: {
-      backgroundColor: "#f0f0f0",
-      padding: "10px",
-      borderRadius: "4px",
-      marginTop: "10px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    fileName: {
-      fontSize: isMobile ? "12px" : "14px",
-      color: colors.textDark,
-      wordBreak: "break-all",
-      flex: 1,
-      marginRight: "10px",
-    },
-    removeFile: {
-      color: colors.danger,
-      cursor: "pointer",
-      fontSize: isMobile ? "14px" : "16px",
-    },
-    // Dual mode modal styles
-    dualModeContainer: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "20px",
-    },
-    dualModeOptions: {
-      display: "flex",
-      gap: "20px",
-      flexWrap: "wrap",
-    },
-    dualModeOption: {
-      flex: "1 1 300px",
-      border: `1px solid ${colors.lightGray}`,
-      borderRadius: "8px",
-      padding: "20px",
-      textAlign: "center",
-      cursor: "pointer",
-      transition: "all 0.2s ease",
-      backgroundColor: colors.white,
-    },
-    dualModeOptionHover: {
-      borderColor: colors.primary,
-      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-      transform: "translateY(-2px)",
-    },
-    dualModeOptionSelected: {
-      borderColor: colors.primary,
-      backgroundColor: colors.lightBlue,
-    },
-    dualModeIcon: {
-      fontSize: "48px",
-      color: colors.primary,
-      marginBottom: "15px",
-    },
-    dualModeTitle: {
-      fontSize: isMobile ? "16px" : "18px",
-      fontWeight: "600",
-      color: colors.textDark,
-      marginBottom: "10px",
-    },
-    dualModeDescription: {
-      fontSize: isMobile ? "12px" : "14px",
-      color: colors.textLight,
-      marginBottom: "15px",
-    },
-    dualModeButton: {
-      padding: "8px 16px",
-      backgroundColor: colors.primary,
-      color: colors.white,
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: isMobile ? "12px" : "14px",
-      fontWeight: "500",
-      transition: "background-color 0.2s ease",
-    },
-    dualModeButtonHover: {
-      backgroundColor: "#2979ff",
-    },
-    manualUploadContainer: {
-      border: `2px dashed ${colors.orange}`,
-      borderRadius: "8px",
-      padding: "20px",
-      textAlign: "center",
-      backgroundColor: "#fff8e1",
-      marginTop: "10px",
-      cursor: "pointer",
-      transition: "border-color 0.2s ease",
-    },
-    manualUploadText: {
-      fontSize: isMobile ? "14px" : "16px",
-      color: colors.textDark,
-      marginBottom: "5px",
-    },
-    manualUploadSubtext: {
-      fontSize: isMobile ? "12px" : "14px",
-      color: colors.textLight,
-    },
   };
 
-  // Render card view for forms (with dual mode button)
+  // Render card view for forms (without delete button)
   const renderFormsCardView = () => (
     <div style={styles.responsiveGrid}>
-      {filteredForms.map((form) => (
+      {formsList.map((form) => (
         <div key={form.id} style={styles.card}>
           <h4 style={styles.cardTitle}>{form.name}</h4>
           <p style={styles.cardText}><b>Type:</b> {form.type}</p>
           <p style={styles.cardText}><b>Version:</b> {form.version}</p>
+          <p style={styles.cardText}>{form.description}</p>
 
-          <div style={styles.threeButtonContainer}>
+          <div style={styles.twoButtonContainer}>
             <button
               style={{ ...styles.btn, background: colors.primary, flex: 1 }}
-              onClick={() => handleDualModeForm(form)}
+              onClick={() => handleOpen(form)}
               onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
               onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
             >
@@ -1060,22 +919,13 @@ const Forms = () => {
             >
               <FaEdit /> Edit
             </button>
-
-            <button
-              style={{ ...styles.btn, background: colors.orange, flex: 1 }}
-              onClick={() => handleUploadForm(form)}
-              onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
-              onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
-            >
-              <FaUpload /> Upload
-            </button>
           </div>
         </div>
       ))}
     </div>
   );
 
-  // Render table view for forms (with dual mode button)
+  // Render table view for forms (without delete button)
   const renderFormsTableView = () => (
     <div style={styles.tableContainer}>
       <table style={styles.table}>
@@ -1084,20 +934,22 @@ const Forms = () => {
             <th style={styles.tableHeaderCell}>Form Name</th>
             <th style={styles.tableHeaderCell}>Type</th>
             <th style={styles.tableHeaderCell}>Version</th>
+            <th style={styles.tableHeaderCell}>Description</th>
             <th style={styles.tableHeaderCell}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredForms.map((form) => (
+          {formsList.map((form) => (
             <tr key={form.id} style={styles.tableRow}>
               <td style={styles.tableCell}>{form.name}</td>
               <td style={styles.tableCell}>{form.type}</td>
               <td style={styles.tableCell}>{form.version}</td>
+              <td style={styles.tableCell}>{form.description}</td>
               <td style={styles.tableCell}>
-                <div style={styles.threeButtonTableContainer}>
+                <div style={styles.twoButtonTableContainer}>
                   <button
                     style={{ ...styles.tableButton, background: colors.primary }}
-                    onClick={() => handleDualModeForm(form)}
+                    onClick={() => handleOpen(form)}
                     onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
                     onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
                   >
@@ -1111,15 +963,6 @@ const Forms = () => {
                     onMouseOut={(e) => e.target.style.backgroundColor = colors.success}
                   >
                     <FaEdit />
-                  </button>
-
-                  <button
-                    style={{ ...styles.tableButton, background: colors.orange }}
-                    onClick={() => handleUploadForm(form)}
-                    onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
-                    onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
-                  >
-                    <FaUpload />
                   </button>
                 </div>
               </td>
@@ -1272,7 +1115,7 @@ const Forms = () => {
   );
 
   // Render filter component
-const renderFilter = () => (
+  const renderFilter = () => (
     <div style={styles.filterContainer}>
       <div style={styles.filterHeader}>
         <h3 style={styles.filterTitle}>Filter Submitted Forms</h3>
@@ -1281,19 +1124,6 @@ const renderFilter = () => (
         </div>
       </div>
       <div style={styles.filterContent}>
-        <div style={styles.filterGroup}>
-          <label style={styles.filterLabel}>Search</label>
-          <div style={{...styles.searchContainer, position: 'relative'}}>
-            <FaSearch style={{...styles.searchIcon, position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', zIndex: 1}} />
-            <input
-              type="text"
-              style={{...styles.filterInput, paddingLeft: '35px'}}
-              placeholder="Search by name, type, status, etc."
-              value={submittedFormsSearchQuery}
-              onChange={(e) => setSubmittedFormsSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
         <div style={styles.filterGroup}>
           <label style={styles.filterLabel}>Status</label>
           <select 
@@ -1426,12 +1256,36 @@ const renderFilter = () => (
                     <div style={styles.formDataItem}>
                       <div style={styles.formDataLabel}>{key}:</div>
                       <div style={styles.nestedDataContainer}>
-                        {Object.entries(value).map(([subKey, subValue]) => (
-                          <div key={subKey} style={styles.nestedDataItem}>
-                            <div style={styles.nestedDataLabel}>{subKey}:</div>
-                            <div style={styles.nestedDataValue}>{subValue}</div>
-                          </div>
-                        ))}
+                        {Array.isArray(value) ? (
+                          value.map((item, index) => (
+                            <div key={index} style={styles.nestedDataItem}>
+                              {typeof item === 'object' ? (
+                                <div>
+                                  <div style={styles.nestedDataValue}>{index + 1}.</div>
+                                  {Object.entries(item).map(([subKey, subValue]) => (
+                                    <div key={subKey} style={styles.nestedDataItem}>
+                                      <div style={styles.nestedDataLabel}>{subKey}:</div>
+                                      <div style={styles.nestedDataValue}>
+                                        {Array.isArray(subValue) ? subValue.join(', ') : subValue}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div style={styles.nestedDataValue}>{index + 1}. {item}</div>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          Object.entries(value).map(([subKey, subValue]) => (
+                            <div key={subKey} style={styles.nestedDataItem}>
+                              <div style={styles.nestedDataLabel}>{subKey}:</div>
+                              <div style={styles.nestedDataValue}>
+                                {typeof subValue === 'object' ? JSON.stringify(subValue) : subValue}
+                              </div>
+                            </div>
+                          ))
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -1509,17 +1363,25 @@ const renderFilter = () => (
                 {typeof value === 'object' ? (
                   <div>
                     <label style={styles.formLabel}>{key}:</label>
-                    {Object.entries(value).map(([subKey, subValue]) => (
-                      <div key={subKey} style={styles.formGroup}>
-                        <label style={styles.formLabel}>{subKey}:</label>
-                        <input 
-                          type="text" 
-                          style={styles.formInput}
-                          value={subValue}
-                          onChange={(e) => handleNestedInputChange(key, subKey, e.target.value)}
-                        />
-                      </div>
-                    ))}
+                    {Array.isArray(value) ? (
+                      <textarea 
+                        style={styles.formTextarea}
+                        value={value.join('\n')}
+                        onChange={(e) => handleInputChange(key, e.target.value.split('\n'))}
+                      />
+                    ) : (
+                      Object.entries(value).map(([subKey, subValue]) => (
+                        <div key={subKey} style={styles.formGroup}>
+                          <label style={styles.formLabel}>{subKey}:</label>
+                          <input 
+                            type="text" 
+                            style={styles.formInput}
+                            value={subValue}
+                            onChange={(e) => handleNestedInputChange(key, subKey, e.target.value)}
+                          />
+                        </div>
+                      ))
+                    )}
                   </div>
                 ) : (
                   <div>
@@ -1566,239 +1428,6 @@ const renderFilter = () => (
     );
   };
 
-  // Render upload modal
-  const renderUploadModal = () => {
-    if (!showUploadModal || !selectedForm) return null;
-
-    return (
-      <div style={styles.modalOverlay}>
-        <div style={styles.modalContent}>
-          <div style={styles.modalHeader}>
-            <h2 style={styles.modalTitle}>Upload {selectedForm.name}</h2>
-            <button 
-              style={styles.modalCloseButton}
-              onClick={() => {
-                setShowUploadModal(false);
-                setSelectedForm(null);
-                setUploadFormData({
-                  file: null,
-                  fileName: "",
-                  uploadedBy: "",
-                  notes: ""
-                });
-              }}
-            >
-              <FaWindowClose />
-            </button>
-          </div>
-          <div style={styles.modalBody}>
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Upload File</label>
-              <div 
-                style={{
-                  ...styles.uploadArea,
-                  ...(uploadFormData.file ? styles.uploadAreaActive : {})
-                }}
-                onClick={() => document.getElementById('file-upload').click()}
-              >
-                <input
-                  id="file-upload"
-                  type="file"
-                  style={{ display: 'none' }}
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                />
-                <FaUpload style={styles.uploadIcon} />
-                <div style={styles.uploadText}>
-                  {uploadFormData.file ? "File Selected" : "Click to Upload or Drag and Drop"}
-                </div>
-                <div style={styles.uploadSubtext}>
-                  Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG
-                </div>
-              </div>
-              
-              {uploadFormData.file && (
-                <div style={styles.fileInfo}>
-                  <div style={styles.fileName}>{uploadFormData.fileName}</div>
-                  <div 
-                    style={styles.removeFile}
-                    onClick={() => setUploadFormData(prev => ({ ...prev, file: null, fileName: "" }))}
-                  >
-                    <FaTimes />
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Uploaded By</label>
-              <input 
-                type="text" 
-                style={styles.formInput}
-                value={uploadFormData.uploadedBy}
-                onChange={(e) => setUploadFormData(prev => ({ ...prev, uploadedBy: e.target.value }))}
-                placeholder="Enter your name"
-              />
-            </div>
-            
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Notes (Optional)</label>
-              <textarea 
-                style={styles.formTextarea}
-                value={uploadFormData.notes}
-                onChange={(e) => setUploadFormData(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Add any additional notes about this form"
-              />
-            </div>
-          </div>
-          <div style={styles.modalFooter}>
-            <button 
-              style={{...styles.modalButton, ...styles.primaryModalButton}}
-              onClick={handleSaveUpload}
-              disabled={!uploadFormData.file || !uploadFormData.uploadedBy}
-            >
-              <FaUpload /> Upload Form
-            </button>
-            <button 
-              style={{...styles.modalButton, ...styles.secondaryModalButton}}
-              onClick={() => {
-                setShowUploadModal(false);
-                setSelectedForm(null);
-                setUploadFormData({
-                  file: null,
-                  fileName: "",
-                  uploadedBy: "",
-                  notes: ""
-                });
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render dual mode modal
-  const renderDualModeModal = () => {
-    if (!showDualModeModal || !selectedForm) return null;
-
-    const handleOnlineForm = () => {
-      // Navigate to the form
-      window.location.href = selectedForm.route;
-    };
-
-    const handleManualUpload = () => {
-      // Close dual mode modal and open upload modal
-      setShowDualModeModal(false);
-      handleUploadForm(selectedForm);
-    };
-
-    return (
-      <div style={styles.modalOverlay}>
-        <div style={styles.modalContent}>
-          <div style={styles.modalHeader}>
-            <h2 style={styles.modalTitle}>{selectedForm.name}</h2>
-            <button 
-              style={styles.modalCloseButton}
-              onClick={() => {
-                setShowDualModeModal(false);
-                setSelectedForm(null);
-              }}
-            >
-              <FaWindowClose />
-            </button>
-          </div>
-          <div style={styles.modalBody}>
-            <div style={styles.dualModeContainer}>
-              <h3 style={styles.formDataTitle}>Choose how you want to complete this form:</h3>
-              
-              <div style={styles.dualModeOptions}>
-                <div 
-                  style={styles.dualModeOption}
-                  onClick={handleOnlineForm}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = colors.primary;
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = colors.lightGray;
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  <FaFile style={styles.dualModeIcon} />
-                  <h4 style={styles.dualModeTitle}>Fill Form Online</h4>
-                  <p style={styles.dualModeDescription}>
-                    Complete the form directly in your browser. Your progress will be saved automatically.
-                  </p>
-                  <button 
-                    style={styles.dualModeButton}
-                    onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
-                    onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
-                  >
-                    Open Online Form
-                  </button>
-                </div>
-                
-                <div 
-                  style={styles.dualModeOption}
-                  onClick={handleManualUpload}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = colors.orange;
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = colors.lightGray;
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  <FaFileWord style={{...styles.dualModeIcon, color: colors.orange}} />
-                  <h4 style={styles.dualModeTitle}>Upload Manual Form</h4>
-                  <p style={styles.dualModeDescription}>
-                    Upload a pre-filled Word document. The system will attach it to your record.
-                  </p>
-                  <button 
-                    style={{...styles.dualModeButton, backgroundColor: colors.orange}}
-                    onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
-                    onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
-                  >
-                    Upload Manual Form
-                  </button>
-                </div>
-              </div>
-              
-              <div style={styles.manualUploadContainer}>
-                <FaCloudUploadAlt style={{fontSize: "32px", color: colors.orange, marginBottom: "10px"}} />
-                <div style={styles.manualUploadText}>
-                  Have a manually filled form? Upload it directly to the system.
-                </div>
-                <div style={styles.manualUploadSubtext}>
-                  Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={styles.modalFooter}>
-            <button 
-              style={{...styles.modalButton, ...styles.secondaryModalButton}}
-              onClick={() => {
-                setShowDualModeModal(false);
-                setSelectedForm(null);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div style={styles.container}>
       <h1 style={styles.header}>Forms Management</h1>
@@ -1825,21 +1454,6 @@ const renderFilter = () => (
       </div>
 
       <div style={styles.controlsContainer}>
-        <div style={styles.searchContainer}>
-          <FaSearch style={styles.searchIcon} />
-          <input
-            type="text"
-            style={styles.searchInput}
-            placeholder={activeTab === "forms" ? "Search forms by name, type, version..." : "Search submitted forms..."}
-            value={activeTab === "forms" ? formsSearchQuery : submittedFormsSearchQuery}
-            onChange={(e) => activeTab === "forms" 
-              ? setFormsSearchQuery(e.target.value) 
-              : setSubmittedFormsSearchQuery(e.target.value)}
-            onFocus={(e) => e.target.style.borderColor = colors.primary}
-            onBlur={(e) => e.target.style.borderColor = colors.lightGray}
-          />
-        </div>
-
         <div style={styles.viewToggle}>
           <button 
             style={{
@@ -1889,19 +1503,6 @@ const renderFilter = () => (
 
       {isMobile && isMobileMenuOpen && (
         <div style={styles.mobileMenu}>
-          <div style={styles.filterGroup}>
-            <label style={styles.filterLabel}>Search</label>
-            <div style={styles.searchContainer}>
-              <FaSearch style={styles.searchIcon} />
-              <input
-                type="text"
-                style={styles.filterInput}
-                placeholder="Search by name, type, status, etc."
-                value={submittedFormsSearchQuery}
-                onChange={(e) => setSubmittedFormsSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
           <div style={styles.filterGroup}>
             <label style={styles.filterLabel}>Status</label>
             <select 
@@ -1970,8 +1571,6 @@ const renderFilter = () => (
       {/* Modals */}
       {renderViewModal()}
       {renderEditModal()}
-      {renderUploadModal()}
-      {renderDualModeModal()}
     </div>
   );
 };
