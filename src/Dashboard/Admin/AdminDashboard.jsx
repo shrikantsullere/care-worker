@@ -135,7 +135,7 @@ const AdminDashboard = () => {
   // Responsive styles
   const styles = {
     container: {
-      padding: isMobile ? "10px" : isTablet ? "12px" : "16px",
+      // padding: isMobile ? "10px" : isTablet ? "12px" : "16px",
       fontFamily: "Segoe UI",
       minHeight: "100vh",
       backgroundColor: colors.bgLight,
