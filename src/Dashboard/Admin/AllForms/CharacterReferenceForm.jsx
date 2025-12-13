@@ -20,7 +20,14 @@ const CharacterReferenceForm = () => {
     additionalInfo: "",
     refereeFullName: "",
     signature: "",
-    date: ""
+    date: "",
+    wordFile: null,
+    manualForm: null
+  });
+
+  const [errors, setErrors] = useState({
+    wordFile: "",
+    manualForm: ""
   });
 
   const handleChange = (e) => {
@@ -28,7 +35,33 @@ const CharacterReferenceForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      // Clear error when file is selected
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
   const handleSave = () => {
+    // Validate attachments
+    let hasError = false;
+    const newErrors = {
+      wordFile: formData.wordFile ? "" : "Word document is required",
+      manualForm: formData.manualForm ? "" : "Manual form is required"
+    };
+
+    if (newErrors.wordFile || newErrors.manualForm) {
+      setErrors(newErrors);
+      hasError = true;
+    }
+
+    if (hasError) {
+      alert("Please attach all required documents");
+      return;
+    }
+
     console.log("Form data saved:", formData);
     alert("Form saved successfully!");
     navigate("/admin/forms");
@@ -69,7 +102,7 @@ const CharacterReferenceForm = () => {
 
       {/* Candidate Details */}
       <Section title="Candidate Details" />
-      <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+      <div className="responsive-row" style={{ display: "flex", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
         <Input label="Forename(s)" name="forename" value={formData.forename} onChange={handleChange} />
         <Input label="Surname(s)" name="surname" value={formData.surname} onChange={handleChange} />
       </div>
@@ -132,9 +165,35 @@ const CharacterReferenceForm = () => {
         onChange={handleChange}
       />
 
+      {/* Attachments Section */}
+      <Section title="Required Attachments" />
+      <div style={{ marginBottom: "20px", backgroundColor: "#fff8dc", padding: "15px", borderRadius: "6px" }}>
+        <p style={{ color: "#d9534f", fontWeight: "bold", marginBottom: "10px" }}>
+          <span style={{ color: "red" }}>*</span> All attachments are mandatory
+        </p>
+        
+        <FileUpload
+          label="Word Document"
+          name="wordFile"
+          file={formData.wordFile}
+          onChange={handleFileChange}
+          error={errors.wordFile}
+          accept=".doc,.docx"
+        />
+        
+        <FileUpload
+          label="Manually Filled Form"
+          name="manualForm"
+          file={formData.manualForm}
+          onChange={handleFileChange}
+          error={errors.manualForm}
+          accept=".pdf,.jpg,.jpeg,.png"
+        />
+      </div>
+
       {/* Signature */}
       <Section title="Referee Signature" />
-      <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+      <div className="responsive-row" style={{ display: "flex", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
         <Input
           label="Referee Full Name"
           name="refereeFullName"
@@ -165,6 +224,15 @@ const CharacterReferenceForm = () => {
       >
         Save Form
       </button>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .responsive-row {
+            flex-direction: column;
+            gap: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 };
@@ -181,7 +249,7 @@ const inputStyle = {
 };
 
 const Input = ({ label, type = "text", name, value, onChange }) => (
-  <div style={{ flex: 1, marginBottom: "12px" }}>
+  <div style={{ flex: 1, marginBottom: "12px", minWidth: "200px" }}>
     <label style={labelStyle}>{label}</label>
     <input type={type} style={inputStyle} name={name} value={value} onChange={onChange} />
   </div>
@@ -191,6 +259,42 @@ const Textarea = ({ label, name, value, onChange }) => (
   <div style={{ marginBottom: "12px" }}>
     <label style={labelStyle}>{label}</label>
     <textarea style={inputStyle} rows="3" name={name} value={value} onChange={onChange}></textarea>
+  </div>
+);
+
+const FileUpload = ({ label, name, file, onChange, error, accept }) => (
+  <div style={{ marginBottom: "15px" }}>
+    <label style={labelStyle}>
+      {label} <span style={{ color: "red" }}>*</span>
+    </label>
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <input
+        type="file"
+        id={name}
+        name={name}
+        onChange={onChange}
+        accept={accept}
+        style={{ display: "none" }}
+      />
+      <label
+        htmlFor={name}
+        style={{
+          display: "inline-block",
+          padding: "8px 12px",
+          background: "#f0f0f0",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginRight: "10px"
+        }}
+      >
+        Choose File
+      </label>
+      <span style={{ fontSize: "14px" }}>
+        {file ? file.name : "No file chosen"}
+      </span>
+    </div>
+    {error && <p style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>{error}</p>}
   </div>
 );
 
