@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaFile, FaEdit, FaTrash, FaEye, FaFilePdf, FaTh, FaTable, FaFilter, FaTimes, FaBars, FaSave, FaWindowClose } from "react-icons/fa";
+import { FaFile, FaEdit, FaTrash, FaEye, FaFilePdf, FaTh, FaTable, FaFilter, FaTimes, FaBars, FaSave, FaWindowClose, FaUpload, FaSearch, FaCloudUploadAlt, FaFileWord } from "react-icons/fa";
 import jsPDF from 'jspdf';
 
 const colors = {
@@ -13,6 +13,8 @@ const colors = {
   lightGray: "#E0E0E0",
   tabActive: "#1976D2",
   tabInactive: "#90CAF9",
+  orange: "#FF9800",
+  lightBlue: "#E3F2FD",
 };
 
 const Forms = () => {
@@ -28,12 +30,24 @@ const Forms = () => {
   const [dateFromFilter, setDateFromFilter] = useState("");
   const [dateToFilter, setDateToFilter] = useState("");
   const [submittedByFilter, setSubmittedByFilter] = useState("");
+  
+  // Search states
+  const [formsSearchQuery, setFormsSearchQuery] = useState("");
+  const [submittedFormsSearchQuery, setSubmittedFormsSearchQuery] = useState("");
 
   // Modal states
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showDualModeModal, setShowDualModeModal] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [editFormData, setEditFormData] = useState({});
+  const [uploadFormData, setUploadFormData] = useState({
+    file: null,
+    fileName: "",
+    uploadedBy: "",
+    notes: ""
+  });
 
   // Track window size for responsive design
   useEffect(() => {
@@ -47,7 +61,7 @@ const Forms = () => {
   const isTablet = windowWidth > 768 && windowWidth <= 1024;
   const isDesktop = windowWidth > 1024;
 
-  // Only 4 forms as requested
+  // Forms from the second file
   const [formsList, setFormsList] = useState([
     { 
       id: 1, 
@@ -283,9 +297,35 @@ const Forms = () => {
     },
   ]);
 
-  // Filter submitted forms based on filter criteria
+  // Filter forms based on search query
+  const filteredForms = useMemo(() => {
+    if (!formsSearchQuery) return formsList;
+    
+    return formsList.filter(form => 
+      form.name.toLowerCase().includes(formsSearchQuery.toLowerCase()) ||
+      form.type.toLowerCase().includes(formsSearchQuery.toLowerCase()) ||
+      form.version.toLowerCase().includes(formsSearchQuery.toLowerCase()) ||
+      form.description.toLowerCase().includes(formsSearchQuery.toLowerCase())
+    );
+  }, [formsList, formsSearchQuery]);
+
+  // Filter submitted forms based on filter criteria and search query
   const filteredSubmittedForms = useMemo(() => {
-    return submittedForms.filter(form => {
+    let filtered = submittedForms;
+    
+    // Apply search filter
+    if (submittedFormsSearchQuery) {
+      filtered = filtered.filter(form => 
+        form.name.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
+        form.type.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
+        form.version.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
+        form.submittedBy.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase()) ||
+        form.status.toLowerCase().includes(submittedFormsSearchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply other filters
+    filtered = filtered.filter(form => {
       // Filter by status
       if (statusFilter !== "All" && form.status !== statusFilter) {
         return false;
@@ -306,7 +346,9 @@ const Forms = () => {
       
       return true;
     });
-  }, [submittedForms, statusFilter, dateFromFilter, dateToFilter, submittedByFilter]);
+    
+    return filtered;
+  }, [submittedForms, statusFilter, dateFromFilter, dateToFilter, submittedByFilter, submittedFormsSearchQuery]);
 
   // Reset filters
   const resetFilters = () => {
@@ -314,6 +356,7 @@ const Forms = () => {
     setDateFromFilter("");
     setDateToFilter("");
     setSubmittedByFilter("");
+    setSubmittedFormsSearchQuery("");
   };
 
   // Open form 
@@ -345,11 +388,77 @@ const Forms = () => {
 
   // Edit submitted form - opens modal instead of navigating
   const handleEditSubmitted = (form) => {
-    // Navigate to the form route for editing
-    const originalForm = formsList.find(f => f.id === form.formId);
-    if (originalForm) {
-      navigate(originalForm.route);
+    setSelectedForm(form);
+    setEditFormData({...form.formData});
+    setShowEditModal(true);
+  };
+
+  // Open dual mode modal for form
+  const handleDualModeForm = (form) => {
+    setSelectedForm(form);
+    setShowDualModeModal(true);
+  };
+
+  // Open upload modal for form
+  const handleUploadForm = (form) => {
+    setSelectedForm(form);
+    setUploadFormData({
+      file: null,
+      fileName: "",
+      uploadedBy: "",
+      notes: ""
+    });
+    setShowUploadModal(true);
+  };
+
+  // Handle file change in upload modal
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadFormData(prev => ({
+        ...prev,
+        file: file,
+        fileName: file.name
+      }));
     }
+  };
+
+  // Save uploaded form
+  const handleSaveUpload = () => {
+    // Create a new submitted form entry
+    const newSubmittedForm = {
+      id: Date.now(), // Use timestamp as temporary ID
+      name: selectedForm.name,
+      formId: selectedForm.id,
+      submittedDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+      submittedBy: uploadFormData.uploadedBy,
+      status: "Pending",
+      type: selectedForm.type,
+      version: selectedForm.version,
+      details: `Manually uploaded ${selectedForm.name} form. ${uploadFormData.notes}`,
+      formData: {
+        fileName: uploadFormData.fileName,
+        uploadedBy: uploadFormData.uploadedBy,
+        notes: uploadFormData.notes,
+        uploadDate: new Date().toISOString()
+      }
+    };
+
+    // Add to submitted forms
+    setSubmittedForms(prev => [...prev, newSubmittedForm]);
+    
+    // Close modal and reset form
+    setShowUploadModal(false);
+    setSelectedForm(null);
+    setUploadFormData({
+      file: null,
+      fileName: "",
+      uploadedBy: "",
+      notes: ""
+    });
+    
+    // Show success message
+    alert("Form uploaded successfully!");
   };
 
   // Save edited form
@@ -476,6 +585,30 @@ const Forms = () => {
       marginBottom: isMobile ? "10px" : "20px",
       flexWrap: "wrap",
       gap: "10px"
+    },
+    searchContainer: {
+      display: "flex",
+      alignItems: "center",
+      flex: isMobile ? "1 1 100%" : "1 1 300px",
+      position: "relative",
+    },
+    searchInput: {
+      width: "100%",
+      padding: isMobile ? "6px 10px 6px 35px" : "8px 12px 8px 35px",
+      border: `1px solid ${colors.lightGray}`,
+      borderRadius: "4px",
+      fontSize: isMobile ? "12px" : "14px",
+      outline: "none",
+      transition: "border-color 0.2s ease",
+    },
+    searchInputFocus: {
+      borderColor: colors.primary,
+    },
+    searchIcon: {
+      position: "absolute",
+      left: "10px",
+      color: colors.textLight,
+      fontSize: isMobile ? "14px" : "16px",
     },
     viewToggle: {
       display: "flex",
@@ -608,7 +741,7 @@ const Forms = () => {
         ? "1fr" 
         : isTablet 
           ? "repeat(2, 1fr)" 
-          : "repeat(auto-fill, minmax(250px, 1fr))",
+          : "repeat(auto-fill, minmax(280px, 1fr))",
       gap: isMobile ? "10px" : "15px",
       marginTop: isMobile ? "10px" : "20px",
     },
@@ -653,6 +786,11 @@ const Forms = () => {
       gap: 6, 
       marginTop: 12,
       flexWrap: "wrap"
+    },
+    threeButtonContainer: {
+      display: "flex", 
+      gap: 6, 
+      marginTop: 12,
     },
     twoButtonContainer: {
       display: "flex", 
@@ -717,6 +855,10 @@ const Forms = () => {
       display: "flex",
       gap: "5px",
       flexWrap: "wrap",
+    },
+    threeButtonTableContainer: {
+      display: "flex",
+      gap: "5px",
     },
     twoButtonTableContainer: {
       display: "flex",
@@ -889,22 +1031,150 @@ const Forms = () => {
       alignItems: "center",
       gap: "5px",
     },
+    // Upload modal specific styles
+    uploadArea: {
+      border: `2px dashed ${colors.lightGray}`,
+      borderRadius: "8px",
+      padding: "20px",
+      textAlign: "center",
+      backgroundColor: "#f9f9f9",
+      marginBottom: "15px",
+      cursor: "pointer",
+      transition: "border-color 0.2s ease",
+    },
+    uploadAreaActive: {
+      borderColor: colors.primary,
+    },
+    uploadIcon: {
+      fontSize: "48px",
+      color: colors.textLight,
+      marginBottom: "10px",
+    },
+    uploadText: {
+      fontSize: isMobile ? "14px" : "16px",
+      color: colors.textDark,
+      marginBottom: "5px",
+    },
+    uploadSubtext: {
+      fontSize: isMobile ? "12px" : "14px",
+      color: colors.textLight,
+    },
+    fileInfo: {
+      backgroundColor: "#f0f0f0",
+      padding: "10px",
+      borderRadius: "4px",
+      marginTop: "10px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    fileName: {
+      fontSize: isMobile ? "12px" : "14px",
+      color: colors.textDark,
+      wordBreak: "break-all",
+      flex: 1,
+      marginRight: "10px",
+    },
+    removeFile: {
+      color: colors.danger,
+      cursor: "pointer",
+      fontSize: isMobile ? "14px" : "16px",
+    },
+    // Dual mode modal styles
+    dualModeContainer: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "20px",
+    },
+    dualModeOptions: {
+      display: "flex",
+      gap: "20px",
+      flexWrap: "wrap",
+    },
+    dualModeOption: {
+      flex: "1 1 300px",
+      border: `1px solid ${colors.lightGray}`,
+      borderRadius: "8px",
+      padding: "20px",
+      textAlign: "center",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+      backgroundColor: colors.white,
+    },
+    dualModeOptionHover: {
+      borderColor: colors.primary,
+      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+      transform: "translateY(-2px)",
+    },
+    dualModeOptionSelected: {
+      borderColor: colors.primary,
+      backgroundColor: colors.lightBlue,
+    },
+    dualModeIcon: {
+      fontSize: "48px",
+      color: colors.primary,
+      marginBottom: "15px",
+    },
+    dualModeTitle: {
+      fontSize: isMobile ? "16px" : "18px",
+      fontWeight: "600",
+      color: colors.textDark,
+      marginBottom: "10px",
+    },
+    dualModeDescription: {
+      fontSize: isMobile ? "12px" : "14px",
+      color: colors.textLight,
+      marginBottom: "15px",
+    },
+    dualModeButton: {
+      padding: "8px 16px",
+      backgroundColor: colors.primary,
+      color: colors.white,
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: isMobile ? "12px" : "14px",
+      fontWeight: "500",
+      transition: "background-color 0.2s ease",
+    },
+    dualModeButtonHover: {
+      backgroundColor: "#2979ff",
+    },
+    manualUploadContainer: {
+      border: `2px dashed ${colors.orange}`,
+      borderRadius: "8px",
+      padding: "20px",
+      textAlign: "center",
+      backgroundColor: "#fff8e1",
+      marginTop: "10px",
+      cursor: "pointer",
+      transition: "border-color 0.2s ease",
+    },
+    manualUploadText: {
+      fontSize: isMobile ? "14px" : "16px",
+      color: colors.textDark,
+      marginBottom: "5px",
+    },
+    manualUploadSubtext: {
+      fontSize: isMobile ? "12px" : "14px",
+      color: colors.textLight,
+    },
   };
 
-  // Render card view for forms (without delete button)
+  // Render card view for forms (with dual mode button)
   const renderFormsCardView = () => (
     <div style={styles.responsiveGrid}>
-      {formsList.map((form) => (
+      {filteredForms.map((form) => (
         <div key={form.id} style={styles.card}>
           <h4 style={styles.cardTitle}>{form.name}</h4>
           <p style={styles.cardText}><b>Type:</b> {form.type}</p>
           <p style={styles.cardText}><b>Version:</b> {form.version}</p>
           <p style={styles.cardText}>{form.description}</p>
 
-          <div style={styles.twoButtonContainer}>
+          <div style={styles.threeButtonContainer}>
             <button
               style={{ ...styles.btn, background: colors.primary, flex: 1 }}
-              onClick={() => handleOpen(form)}
+              onClick={() => handleDualModeForm(form)}
               onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
               onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
             >
@@ -919,13 +1189,22 @@ const Forms = () => {
             >
               <FaEdit /> Edit
             </button>
+
+            <button
+              style={{ ...styles.btn, background: colors.orange, flex: 1 }}
+              onClick={() => handleUploadForm(form)}
+              onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
+              onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
+            >
+              <FaUpload /> Upload
+            </button>
           </div>
         </div>
       ))}
     </div>
   );
 
-  // Render table view for forms (without delete button)
+  // Render table view for forms (with dual mode button)
   const renderFormsTableView = () => (
     <div style={styles.tableContainer}>
       <table style={styles.table}>
@@ -939,17 +1218,17 @@ const Forms = () => {
           </tr>
         </thead>
         <tbody>
-          {formsList.map((form) => (
+          {filteredForms.map((form) => (
             <tr key={form.id} style={styles.tableRow}>
               <td style={styles.tableCell}>{form.name}</td>
               <td style={styles.tableCell}>{form.type}</td>
               <td style={styles.tableCell}>{form.version}</td>
               <td style={styles.tableCell}>{form.description}</td>
               <td style={styles.tableCell}>
-                <div style={styles.twoButtonTableContainer}>
+                <div style={styles.threeButtonTableContainer}>
                   <button
                     style={{ ...styles.tableButton, background: colors.primary }}
-                    onClick={() => handleOpen(form)}
+                    onClick={() => handleDualModeForm(form)}
                     onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
                     onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
                   >
@@ -963,6 +1242,15 @@ const Forms = () => {
                     onMouseOut={(e) => e.target.style.backgroundColor = colors.success}
                   >
                     <FaEdit />
+                  </button>
+
+                  <button
+                    style={{ ...styles.tableButton, background: colors.orange }}
+                    onClick={() => handleUploadForm(form)}
+                    onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
+                    onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
+                  >
+                    <FaUpload />
                   </button>
                 </div>
               </td>
@@ -1124,6 +1412,19 @@ const Forms = () => {
         </div>
       </div>
       <div style={styles.filterContent}>
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>Search</label>
+          <div style={{...styles.searchContainer, position: 'relative'}}>
+            <FaSearch style={{...styles.searchIcon, position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', zIndex: 1}} />
+            <input
+              type="text"
+              style={{...styles.filterInput, paddingLeft: '35px'}}
+              placeholder="Search by name, type, status, etc."
+              value={submittedFormsSearchQuery}
+              onChange={(e) => setSubmittedFormsSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
         <div style={styles.filterGroup}>
           <label style={styles.filterLabel}>Status</label>
           <select 
@@ -1428,6 +1729,229 @@ const Forms = () => {
     );
   };
 
+  // Render upload modal
+  const renderUploadModal = () => {
+    if (!showUploadModal || !selectedForm) return null;
+
+    return (
+      <div style={styles.modalOverlay}>
+        <div style={styles.modalContent}>
+          <div style={styles.modalHeader}>
+            <h2 style={styles.modalTitle}>Upload {selectedForm.name}</h2>
+            <button 
+              style={styles.modalCloseButton}
+              onClick={() => {
+                setShowUploadModal(false);
+                setSelectedForm(null);
+                setUploadFormData({
+                  file: null,
+                  fileName: "",
+                  uploadedBy: "",
+                  notes: ""
+                });
+              }}
+            >
+              <FaWindowClose />
+            </button>
+          </div>
+          <div style={styles.modalBody}>
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Upload File</label>
+              <div 
+                style={{
+                  ...styles.uploadArea,
+                  ...(uploadFormData.file ? styles.uploadAreaActive : {})
+                }}
+                onClick={() => document.getElementById('file-upload').click()}
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                />
+                <FaUpload style={styles.uploadIcon} />
+                <div style={styles.uploadText}>
+                  {uploadFormData.file ? "File Selected" : "Click to Upload or Drag and Drop"}
+                </div>
+                <div style={styles.uploadSubtext}>
+                  Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG
+                </div>
+              </div>
+              
+              {uploadFormData.file && (
+                <div style={styles.fileInfo}>
+                  <div style={styles.fileName}>{uploadFormData.fileName}</div>
+                  <div 
+                    style={styles.removeFile}
+                    onClick={() => setUploadFormData(prev => ({ ...prev, file: null, fileName: "" }))}
+                  >
+                    <FaTimes />
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Uploaded By</label>
+              <input 
+                type="text" 
+                style={styles.formInput}
+                value={uploadFormData.uploadedBy}
+                onChange={(e) => setUploadFormData(prev => ({ ...prev, uploadedBy: e.target.value }))}
+                placeholder="Enter your name"
+              />
+            </div>
+            
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Notes (Optional)</label>
+              <textarea 
+                style={styles.formTextarea}
+                value={uploadFormData.notes}
+                onChange={(e) => setUploadFormData(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Add any additional notes about this form"
+              />
+            </div>
+          </div>
+          <div style={styles.modalFooter}>
+            <button 
+              style={{...styles.modalButton, ...styles.primaryModalButton}}
+              onClick={handleSaveUpload}
+              disabled={!uploadFormData.file || !uploadFormData.uploadedBy}
+            >
+              <FaUpload /> Upload Form
+            </button>
+            <button 
+              style={{...styles.modalButton, ...styles.secondaryModalButton}}
+              onClick={() => {
+                setShowUploadModal(false);
+                setSelectedForm(null);
+                setUploadFormData({
+                  file: null,
+                  fileName: "",
+                  uploadedBy: "",
+                  notes: ""
+                });
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render dual mode modal
+  const renderDualModeModal = () => {
+    if (!showDualModeModal || !selectedForm) return null;
+
+    const handleOnlineForm = () => {
+      // Navigate to the form
+      navigate(selectedForm.route);
+    };
+
+    const handleManualUpload = () => {
+      // Close dual mode modal and open upload modal
+      setShowDualModeModal(false);
+      handleUploadForm(selectedForm);
+    };
+
+    return (
+      <div style={styles.modalOverlay}>
+        <div style={styles.modalContent}>
+          <div style={styles.modalHeader}>
+            <h2 style={styles.modalTitle}>{selectedForm.name}</h2>
+            <button 
+              style={styles.modalCloseButton}
+              onClick={() => {
+                setShowDualModeModal(false);
+                setSelectedForm(null);
+              }}
+            >
+              <FaWindowClose />
+            </button>
+          </div>
+          <div style={styles.modalBody}>
+            <div style={styles.dualModeContainer}>
+              <h3 style={styles.formDataTitle}>Choose how you want to complete this form:</h3>
+              
+              <div style={styles.dualModeOptions}>
+                <div 
+                  style={styles.dualModeOption}
+                  onClick={handleOnlineForm}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.borderColor = colors.primary;
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.borderColor = colors.lightGray;
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  <FaFile style={styles.dualModeIcon} />
+                  <h4 style={styles.dualModeTitle}>Fill Form Online</h4>
+                  <p style={styles.dualModeDescription}>
+                    Complete the form directly in your browser. Your progress will be saved automatically.
+                  </p>
+                  <button 
+                    style={styles.dualModeButton}
+                    onMouseOver={(e) => e.target.style.backgroundColor = "#2979ff"}
+                    onMouseOut={(e) => e.target.style.backgroundColor = colors.primary}
+                  >
+                    Open Online Form
+                  </button>
+                </div>
+                
+                <div 
+                  style={styles.dualModeOption}
+                  onClick={handleManualUpload}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.borderColor = colors.orange;
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.borderColor = colors.lightGray;
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  <FaFileWord style={{...styles.dualModeIcon, color: colors.orange}} />
+                  <h4 style={styles.dualModeTitle}>Upload Manual Form</h4>
+                  <p style={styles.dualModeDescription}>
+                    Upload a pre-filled Word document. The system will attach it to your record.
+                  </p>
+                  <button 
+                    style={{...styles.dualModeButton, backgroundColor: colors.orange}}
+                    onMouseOver={(e) => e.target.style.backgroundColor = "#F57C00"}
+                    onMouseOut={(e) => e.target.style.backgroundColor = colors.orange}
+                  >
+                    Upload Manual Form
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={styles.modalFooter}>
+            <button 
+              style={{...styles.modalButton, ...styles.secondaryModalButton}}
+              onClick={() => {
+                setShowDualModeModal(false);
+                setSelectedForm(null);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.header}>Forms Management</h1>
@@ -1454,6 +1978,21 @@ const Forms = () => {
       </div>
 
       <div style={styles.controlsContainer}>
+        <div style={styles.searchContainer}>
+          <FaSearch style={styles.searchIcon} />
+          <input
+            type="text"
+            style={styles.searchInput}
+            placeholder={activeTab === "forms" ? "Search forms by name, type, version..." : "Search submitted forms..."}
+            value={activeTab === "forms" ? formsSearchQuery : submittedFormsSearchQuery}
+            onChange={(e) => activeTab === "forms" 
+              ? setFormsSearchQuery(e.target.value) 
+              : setSubmittedFormsSearchQuery(e.target.value)}
+            onFocus={(e) => e.target.style.borderColor = colors.primary}
+            onBlur={(e) => e.target.style.borderColor = colors.lightGray}
+          />
+        </div>
+
         <div style={styles.viewToggle}>
           <button 
             style={{
@@ -1503,6 +2042,19 @@ const Forms = () => {
 
       {isMobile && isMobileMenuOpen && (
         <div style={styles.mobileMenu}>
+          <div style={styles.filterGroup}>
+            <label style={styles.filterLabel}>Search</label>
+            <div style={styles.searchContainer}>
+              <FaSearch style={styles.searchIcon} />
+              <input
+                type="text"
+                style={styles.filterInput}
+                placeholder="Search by name, type, status, etc."
+                value={submittedFormsSearchQuery}
+                onChange={(e) => setSubmittedFormsSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
           <div style={styles.filterGroup}>
             <label style={styles.filterLabel}>Status</label>
             <select 
@@ -1571,6 +2123,8 @@ const Forms = () => {
       {/* Modals */}
       {renderViewModal()}
       {renderEditModal()}
+      {renderUploadModal()}
+      {renderDualModeModal()}
     </div>
   );
 };

@@ -93,29 +93,52 @@ export default function MedicationManagementForm() {
       margin: "0 auto",
       fontFamily: "Segoe UI",
       padding: "16px",
-      backgroundColor: "#f9f9f9",
-      borderRadius: "8px"
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      position: "relative"
     }}>
       
-      {/* Back Button */}
-      <button
-        onClick={() => navigate("/admin/forms")}
-        style={{
-          background: "#3A8DFF",
-          color: "#fff",
-          padding: "6px 14px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "14px",
-          border: "none"
-        }}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ color: "#00264D", marginBottom: "12px" }}>
-        Care Worker – Medication Management Assessment
-      </h2>
+      {/* Header with Logo */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "14px",
+        flexWrap: "wrap"
+      }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            onClick={() => navigate("/admin/forms")}
+            style={{
+              background: "#3A8DFF",
+              color: "#fff",
+              padding: "6px 14px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              border: "none",
+              marginRight: "15px"
+            }}
+          >
+            ← Back
+          </button>
+          <h2 style={{ 
+            color: "#00264D", 
+            margin: 0,
+            fontSize: window.innerWidth < 768 ? "20px" : "24px"
+          }}>
+            Care Worker – Medication Management Assessment
+          </h2>
+        </div>
+        <img 
+          src="https://unitecare.org/content/images/logo.png" 
+          alt="Unite Care Logo" 
+          style={{
+            height: "60px",
+            maxWidth: "150px",
+            objectFit: "contain"
+          }}
+        />
+      </div>
 
       {/* BASIC INFO */}
       <Section title="Basic Information" />
@@ -372,18 +395,20 @@ function YesNoRow({ label, value, onChange, options }) {
   return (
     <div style={box}>
       <div style={{ fontWeight: 600, marginBottom: "6px" }}>{label}</div>
-      {options.map(opt => (
-        <label key={opt} style={{ marginRight: "14px" }}>
-          <input type="radio" checked={value === opt} onChange={() => onChange(opt)} /> {opt}
-        </label>
-      ))}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+        {options.map(opt => (
+          <label key={opt} style={{ marginRight: "14px" }}>
+            <input type="radio" checked={value === opt} onChange={() => onChange(opt)} /> {opt}
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
 
 function Input({ label, value, onChange, type="text" }) {
   return (
-    <div style={{ flex: 1 }}>
+    <div style={{ flex: 1, minWidth: "250px" }}>
       <label style={{ fontWeight: 600 }}>{label}</label>
       <input
         type={type}
@@ -395,7 +420,8 @@ function Input({ label, value, onChange, type="text" }) {
           borderRadius: "4px",
           border: "1px solid #ccc",
           marginTop: "4px",
-          background: "#fff"
+          background: "#fff",
+          boxSizing: "border-box"
         }}
       />
     </div>
@@ -415,7 +441,8 @@ function InputCompact({ placeholder, value, onChange, type="text" }) {
         borderRadius: "4px",
         border: "1px solid #ccc",
         minWidth: "120px",
-        background: "#fff"
+        background: "#fff",
+        boxSizing: "border-box"
       }}
     />
   );
@@ -423,7 +450,11 @@ function InputCompact({ placeholder, value, onChange, type="text" }) {
 
 function ResponsiveTwoCol({ children }) {
   return (
-    <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+    <div style={{ 
+      display: "flex", 
+      gap: "14px", 
+      flexWrap: "wrap" 
+    }}>
       {children}
     </div>
   );

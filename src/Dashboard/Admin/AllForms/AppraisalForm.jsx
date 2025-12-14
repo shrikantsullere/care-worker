@@ -105,13 +105,32 @@ export default function AppraisalForm() {
     maxWidth: "100vw",
     margin: "0 auto",
     padding: "20px",
-    background: "#f9f9f9",
+    background: "#fff",
     fontFamily: "Segoe UI",
     borderRadius: 8,
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    position: "relative",
   };
 
-  const label = { fontWeight: 600, marginBottom: 4, display: "block" };
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  };
+
+  const logoStyle = {
+    height: "60px",
+    maxWidth: "150px",
+    objectFit: "contain",
+  };
+
+  const label = { 
+    fontWeight: 600, 
+    marginBottom: 4, 
+    display: "block" 
+  };
 
   const input = {
     width: "100%",
@@ -120,6 +139,7 @@ export default function AppraisalForm() {
     borderRadius: 4,
     marginBottom: 12,
     background: "white",
+    boxSizing: "border-box",
   };
 
   const section = {
@@ -130,46 +150,67 @@ export default function AppraisalForm() {
     paddingBottom: 4,
   };
 
-  const row = { display: "flex", gap: 12, flexWrap: "wrap" };
+  const row = { 
+    display: "flex", 
+    gap: 12, 
+    flexWrap: "wrap" 
+  };
+
+  const responsiveRow = {
+    ...row,
+    flexDirection: "row",
+  };
+
+  const responsiveCol = {
+    flex: "1 1 300px",
+    minWidth: "250px",
+  };
 
   return (
     <form style={formStyle}>
-      
-      {/* Back Button */}
-      <button
-        type="button"
-        onClick={() => navigate("/admin/forms")}
-        style={{
-          background: "#3A8DFF",
-          color: "#fff",
-          padding: "6px 14px",
-          borderRadius: 4,
-          border: "none",
-          marginBottom: 15,
-          cursor: "pointer",
-        }}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ color: "#00264D", marginBottom: 20 }}>
-        Staff Appraisal Form
-      </h2>
+      {/* Header with Logo */}
+      <div style={headerStyle}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/forms")}
+            style={{
+              background: "#3A8DFF",
+              color: "#fff",
+              padding: "6px 14px",
+              borderRadius: 4,
+              border: "none",
+              cursor: "pointer",
+              marginRight: "15px",
+            }}
+          >
+            ← Back
+          </button>
+          <h2 style={{ color: "#00264D", margin: "0" }}>
+            Staff Appraisal Form
+          </h2>
+        </div>
+        <img 
+          src="https://unitecare.org/content/images/logo.png" 
+          alt="Unite Care Logo" 
+          style={logoStyle}
+        />
+      </div>
 
       {/* Employee Details */}
       <div style={section}>Employee Details</div>
-      <div style={row}>
-        <div style={{ flex: 1 }}>
+      <div style={responsiveRow}>
+        <div style={responsiveCol}>
           <label style={label}>Employee Name</label>
           <input style={input} name="employeeName" value={formData.employeeName}
             onChange={handleChange} />
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Job Position</label>
           <input style={input} name="jobPosition" value={formData.jobPosition}
             onChange={handleChange} />
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Appraisal Date</label>
           <input type="date" style={input} name="appraisalDate"
             value={formData.appraisalDate} onChange={handleChange} />
@@ -179,39 +220,39 @@ export default function AppraisalForm() {
       {/* SELF ASSESSMENT */}
       <div style={section}>A: Pre-Appraisal Questionnaire</div>
 
-      <textarea style={input} placeholder="Achievements"
+      <textarea style={input} rows="3" placeholder="Achievements"
         value={formData.selfAssessment.achievements}
         onChange={(e) => handleChange(e, "selfAssessment", "achievements")}
       />
 
-      <textarea style={input} placeholder="Problems"
+      <textarea style={input} rows="3" placeholder="Problems"
         value={formData.selfAssessment.problems}
         onChange={(e) => handleChange(e, "selfAssessment", "problems")}
       />
 
-      <textarea style={input} placeholder="Actions Needed"
+      <textarea style={input} rows="3" placeholder="Actions Needed"
         value={formData.selfAssessment.actionsNeeded}
         onChange={(e) => handleChange(e, "selfAssessment", "actionsNeeded")}
       />
 
-      <textarea style={input} placeholder="Objectives"
+      <textarea style={input} rows="3" placeholder="Objectives"
         value={formData.selfAssessment.objectives}
         onChange={(e) => handleChange(e, "selfAssessment", "objectives")}
       />
 
-      <textarea style={input} placeholder="Training Required"
+      <textarea style={input} rows="3" placeholder="Training Required"
         value={formData.selfAssessment.trainingRequired}
         onChange={(e) => handleChange(e, "selfAssessment", "trainingRequired")}
       />
 
-      <textarea style={input} placeholder="General Comments"
+      <textarea style={input} rows="3" placeholder="General Comments"
         value={formData.selfAssessment.generalComments}
         onChange={(e) => handleChange(e, "selfAssessment", "generalComments")}
       />
 
       {/* Employee signature for Self Appraisal */}
-      <div style={row}>
-        <div style={{ flex: 1 }}>
+      <div style={responsiveRow}>
+        <div style={responsiveCol}>
           <label style={label}>Employee Signature</label>
           <input style={input}
             value={formData.selfAssessment.employeeSignature}
@@ -219,7 +260,7 @@ export default function AppraisalForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Date</label>
           <input type="date" style={input}
             value={formData.selfAssessment.employeeSignatureDate}
@@ -234,7 +275,7 @@ export default function AppraisalForm() {
       {ratingKeys.map((key) => (
         <div key={key} style={{ marginBottom: 12 }}>
           <b>{key}</b>
-          <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+          <div style={{ display: "flex", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
             {[1, 2, 3, 4, 5].map((n) => (
               <label key={n} style={{ fontSize: 14 }}>
                 <input
@@ -256,37 +297,37 @@ export default function AppraisalForm() {
       {/* SUPERVISOR COMMENTS */}
       <div style={section}>Supervisor Comments</div>
 
-      <textarea style={input} placeholder="Strengths"
+      <textarea style={input} rows="3" placeholder="Strengths"
         value={formData.supervisorComments.strengths}
         onChange={(e) => handleChange(e, "supervisorComments", "strengths")}
       />
 
-      <textarea style={input} placeholder="Weaknesses"
+      <textarea style={input} rows="3" placeholder="Weaknesses"
         value={formData.supervisorComments.weaknesses}
         onChange={(e) => handleChange(e, "supervisorComments", "weaknesses")}
       />
 
-      <textarea style={input} placeholder="Targets Achieved"
+      <textarea style={input} rows="3" placeholder="Targets Achieved"
         value={formData.supervisorComments.targetsAchieved}
         onChange={(e) => handleChange(e, "supervisorComments", "targetsAchieved")}
       />
 
-      <textarea style={input} placeholder="Problems Encountered"
+      <textarea style={input} rows="3" placeholder="Problems Encountered"
         value={formData.supervisorComments.problemsEncountered}
         onChange={(e) => handleChange(e, "supervisorComments", "problemsEncountered")}
       />
 
-      <textarea style={input} placeholder="Disciplinary Record Comments"
+      <textarea style={input} rows="3" placeholder="Disciplinary Record Comments"
         value={formData.supervisorComments.disciplinaryComments}
         onChange={(e) => handleChange(e, "supervisorComments", "disciplinaryComments")}
       />
 
-      <textarea style={input} placeholder="Training Requirements"
+      <textarea style={input} rows="3" placeholder="Training Requirements"
         value={formData.supervisorComments.trainingRequirements}
         onChange={(e) => handleChange(e, "supervisorComments", "trainingRequirements")}
       />
 
-      <textarea style={input} placeholder="Other Comments / Issues"
+      <textarea style={input} rows="3" placeholder="Other Comments / Issues"
         value={formData.supervisorComments.otherComments}
         onChange={(e) => handleChange(e, "supervisorComments", "otherComments")}
       />
@@ -294,8 +335,8 @@ export default function AppraisalForm() {
       {/* SIGNATURE BLOCK */}
       <div style={section}>Signatures</div>
 
-      <div style={row}>
-        <div style={{ flex: 1 }}>
+      <div style={responsiveRow}>
+        <div style={responsiveCol}>
           <label style={label}>Employee Name</label>
           <input style={input}
             name="employeeEndName"
@@ -304,7 +345,7 @@ export default function AppraisalForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Employee Signature</label>
           <input style={input}
             name="employeeEndSignature"
@@ -313,7 +354,7 @@ export default function AppraisalForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Date</label>
           <input type="date" style={input}
             name="employeeEndDate"
@@ -323,8 +364,8 @@ export default function AppraisalForm() {
         </div>
       </div>
 
-      <div style={row}>
-        <div style={{ flex: 1 }}>
+      <div style={responsiveRow}>
+        <div style={responsiveCol}>
           <label style={label}>Supervisor Name</label>
           <input style={input}
             name="supervisorEndName"
@@ -333,7 +374,7 @@ export default function AppraisalForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Supervisor Signature</label>
           <input style={input}
             name="supervisorEndSignature"
@@ -342,7 +383,7 @@ export default function AppraisalForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={responsiveCol}>
           <label style={label}>Date</label>
           <input type="date" style={input}
             name="supervisorEndDate"

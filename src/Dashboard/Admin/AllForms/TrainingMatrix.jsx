@@ -65,9 +65,24 @@ export default function TrainingMatrixForm() {
     margin: "0 auto",
     fontFamily: "Segoe UI",
     padding: "20px",
-    background: "#f9f9f9",
+    background: "#fff",
     borderRadius: "8px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    position: "relative",
+  };
+
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "10px",
+    flexWrap: "wrap",
+  };
+
+  const logoStyle = {
+    height: "60px",
+    maxWidth: "150px",
+    objectFit: "contain",
   };
 
   const section = {
@@ -92,6 +107,7 @@ export default function TrainingMatrixForm() {
     borderRadius: "4px",
     border: "1px solid #ccc",
     background: "white",
+    boxSizing: "border-box",
   };
 
   const button = {
@@ -102,28 +118,46 @@ export default function TrainingMatrixForm() {
     width: "100%",
   };
 
+  const responsiveCol = {
+    flex: "1 1 300px",
+    minWidth: "250px",
+  };
+
   return (
     <div style={container}>
-      {/* Back Button */}
-      <button
-        onClick={() => navigate("/admin/forms")}
-        style={{
-          background: "#3A8DFF",
-          color: "#fff",
-          padding: "6px 14px",
-          fontSize: "14px",
-          borderRadius: "4px",
-          border: "none",
-          marginBottom: "15px",
-          cursor: "pointer",
-        }}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ textAlign: "center", color: "#00264D", marginBottom: "10px" }}>
-        Training Matrix
-      </h2>
+      {/* Header with Logo */}
+      <div style={headerStyle}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            onClick={() => navigate("/admin/forms")}
+            style={{
+              background: "#3A8DFF",
+              color: "#fff",
+              padding: "6px 14px",
+              fontSize: "14px",
+              borderRadius: "4px",
+              border: "none",
+              marginRight: "15px",
+              cursor: "pointer",
+            }}
+          >
+            ← Back
+          </button>
+          <h2 style={{ 
+            textAlign: "center", 
+            color: "#00264D", 
+            margin: 0,
+            fontSize: window.innerWidth < 768 ? "20px" : "24px"
+          }}>
+            Training Matrix
+          </h2>
+        </div>
+        <img 
+          src="https://unitecare.org/content/images/logo.png" 
+          alt="Unite Care Logo" 
+          style={logoStyle}
+        />
+      </div>
 
       <div style={section}>Mandatory & Additional Training</div>
 
@@ -150,7 +184,7 @@ export default function TrainingMatrixForm() {
 
           <div style={row}>
             {/* COMPLETED DATE */}
-            <div style={{ flex: 1 }}>
+            <div style={responsiveCol}>
               <label style={{ fontWeight: 600 }}>Completed Date</label>
               <input
                 type="date"
@@ -163,7 +197,7 @@ export default function TrainingMatrixForm() {
             </div>
 
             {/* EXPIRY DATE */}
-            <div style={{ flex: 1 }}>
+            <div style={responsiveCol}>
               <label style={{ fontWeight: 600 }}>Expiry Date</label>
               <input
                 type="date"

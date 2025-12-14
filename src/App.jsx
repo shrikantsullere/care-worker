@@ -57,6 +57,8 @@ import TrainingMatrix from "./Dashboard/Admin/AllForms/TrainingMatrix";
 import ClientProfileForm from "./Dashboard/Admin/AllForms/ClientProfileForm";
 import UniteCareLtd from "./Dashboard/Admin/AllForms/UniteCareLtd";
 import InductionChecklist from "./Dashboard/Admin/AllForms/InductionChecklist";
+import CarerDBS from "./Dashboard/Admin/AllForms/CarerDBS";
+import StaffFile from "./Dashboard/Admin/AllForms/StaffFile";
 // client 
 import Client from "./Dashboard/Admin/Clients/client";
 import TelephoneMonitoringForm from "./Dashboard/Admin/Clients/TelephoneMonitoring";
@@ -140,6 +142,10 @@ function App() {
             <Route path="/admin/forms/client-profile-form" element={<ClientProfileForm />} />
             <Route path="/admin/forms/unite-care-ltd-form" element={<UniteCareLtd />} />
             <Route path="/admin/forms/induction-checklist-form" element={<InductionChecklist />} />
+            <Route path="/admin/forms/carer-dbs-form" element={<CarerDBS />} />
+            <Route path="/admin/forms/staff-file" element={<StaffFile />} />
+
+          
             {/* clieny
              */}
             <Route path="/admin/clients" element={<Client />} />

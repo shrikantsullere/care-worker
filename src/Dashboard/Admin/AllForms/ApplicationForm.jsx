@@ -1,9 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
   const formRef = useRef();
+  const signatureCanvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [signatureData, setSignatureData] = useState(null);
 
   const [formData, setFormData] = useState({
     // Position Applied For
@@ -46,14 +49,10 @@ const ApplicationForm = () => {
     noticePeriod: "",
 
     // Employment History (multiple rows)
-    employmentHistory: [
-      // { employer: "", jobTitle: "", dateFrom: "", dateTo: "", reasonForLeaving: "" }
-    ],
+    employmentHistory: [],
 
     // Courses / Qualifications
-    courses: [
-      // { course: "", date: "", awardingBody: "" }
-    ],
+    courses: [],
 
     // Mandatory Training
     mandatoryTraining: {
@@ -98,8 +97,9 @@ const ApplicationForm = () => {
     dbsExpiry: "",
     dbsUpdateService: "",
     requireWorkPermit: "",
+    waitingConviction: "",
 
-    // Availability — extended: mornings, lunches, teas, beds, sleepIn, nights, liveIn
+    // Availability
     availability: {
       mornings: { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false },
       lunches: { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false },
@@ -152,6 +152,7 @@ const ApplicationForm = () => {
     fullName: "",
     signatureDate: "",
     declarationDate: "",
+    digitalSignature: "",
 
     // Photo Upload
     photo: null,
@@ -170,6 +171,26 @@ const ApplicationForm = () => {
     isCompleted: false,
     isLocked: false
   });
+
+  // Initialize signature canvas
+  useEffect(() => {
+    const canvas = signatureCanvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      
+      // Set canvas size for high DPI displays
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+    }
+  }, []);
 
   // Generic setter for nested keys using dot notation
   const setNestedValue = (path, value) => {
@@ -212,6 +233,54 @@ const ApplicationForm = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Digital signature functions
+  const startDrawing = (e) => {
+    setIsDrawing(true);
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || e.touches[0].clientX) - rect.left;
+    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e) => {
+    if (!isDrawing) return;
+    
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || e.touches[0].clientX) - rect.left;
+    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearSignature = () => {
+    const canvas = signatureCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setSignatureData(null);
+    setFormData(prev => ({ ...prev, digitalSignature: "" }));
+  };
+
+  const saveSignature = () => {
+    const canvas = signatureCanvasRef.current;
+    const dataURL = canvas.toDataURL('image/png');
+    setSignatureData(dataURL);
+    setFormData(prev => ({ ...prev, digitalSignature: dataURL }));
+    alert("Signature saved successfully!");
   };
 
   // Handler for photo upload
@@ -325,6 +394,11 @@ const ApplicationForm = () => {
       return;
     }
     
+    if (!formData.digitalSignature) {
+      alert("Please provide your digital signature before submitting.");
+      return;
+    }
+    
     // In a real implementation, you would send the data to a server
     console.log("Form Data Submitted:", formData);
     
@@ -389,33 +463,51 @@ const ApplicationForm = () => {
   return (
     <div
       style={{
-        maxWidth: "100vw",
+        maxWidth: "100%",
         margin: "0 auto",
         fontFamily: "Segoe UI",
         padding: "20px",
-        backgroundColor: "#f9f9f9",
+        backgroundColor: "#fff",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        borderRadius: "8px"
+        borderRadius: "8px",
+        position: "relative"
       }}
     >
-      {/* Back Button */}
-      <button
-        onClick={() => navigate("/admin/forms")}
-        style={{
-          background: "#3A8DFF",
-          border: "1px solid #999",
-          color: "#ffffff",
-          padding: "6px 14px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontSize: "14px",
-          marginBottom: "12px"
-        }}
-      >
-        ← Back
-      </button>
+      {/* Header with Logo and Back Button */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px"
+      }}>
+        <button
+          onClick={() => navigate("/admin/forms")}
+          style={{
+            background: "#3A8DFF",
+            border: "none",
+            color: "#ffffff",
+            padding: "8px 16px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px"
+          }}
+        >
+          ← Back
+        </button>
+        
+        <img
+          src="https://unitecare.org/content/images/logo.png"
+          alt="Unite Care Ltd Logo"
+          style={{
+            height: "50px",
+            width: "auto",
+            maxWidth: "120px",
+            objectFit: "contain"
+          }}
+        />
+      </div>
 
-      <h2 style={{ color: "#00264D", marginBottom: "12px", textAlign: "center" }}>
+      <h2 style={{ color: "#00264D", marginBottom: "20px", textAlign: "center" }}>
         APPLICATION FORM – UNITE CARE LTD
       </h2>
 
@@ -769,7 +861,7 @@ const ApplicationForm = () => {
         {/* Position Applied For */}
         <Section title="Position Applied For" />
         <div style={{ marginBottom: "10px" }}>
-          {["Care Worker", "Coordinator", "Supervisor", "Administrator"].map((pos) => (
+          {["Care Worker", "Supervisor", "Coordinator", "Administrator"].map((pos) => (
             <label key={pos} style={{ marginRight: "15px" }}>
               <input
                 type="radio"
@@ -786,7 +878,7 @@ const ApplicationForm = () => {
         {/* Vacancy Source */}
         <Section title="Where did you hear about this vacancy?" />
         <div style={{ marginBottom: "10px" }}>
-          {["Word of Mouth", "Job Centre Plus", "Our website", "Social media", "Local Press"].map((source) => (
+          {["Word of Mouth", "Job Centre Plus", "Our Website", "Social Media", "Local Press"].map((source) => (
             <label key={source} style={{ marginRight: "15px" }}>
               <input
                 type="radio"
@@ -1098,7 +1190,26 @@ const ApplicationForm = () => {
           </div>
           <div style={{ flex: 1 }}>
             <label style={labelStyle}>Ethnicity</label>
-            <input name="ethnicity" value={formData.ethnicity} onChange={handleChange} style={inputStyle} placeholder="e.g. British / Indian / ..." disabled={formData.isLocked} />
+            <select name="ethnicity" value={formData.ethnicity} onChange={handleChange} style={inputStyle} disabled={formData.isLocked}>
+              <option value="">Select</option>
+              <option>White - British</option>
+              <option>White - Irish</option>
+              <option>White - European</option>
+              <option>White - Other</option>
+              <option>Mixed - White & Black Caribbean</option>
+              <option>Mixed - White & Black African</option>
+              <option>Mixed - White & Asian</option>
+              <option>Mixed - Other</option>
+              <option>Asian/Asian British - Indian</option>
+              <option>Asian/Asian British - Pakistani</option>
+              <option>Asian/Asian British - Bangladeshi</option>
+              <option>Asian/Asian British - Other</option>
+              <option>Black/African British - Caribbean</option>
+              <option>Black/African British - African</option>
+              <option>Black/African British - Other</option>
+              <option>Chinese</option>
+              <option>Other</option>
+            </select>
           </div>
         </div>
 
@@ -1140,16 +1251,117 @@ const ApplicationForm = () => {
         {/* Final Declaration */}
         <Section title="Declaration" />
         <p>I declare that the information given on this form is correct to the best of my knowledge. I consent to Unite Care Ltd holding this information in a secure place.</p>
-        <div style={row}>
-          <Input label="Applicant signature" name="signature" value={formData.signature} onChange={handleChange} flex disabled={formData.isLocked} />
-          <Input label="Full Name (PRINT)" name="fullName" value={formData.fullName} onChange={handleChange} flex disabled={formData.isLocked} />
+        
+        {/* Digital Signature Section */}
+        <Section title="Digital Signature" />
+        <div style={{ 
+          marginBottom: "20px", 
+          padding: "15px", 
+          border: "1px solid #ddd", 
+          borderRadius: "6px",
+          backgroundColor: "#fff"
+        }}>
+          <p style={{ marginBottom: "10px", fontSize: "14px" }}>
+            Please sign in the box below using your mouse or touch screen
+          </p>
+          
+          <div style={{ 
+            border: "2px solid #ccc", 
+            borderRadius: "4px", 
+            marginBottom: "10px",
+            position: "relative",
+            backgroundColor: "#fafafa"
+          }}>
+            <canvas
+              ref={signatureCanvasRef}
+              style={{
+                width: "100%",
+                height: "150px",
+                display: "block",
+                cursor: "crosshair",
+                touchAction: "none"
+              }}
+              onMouseDown={startDrawing}
+              onMouseMove={draw}
+              onMouseUp={stopDrawing}
+              onMouseLeave={stopDrawing}
+              onTouchStart={startDrawing}
+              onTouchMove={draw}
+              onTouchEnd={stopDrawing}
+            />
+            
+            {signatureData && (
+              <div style={{
+                position: "absolute",
+                top: "5px",
+                right: "5px",
+                background: "#28a745",
+                color: "white",
+                padding: "3px 8px",
+                borderRadius: "4px",
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px"
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Signed
+              </div>
+            )}
+          </div>
+          
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={clearSignature}
+              style={{
+                background: "#dc3545",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                padding: "8px 16px",
+                cursor: "pointer",
+                fontSize: "14px"
+              }}
+            >
+              Clear Signature
+            </button>
+            
+            <button
+              type="button"
+              onClick={saveSignature}
+              style={{
+                background: "#28a745",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                padding: "8px 16px",
+                cursor: "pointer",
+                fontSize: "14px"
+              }}
+            >
+              Save Signature
+            </button>
+          </div>
+          
+          {signatureData && (
+            <div style={{ marginTop: "10px" }}>
+              <p style={{ fontSize: "12px", color: "#666", margin: "5px 0" }}>
+                Signature saved on: {new Date().toLocaleString()}
+              </p>
+            </div>
+          )}
         </div>
+
         <div style={row}>
+          <Input label="Full Name (PRINT)" name="fullName" value={formData.fullName} onChange={handleChange} flex disabled={formData.isLocked} />
           <Input label="Date" type="date" name="declarationDate" value={formData.declarationDate} onChange={handleChange} flex disabled={formData.isLocked} />
         </div>
       </div>
 
-      {/* Save Button - Restored to original style */}
+      {/* Save and Submit Buttons */}
       <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
         <button
           onClick={handleSave}
@@ -1166,6 +1378,23 @@ const ApplicationForm = () => {
           }}
         >
           Save Form
+        </button>
+        
+        <button
+          onClick={handleSubmit}
+          style={{
+            background: "#28a745",
+            color: "#fff",
+            border: "none",
+            padding: "12px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: 600,
+            width: "100%",
+            fontSize: "16px"
+          }}
+        >
+          Submit Form
         </button>
       </div>
       

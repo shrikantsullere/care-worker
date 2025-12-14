@@ -66,10 +66,30 @@ export default function ClientProfileForm() {
   const container = {
     maxWidth: "100vw",
     padding: "20px",
-    background: "#f9f9f9",
+    background: "#fff",
     borderRadius: "8px",
     fontFamily: "Segoe UI",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    position: "relative",
+  };
+
+  const header = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  };
+
+  const logoContainer = {
+    width: "150px",
+    height: "auto",
+  };
+
+  const logo = {
+    width: "100%",
+    height: "auto",
+    maxWidth: "150px",
   };
 
   const section = {
@@ -103,26 +123,64 @@ export default function ClientProfileForm() {
     marginTop: "15px",
   };
 
+  // Responsive styles
+  const responsiveStyles = `
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .logo-container {
+        width: 120px;
+        margin-bottom: 10px;
+      }
+      
+      .title-container {
+        width: 100%;
+        text-align: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .logo-container {
+        width: 100px;
+      }
+    }
+  `;
+
   return (
     <div style={container}>
-
-      {/* BACK BUTTON */}
-      <button
-        onClick={() => navigate("/admin/forms")}
-        style={{
-          background: "#3A8DFF",
-          padding: "6px 14px",
-          borderRadius: "4px",
-          border: "none",
-          color: "#fff",
-          cursor: "pointer",
-          marginBottom: "15px",
-        }}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ textAlign: "center", color: "#00264D" }}>Client Profile Form</h2>
+      <style>{responsiveStyles}</style>
+      
+      {/* HEADER WITH LOGO */}
+      <div className="header-container" style={header}>
+        <button
+          onClick={() => navigate("/admin/forms")}
+          style={{
+            background: "#3A8DFF",
+            padding: "6px 14px",
+            borderRadius: "4px",
+            border: "none",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          ← Back
+        </button>
+        
+        <div className="title-container">
+          <h2 style={{ textAlign: "center", color: "#00264D", margin: 0 }}>Client Profile Form</h2>
+        </div>
+        
+        <div className="logo-container" style={logoContainer}>
+          <img 
+            src="https://unitecare.org/content/images/logo.png" 
+            alt="UniteCare Logo" 
+            style={logo}
+          />
+        </div>
+      </div>
 
       {/* PERSONAL PROFILE */}
       <div style={section}>Personal Profile</div>

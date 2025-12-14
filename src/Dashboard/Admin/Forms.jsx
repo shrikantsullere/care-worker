@@ -84,6 +84,8 @@ const Forms = () => {
     { id: 22, name: "Client Profile", route: "/admin/forms/client-profile-form", type: "Input", version: "1.0" },
     { id: 23, name: "Unite Care Ltd", route: "/admin/forms/unite-care-ltd-form", type: "Input", version: "1.0" },
     { id: 24, name: "Induction Checklist", route: "/admin/forms/induction-checklist-form", type: "Input", version: "1.0" },
+    { id: 25, name: "Carer DBS Form", route: "/admin/forms/carer-dbs-form", type: "Input", version: "1.0" },
+    { id: 26, name: "Staff File", route: "/admin/forms/staff-file", type: "Input", version: "1.0" },
   ]);
 
   // Sample submitted forms data
@@ -1772,7 +1774,7 @@ const renderFilter = () => (
                 </div>
               </div>
               
-              <div style={styles.manualUploadContainer}>
+              {/* <div style={styles.manualUploadContainer}>
                 <FaCloudUploadAlt style={{fontSize: "32px", color: colors.orange, marginBottom: "10px"}} />
                 <div style={styles.manualUploadText}>
                   Have a manually filled form? Upload it directly to the system.
@@ -1780,7 +1782,7 @@ const renderFilter = () => (
                 <div style={styles.manualUploadSubtext}>
                   Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div style={styles.modalFooter}>
