@@ -17,15 +17,15 @@ const CharacterReferenceForm = () => {
     honestDetails: "",
     additionalInfo: "",
     refereeFullName: "",
-    signature: "", // Kept for typed signature, though digital is now primary
+    signature: "",
     date: "",
     wordFile: null,
     manualForm: null,
-    digitalSignature: null // To store the dataURL of the signature
+    digitalSignature: null
   });
 
   const [errors, setErrors] = useState({
-    digitalSignature: "" // Only validating the digital signature now
+    digitalSignature: ""
   });
 
   const canvasRef = useRef(null);
@@ -56,7 +56,7 @@ const CharacterReferenceForm = () => {
   };
 
   const startDrawing = (event) => {
-    event.preventDefault(); // Prevent scrolling on touch devices
+    event.preventDefault();
     const { x, y } = getCoordinates(event);
     const context = canvasRef.current.getContext('2d');
     context.beginPath();
@@ -65,7 +65,7 @@ const CharacterReferenceForm = () => {
   };
 
   const draw = (event) => {
-    event.preventDefault(); // Prevent scrolling on touch devices
+    event.preventDefault();
     if (!isDrawing) return;
 
     const { x, y } = getCoordinates(event);
@@ -77,12 +77,11 @@ const CharacterReferenceForm = () => {
   const stopDrawing = () => {
     if (isDrawing) {
       setIsDrawing(false);
-      // Save the canvas content as a data URL when drawing stops
       const canvas = canvasRef.current;
       if (canvas) {
         const dataURL = canvas.toDataURL('image/png');
         setFormData(prev => ({ ...prev, digitalSignature: dataURL }));
-        setErrors(prev => ({ ...prev, digitalSignature: "" })); // Clear error on successful draw
+        setErrors(prev => ({ ...prev, digitalSignature: "" }));
       }
     }
   };
@@ -93,7 +92,6 @@ const CharacterReferenceForm = () => {
     
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
-    // Re-fill with white background after clearing
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -112,14 +110,37 @@ const CharacterReferenceForm = () => {
     context.lineCap = 'round';
     context.strokeStyle = '#000';
     
-    // Set canvas size
-    canvas.width = 600; // Higher resolution for a smoother line
+    // Set canvas size to match display size for better quality
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
     canvas.height = 200;
 
     // Fill with white background
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
-  }, []); // Runs only once on mount
+    
+    // Handle window resize
+    const handleResize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const tempImage = context.getImageData(0, 0, canvas.width, canvas.height);
+      
+      canvas.width = rect.width;
+      canvas.height = 200;
+      
+      context.putImageData(tempImage, 0, 0);
+      context.lineWidth = 2;
+      context.lineCap = 'round';
+      context.strokeStyle = '#000';
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,7 +155,6 @@ const CharacterReferenceForm = () => {
   };
 
   const handleSave = () => {
-    // Validate only digital signature
     if (!formData.digitalSignature) {
       setErrors({ digitalSignature: "Digital signature is required." });
       alert("Please provide your digital signature to save the form.");
@@ -241,13 +261,14 @@ const CharacterReferenceForm = () => {
 // --- Styles Object for better organization ---
 const styles = {
   container: {
-    maxWidth: "800px",
+    width: "100%",
     margin: "20px auto",
     fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
     padding: "20px",
     backgroundColor: "#fff",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     borderRadius: "8px",
+    boxSizing: "border-box",
   },
   header: {
     display: "flex",
@@ -304,21 +325,22 @@ const styles = {
   },
   signatureContainer: {
     marginBottom: "20px",
+    width: "100%",
   },
   canvasWrapper: {
     border: "2px dashed #ccc",
     borderRadius: "4px",
     backgroundColor: "#fff",
     position: "relative",
-    display: "inline-block", // To fit the content
     width: "100%",
+    overflow: "hidden",
   },
   signatureCanvas: {
     display: "block",
     width: "100%",
     height: "200px",
     cursor: "crosshair",
-    touchAction: "none", // Prevents touch scroll on the canvas
+    touchAction: "none",
   },
   clearButton: {
     position: "absolute",
@@ -345,7 +367,12 @@ const styles = {
     marginTop: "20px",
     transition: "background-color 0.3s",
   },
-  label: { display: "block", fontWeight: 600, marginBottom: 8, color: "#333" },
+  label: { 
+    display: "block", 
+    fontWeight: 600, 
+    marginBottom: 8, 
+    color: "#333" 
+  },
   input: {
     width: "100%",
     padding: "12px",
@@ -395,7 +422,7 @@ const Input = ({ label, type = "text", name, value, onChange }) => (
 );
 
 const Textarea = ({ label, name, value, onChange }) => (
-  <div>
+  <div style={{ width: "100%" }}>
     <label style={styles.label}>{label}</label>
     <textarea style={styles.textarea} name={name} value={value} onChange={onChange} />
   </div>
@@ -430,6 +457,5 @@ styles.sectionHeader = {
   borderBottom: "2px solid #e9ecef",
   paddingBottom: "8px",
 };
-
 
 export default CharacterReferenceForm;

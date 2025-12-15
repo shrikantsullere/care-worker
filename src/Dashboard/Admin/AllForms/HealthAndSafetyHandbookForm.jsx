@@ -76,13 +76,36 @@ const HealthAndSafetyHandbookForm = () => {
     context.lineCap = 'round';
     context.strokeStyle = '#000';
     
-    // Set canvas size
-    canvas.width = 600; // Higher resolution for a smoother line
+    // Set canvas size to match display size for better quality
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
     canvas.height = 200;
 
     // Fill with white background
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Handle window resize
+    const handleResize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const tempImage = context.getImageData(0, 0, canvas.width, canvas.height);
+      
+      canvas.width = rect.width;
+      canvas.height = 200;
+      
+      context.putImageData(tempImage, 0, 0);
+      context.lineWidth = 2;
+      context.lineCap = 'round';
+      context.strokeStyle = '#000';
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Function to get correct coordinates, accounting for canvas scaling
@@ -151,10 +174,9 @@ const HealthAndSafetyHandbookForm = () => {
     setDigitalSignature(null);
   };
 
-  // Toggle Checkboxes
+  // Toggle Checkboxes - Fixed to allow checking even in edit mode
   const toggleCheck = (section) => {
-    if (!isEditMode) return;
-
+    // Always allow toggling, regardless of edit mode
     setChecked((prev) => ({
       ...prev,
       [section]: !prev[section]
@@ -186,14 +208,15 @@ const HealthAndSafetyHandbookForm = () => {
   return (
     <div
       style={{
-        maxWidth: "100%",
+        width: "100%",
         margin: "0 auto",
         fontFamily: "Segoe UI",
         padding: "20px",
         backgroundColor: "#fff",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         borderRadius: "8px",
-        position: "relative"
+        position: "relative",
+        boxSizing: "border-box"
       }}
     >
       {/* Header with Logo and Back Button */}
@@ -256,11 +279,11 @@ const HealthAndSafetyHandbookForm = () => {
         I confirm I have read and understood the following sections:
       </p>
 
-      {/* CHECKBOX LIST */}
+      {/* CHECKBOX LIST - Improved responsive grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
           gap: "12px",
           marginBottom: "24px"
         }}
@@ -274,8 +297,10 @@ const HealthAndSafetyHandbookForm = () => {
               padding: "8px",
               borderRadius: "4px",
               backgroundColor: "#fff",
-              border: "1px solid #e0e0e0"
+              border: "1px solid #e0e0e0",
+              cursor: "pointer"
             }}
+            onClick={() => toggleCheck(section)}
           >
             <input
               type="checkbox"
@@ -285,7 +310,12 @@ const HealthAndSafetyHandbookForm = () => {
               style={{
                 marginRight: "12px",
                 marginTop: "3px",
-                cursor: isEditMode ? "pointer" : "not-allowed"
+                cursor: isEditMode ? "pointer" : "not-allowed",
+                pointerEvents: isEditMode ? "auto" : "none",
+                width: "18px",
+                height: "18px",
+                accentColor: "#007BFF", // Blue color for checkbox tick
+                backgroundColor: isEditMode ? "#fff" : "#f5f5f5"
               }}
             />
             <span style={{ fontSize: "15px" }}>{section}</span>
@@ -293,7 +323,7 @@ const HealthAndSafetyHandbookForm = () => {
         ))}
       </div>
 
-      {/* FORM BOTTOM SECTION */}
+      {/* FORM BOTTOM SECTION - Improved responsive layout */}
       <div
         style={{
           display: "grid",
@@ -312,20 +342,21 @@ const HealthAndSafetyHandbookForm = () => {
             name="date"
             value={formData.date}
             onChange={handleChange}
+            disabled={!isEditMode}
             style={{
               width: "100%",
               padding: "12px",
               border: "1px solid #ccc",
               borderRadius: "4px",
-              backgroundColor: "white",
-              cursor: "text",
+              backgroundColor: isEditMode ? "white" : "#f5f5f5",
+              cursor: isEditMode ? "text" : "not-allowed",
               fontSize: "16px",
               boxSizing: "border-box"
             }}
           />
         </div>
 
-        {/* FULL NAME */}
+        {/* FULL NAME - Fixed to always allow typing */}
         <div>
           <label style={{ fontWeight: 600, marginBottom: 8, display: "block" }}>
             Full Name
@@ -336,6 +367,7 @@ const HealthAndSafetyHandbookForm = () => {
             value={formData.fullName}
             onChange={handleChange}
             placeholder="Type full name"
+            // Removed disabled property to always allow typing
             style={{
               width: "100%",
               padding: "12px",
@@ -350,7 +382,7 @@ const HealthAndSafetyHandbookForm = () => {
         </div>
       </div>
 
-      {/* DIGITAL SIGNATURE SECTION */}
+      {/* DIGITAL SIGNATURE SECTION - Improved responsive canvas */}
       <div style={{ marginTop: "24px" }}>
         <h3 style={{ 
           color: "#00264D", 
@@ -367,8 +399,8 @@ const HealthAndSafetyHandbookForm = () => {
           borderRadius: "4px",
           backgroundColor: "#fff",
           position: "relative",
-          display: "inline-block",
           width: "100%",
+          overflow: "hidden",
           marginBottom: "10px"
         }}>
           <canvas
@@ -378,7 +410,7 @@ const HealthAndSafetyHandbookForm = () => {
               width: "100%",
               height: "200px",
               cursor: "crosshair",
-              touchAction: "none", // Prevents touch scroll on the canvas
+              touchAction: "none",
             }}
             onMouseDown={startDrawing}
             onMouseMove={draw}
@@ -412,7 +444,7 @@ const HealthAndSafetyHandbookForm = () => {
         </p>
       </div>
 
-      {/* EDIT / SAVE / CANCEL */}
+      {/* EDIT / SAVE / CANCEL - Improved responsive buttons */}
       <div
         style={{
           display: "flex",
@@ -451,7 +483,8 @@ const HealthAndSafetyHandbookForm = () => {
                 cursor: "pointer",
                 fontWeight: 600,
                 fontSize: "16px",
-                flex: 1
+                flex: 1,
+                minWidth: "120px"
               }}
             >
               Save Form
@@ -467,7 +500,8 @@ const HealthAndSafetyHandbookForm = () => {
                 cursor: "pointer",
                 fontWeight: 600,
                 fontSize: "16px",
-                flex: 1
+                flex: 1,
+                minWidth: "120px"
               }}
             >
               Cancel
@@ -478,7 +512,7 @@ const HealthAndSafetyHandbookForm = () => {
 
       <style jsx>{`
         @media (max-width: 768px) {
-          div[style*="display: grid"] {
+          div[style*="grid-template-columns"] {
             grid-template-columns: 1fr;
           }
           

@@ -91,6 +91,7 @@ const Forms = () => {
     { id: 28, name: "48 Hour Agreement", route: "/admin/forms/hour-working", type: "Document", version: "1.0" },
     { id: 29, name: "Bank Detail Form", route: "/admin/forms/bank-detail-form", type: "Input", version: "1.0" },
     { id: 30, name: "Literacy Assessment", route: "/admin/forms/literacy-assessment", type: "Input", version: "1.0" },
+    { id: 31, name: "Care & Support Plan", route: "/admin/forms/care-and-support-plan", type: "Input", version: "1.0" },
   ]);
 
   // Sample submitted forms data

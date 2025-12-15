@@ -63,6 +63,9 @@ import InductionTraining from "./Dashboard/Admin/AllForms/InductionTraining";
 import HourWorking from "./Dashboard/Admin/AllForms/HourWorking";
 import LiteracyAssessment from "./Dashboard/Admin/AllForms/LiteracyAssessment";
 import BankDetail from "./Dashboard/Admin/AllForms/BankDetail";
+// FIX: Renamed the second import to avoid a naming conflict
+import CareAndSupportForm from "./Dashboard/Admin/AllForms/Care&Support";
+
 // client 
 import Client from "./Dashboard/Admin/Clients/client";
 import TelephoneMonitoringForm from "./Dashboard/Admin/Clients/TelephoneMonitoring";
@@ -152,6 +155,8 @@ function App() {
             <Route path="/admin/forms/hour-working" element={<HourWorking />} />
             <Route path="/admin/forms/literacy-assessment" element={<LiteracyAssessment />} />
             <Route path="/admin/forms/bank-detail-form" element={<BankDetail />} />
+            {/* FIX: Updated the route to use the newly named component */}
+            <Route path="/admin/forms/care-and-support-plan" element={<CareAndSupportForm />} />
 
           
             {/* clieny
