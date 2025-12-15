@@ -1,4 +1,4 @@
-/* LendingPage.css */
+/* LendingPage.css - 完整文件 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* CSS Variables for consistent theming */
@@ -36,6 +36,9 @@ body {
   color: var(--primary-color);
   overflow-x: hidden;
   background: var(--bg-light);
+  /* Fix for iOS Safari */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 .container {
@@ -769,7 +772,7 @@ body {
   color: var(--text-light);
 }
 
-/* CTA Section */
+/* CTA Section - Mobile Keyboard Fixed */
 .cta-card {
   background: white;
   padding: 3rem;
@@ -787,34 +790,114 @@ body {
   color: var(--primary-color);
 }
 
-.cta-form {
-  max-width: 500px;
-  margin: 2rem auto 0;
-}
-
-.input-group {
-  display: flex;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-
-.form-control {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  border: none;
-  font-size: 1rem;
-  outline: none;
-}
-
-.form-control:focus {
-  box-shadow: none;
-}
-
 .form-note {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: var(--text-light);
+}
+
+/* Mobile-Optimized Form Container */
+.mobile-form-container {
+  margin: 2rem auto 0;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.mobile-cta-form {
+  width: 100%;
+}
+
+.mobile-input-group {
+  display: flex;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  background: white;
+}
+
+/* Visually hidden for screen readers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Mobile Email Input - Guaranteed to work on all devices */
+.mobile-email-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  font-size: 16px; /* Important: 16px prevents zoom on iOS */
+  line-height: 1.5;
+  color: #333;
+  background: white;
+  outline: none;
+  width: 100%;
+  min-height: 52px;
+  /* Critical for mobile input */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Ensure proper touch behavior */
+  pointer-events: auto;
+  /* Text selection */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  /* Remove any transform that might interfere */
+  transform: none;
+  position: static;
+  /* Ensure proper focus behavior */
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.mobile-email-input:focus {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: -2px;
+}
+
+.mobile-email-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Mobile Submit Button */
+.mobile-submit-btn {
+  padding: 16px 24px;
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-height: 52px;
+  /* Ensure button is clickable */
+  pointer-events: auto;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.mobile-submit-btn:hover {
+  background: #2563EB;
+}
+
+.mobile-submit-btn:active {
+  transform: scale(0.98);
 }
 
 /* Footer */
@@ -1081,6 +1164,34 @@ html {
   .testimonial-card {
     margin-bottom: 1rem;
   }
+  
+  /* MOBILE FORM FIXES */
+  .mobile-form-container {
+    width: 100%;
+    max-width: none;
+    padding: 0 15px;
+  }
+  
+  .mobile-input-group {
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mobile-email-input {
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 0;
+    font-size: 16px; /* Keep 16px to prevent zoom */
+    padding: 16px;
+    min-height: 48px;
+  }
+  
+  .mobile-submit-btn {
+    border-radius: 0 0 8px 8px;
+    width: 100%;
+    min-height: 48px;
+    padding: 16px;
+  }
 }
 
 @media (max-width: 479px) {
@@ -1156,13 +1267,20 @@ html {
     font-size: 1.75rem;
   }
   
-  /* Adjust input group for very small screens */
-  .input-group {
-    flex-direction: column;
+  /* Further adjust mobile form for very small screens */
+  .mobile-form-container {
+    padding: 0 10px;
   }
   
-  .form-control {
-    margin-bottom: 1rem;
-    border-radius: 8px;
+  .mobile-email-input {
+    padding: 14px 16px;
+    font-size: 16px; /* Keep 16px to prevent zoom */
+    min-height: 48px;
+  }
+  
+  .mobile-submit-btn {
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 48px;
   }
 }

@@ -1,4 +1,4 @@
-// LandingPage.js
+// LandingPage.js - 完整文件
 import React, { useState, useEffect } from 'react';
 import { 
   FaUsers, FaFileAlt, FaCheckCircle, FaDownload, FaShieldAlt,
@@ -18,6 +18,7 @@ const LandingPage = () => {
   const [email, setEmail] = useState('');
   const [expandedTerms, setExpandedTerms] = useState({});
   const [activeTab, setActiveTab] = useState('application');
+  const [inputFocused, setInputFocused] = useState(false);
 
   // Toggle function for terms
   const toggleTerm = (index) => {
@@ -131,6 +132,18 @@ const LandingPage = () => {
     alert('Thank you for your interest! We will contact you soon.');
   };
 
+  const handleInputChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleInputFocus = () => {
+    setInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setInputFocused(false);
+  };
+
   return (
     <div className="app">
       {/* Header */}
@@ -242,12 +255,7 @@ const LandingPage = () => {
                     <FaCalendarAlt className="me-2" />
                     Request a Demo
                   </button>
-                  <button 
-                    className="btn btn-outline-secondary btn-lg"
-                    onClick={() => scrollToSection('how-it-works')}
-                  >
-                    <FaArrowRight className="ms-2" />
-                  </button>
+
                 </div>
 
                 <div className="hero-stats">
@@ -465,28 +473,54 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA - Mobile Keyboard Fixed Version */}
       <section id="demo" className="cta-section py-5">
         <div className="container">
           <div className="cta-card text-center">
             <h2>Ready to Eliminate Paper Onboarding?</h2>
             <p>Get a fully digital portal for care worker onboarding — with all compliance forms.</p>
-            <form className="cta-form" onSubmit={handleEmailSubmit}>
-              <div className="input-group">
-                <input 
-                  type="email" 
-                  className="form-control" 
-                  placeholder="Enter your email address" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <button className="btn btn-primary" type="submit">
-                  <FaRegPaperPlane className="me-2" />
-                  Request Demo
-                </button>
-              </div>
-            </form>
+            
+            {/* Mobile-Optimized Form */}
+            <div className="mobile-form-container">
+              <form 
+                className="mobile-cta-form" 
+                onSubmit={handleEmailSubmit}
+                noValidate
+              >
+                <div className="mobile-input-group">
+                  <label htmlFor="user-email" className="visually-hidden">Email Address</label>
+                  <input 
+                    id="user-email"
+                    ref={(input) => {
+                      if (input && !inputFocused) {
+                        // Force remove any potential focus blockers
+                        input.style.webkitUserSelect = 'text';
+                        input.style.userSelect = 'text';
+                      }
+                    }}
+                    type="email" 
+                    className="mobile-email-input" 
+                    placeholder="Enter your email address" 
+                    value={email}
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    required
+                    autoComplete="email"
+                    inputMode="email"
+                    name="email"
+                    spellCheck="false"
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                  />
+                  <button className="mobile-submit-btn" type="submit">
+                    <FaRegPaperPlane className="me-2" />
+                    Request Demo
+                  </button>
+                </div>
+              </form>
+            </div>
+            
             <p className="form-note">No credit card required. 30-day free trial.</p>
           </div>
         </div>
