@@ -108,6 +108,8 @@ export default function IncidentForm() {
     backgroundColor: "#f9f9f9",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     borderRadius: "8px",
+    boxSizing: "border-box",
+    overflow: "hidden"
   };
 
   const inputStyle = {
@@ -117,6 +119,7 @@ export default function IncidentForm() {
     border: "1px solid #ccc",
     marginBottom: "10px",
     backgroundColor: "white",
+    boxSizing: "border-box"
   };
 
   const labelStyle = {
@@ -144,7 +147,7 @@ export default function IncidentForm() {
 
   const saveBtn = {
     ...buttonStyle,
-    backgroundColor: "#7e57c2",
+    backgroundColor: "#00264D",
     color: "#fff",
     border: "none",
     width: "100%",
@@ -173,6 +176,7 @@ export default function IncidentForm() {
     border: "1px solid #ccc",
     marginRight: "10px",
     backgroundColor: "white",
+    boxSizing: "border-box"
   };
 
   const removeBtnStyle = {
@@ -211,6 +215,7 @@ export default function IncidentForm() {
     gap: "16px",
     marginTop: "6px",
     marginBottom: "10px",
+    flexWrap: "wrap"
   };
 
   const radioLabelStyle = {
@@ -220,18 +225,51 @@ export default function IncidentForm() {
     cursor: "pointer",
   };
 
+  // Header styles
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+    gap: "10px"
+  };
+
+  const titleStyle = {
+    color: "#00264D",
+    fontSize: "22px",
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1
+  };
+
+  const logoStyle = {
+    height: "50px",
+    width: "auto",
+    maxWidth: "120px",
+    objectFit: "contain"
+  };
+
   return (
     <div style={formStyle}>
-      {/* Back Button */}
-      <button 
-        type="button" 
-        onClick={() => navigate("/admin/clients")} 
-        style={backBtn}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ color: "#00264D", marginBottom: "20px" }}>Incident Form</h2>
+      {/* Header with Logo and Title */}
+      <div style={headerStyle}>
+        <button 
+          type="button" 
+          onClick={() => navigate("/admin/clients")} 
+          style={backBtn}
+        >
+          ← Back
+        </button>
+        
+        <h2 style={titleStyle}>Incident Form</h2>
+        
+        <img 
+          src="https://unitecare.org/content/images/logo.png" 
+          alt="Unite Care Ltd Logo" 
+          style={logoStyle}
+        />
+      </div>
 
       {/* Client Information Section */}
       <div style={sectionStyle}>Client Information</div>

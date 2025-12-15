@@ -7,13 +7,13 @@ export default function TelephoneMonitoringForm() {
 
   // Questions from PDF + missing ones added
   const checklistQuestions = [
-    "Is the support reliable?",
+    "Is support reliable?",
     "Have all visits been attended?",
     "Are you informed of delays or changes?",
-    "Does the worker stay full duration?",
+    "Does worker stay full duration?",
     "Do they wear uniform, ID & PPE?",
     "Are workers friendly & courteous?",
-    "Does care match the care plan?",
+    "Does care match care plan?",
     "Does care promote independence?",
     "Do you feel safer with our care?",
     "Are you asked to sign a timesheet?",
@@ -74,6 +74,8 @@ export default function TelephoneMonitoringForm() {
     backgroundColor: "#f9f9f9",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     borderRadius: "8px",
+    boxSizing: "border-box",
+    overflow: "hidden"
   };
 
   const inputStyle = {
@@ -83,6 +85,7 @@ export default function TelephoneMonitoringForm() {
     border: "1px solid #ccc",
     marginBottom: "10px",
     backgroundColor: "white",
+    boxSizing: "border-box"
   };
 
   const labelStyle = {
@@ -110,7 +113,7 @@ export default function TelephoneMonitoringForm() {
 
   const saveBtn = {
     ...buttonStyle,
-    backgroundColor: "#7e57c2",
+    backgroundColor: "#00264D",
     color: "#fff",
     border: "none",
     width: "100%",
@@ -126,24 +129,56 @@ export default function TelephoneMonitoringForm() {
     fontSize: "14px",
   };
 
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+    gap: "10px"
+  };
+
+  const titleStyle = {
+    color: "#00264D",
+    fontSize: "22px",
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1
+  };
+
+  const logoStyle = {
+    height: "50px",
+    width: "auto",
+    maxWidth: "120px",
+    objectFit: "contain"
+  };
+
   return (
     <div style={formStyle}>
-      {/* Back Button */}
-      <button 
-        type="button" 
-        onClick={() => navigate("/admin/clients")} 
-        style={backBtn}
-      >
-        ← Back
-      </button>
-
-      <h2 style={{ color: "#00264D", marginBottom: "20px" }}>Telephone Monitoring Form</h2>
+      {/* Header with Logo and Title */}
+      <div style={headerStyle}>
+        <button 
+          type="button" 
+          onClick={() => navigate("/admin/clients")} 
+          style={backBtn}
+        >
+          ← Back
+        </button>
+        
+        <h2 style={titleStyle}>Telephone Monitoring Form</h2>
+        
+        <img 
+          src="https://unitecare.org/content/images/logo.png" 
+          alt="Unite Care Ltd Logo" 
+          style={logoStyle}
+        />
+      </div>
 
       {/* Call Details */}
       <div style={sectionStyle}>Call Details</div>
 
       <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: "200px" }}>
           <label style={labelStyle}>Service User Name</label>
           <input
             type="text"
@@ -154,7 +189,7 @@ export default function TelephoneMonitoringForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: "200px" }}>
           <label style={labelStyle}>Person Making Call</label>
           <input
             type="text"
@@ -176,7 +211,7 @@ export default function TelephoneMonitoringForm() {
         <div key={q} style={{ marginBottom: "20px" }}>
           <b>{q}</b>
 
-          <div style={{ display: "flex", gap: "16px", marginTop: "6px" }}>
+          <div style={{ display: "flex", gap: "16px", marginTop: "6px", flexWrap: "wrap" }}>
             <label>
               <input
                 type="radio"
@@ -236,7 +271,7 @@ export default function TelephoneMonitoringForm() {
       <div style={sectionStyle}>Care Manager Review</div>
 
       <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: "200px" }}>
           <label style={labelStyle}>Care Manager Signature</label>
           <input
             type="text"
@@ -248,7 +283,7 @@ export default function TelephoneMonitoringForm() {
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: "200px" }}>
           <label style={labelStyle}>Date</label>
           <input
             type="date"
