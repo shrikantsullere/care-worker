@@ -726,12 +726,12 @@ const CarersList = () => {
                     >
                       <FaEye />
                     </button>
-                    <button 
+                    {/* <button 
                       style={{ ...styles.iconBtn, color: colors.primary }} 
                       onClick={() => { setViewingCarer(c); setFormsModalOpen(true); }}
                     >
                       <FaFolderOpen />
-                    </button>
+                    </button> */}
                     <button 
                       style={{ ...styles.iconBtn, color: colors.primary }} 
                       onClick={() => setAssignModal({ open: true, carerId: c.id })}
