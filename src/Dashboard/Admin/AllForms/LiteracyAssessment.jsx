@@ -234,9 +234,15 @@ const LiteracyAssessment = () => {
       width: "auto"
     },
     examPaper: {
+<<<<<<< HEAD
       border: "1px solid #ddd",
       boxShadow: "0 0 10px rgba(0,0,0,0.1)",
       backgroundColor: "#fff",
+=======
+      // border: "1px solid #ddd",
+      boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+      // backgroundColor: "#fff",
+>>>>>>> 4af374cc46faf46551558e7ae54ede87705b7c98
       padding: isMobile ? "10px" : "20px",
       margin: "0 auto",
       maxWidth: "100%"
