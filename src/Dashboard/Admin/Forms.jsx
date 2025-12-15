@@ -86,6 +86,11 @@ const Forms = () => {
     { id: 24, name: "Induction Checklist", route: "/admin/forms/induction-checklist-form", type: "Input", version: "1.0" },
     { id: 25, name: "Carer DBS Form", route: "/admin/forms/carer-dbs-form", type: "Input", version: "1.0" },
     { id: 26, name: "Staff File", route: "/admin/forms/staff-file", type: "Input", version: "1.0" },
+    // New forms added
+    { id: 27, name: "Induction Training", route: "/admin/forms/induction-training", type: "Input", version: "1.0" },
+    { id: 28, name: "48 Hour Agreement", route: "/admin/forms/hour-working", type: "Document", version: "1.0" },
+    { id: 29, name: "Bank Detail Form", route: "/admin/forms/bank-detail-form", type: "Input", version: "1.0" },
+    { id: 30, name: "Literacy Assessment", route: "/admin/forms/literacy-assessment", type: "Input", version: "1.0" },
   ]);
 
   // Sample submitted forms data
