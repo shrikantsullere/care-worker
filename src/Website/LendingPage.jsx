@@ -253,7 +253,7 @@ const LandingPage = () => {
                     onClick={() => scrollToSection('demo')}
                   >
                     <FaCalendarAlt className="me-2" />
-                    Request a Demo
+                    Request a Demo 
                   </button>
 
                 </div>
