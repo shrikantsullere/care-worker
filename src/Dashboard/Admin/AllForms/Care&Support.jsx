@@ -1,5 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Custom hook for responsive styles
+const useResponsive = () => {
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = screenSize.width < 768;
+  const isTablet = screenSize.width >= 768 && screenSize.width < 1024;
+  const isDesktop = screenSize.width >= 1024;
+
+  return { isMobile, isTablet, isDesktop, screenSize };
+};
 
 // --- Reusable Components (using the styles object) ---
 const Input = ({ label, type = "text", name, value, onChange, disabled }) => (
@@ -34,6 +60,7 @@ const Section = ({ title }) => (
 const CareAssessmentForm = () => {
   const navigate = useNavigate();
   const [isEditMode] = useState(true); // Assuming edit mode is always true for this example
+  const { isMobile, isTablet } = useResponsive();
 
   // State for all form sections
   const [clientInfo, setClientInfo] = useState({
@@ -174,28 +201,156 @@ const CareAssessmentForm = () => {
     navigate('/admin/forms');
   };
 
+  // Responsive styles based on screen size
+  const getResponsiveStyles = () => {
+    const baseStyles = { ...styles };
+    
+    if (isMobile) {
+      return {
+        ...baseStyles,
+        container: {
+          ...baseStyles.container,
+          padding: "10px",
+        },
+        header: {
+          ...baseStyles.header,
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: "10px",
+        },
+        headerLeft: {
+          ...baseStyles.headerLeft,
+          flex: "none",
+          width: "100%",
+        },
+        headerCenter: {
+          ...baseStyles.headerCenter,
+          flex: "none",
+          width: "100%",
+        },
+        headerRight: {
+          ...baseStyles.headerRight,
+          flex: "none",
+          width: "100%",
+          justifyContent: "center",
+        },
+        mainTitle: {
+          ...baseStyles.mainTitle,
+          fontSize: "20px",
+        },
+        logo: {
+          ...baseStyles.logo,
+          height: "40px",
+        },
+        formContent: {
+          ...baseStyles.formContent,
+          padding: "15px",
+        },
+        row: {
+          ...baseStyles.row,
+          flexDirection: "column",
+          gap: "15px",
+        },
+        grid: {
+          ...baseStyles.grid,
+          gridTemplateColumns: "1fr",
+        },
+        label: {
+          ...baseStyles.label,
+          fontSize: "13px",
+        },
+        input: {
+          ...baseStyles.input,
+          padding: "10px",
+          fontSize: "14px",
+        },
+        textarea: {
+          ...baseStyles.textarea,
+          padding: "10px",
+          fontSize: "14px",
+        },
+        select: {
+          ...baseStyles.select,
+          padding: "10px",
+          fontSize: "14px",
+        },
+        sectionHeader: {
+          ...baseStyles.sectionHeader,
+          fontSize: "18px",
+          margin: "20px 0 10px",
+        },
+        saveButton: {
+          ...baseStyles.saveButton,
+          padding: "12px",
+          fontSize: "16px",
+        }
+      };
+    } else if (isTablet) {
+      return {
+        ...baseStyles,
+        container: {
+          ...baseStyles.container,
+          padding: "15px",
+        },
+        header: {
+          ...baseStyles.header,
+          flexWrap: "wrap",
+        },
+        mainTitle: {
+          ...baseStyles.mainTitle,
+          fontSize: "22px",
+        },
+        formContent: {
+          ...baseStyles.formContent,
+          padding: "18px",
+        },
+        row: {
+          ...baseStyles.row,
+          gap: "15px",
+        },
+        grid: {
+          ...baseStyles.grid,
+          gridTemplateColumns: "repeat(2, 1fr)",
+        },
+        sectionHeader: {
+          ...baseStyles.sectionHeader,
+          fontSize: "19px",
+        }
+      };
+    }
+    
+    return baseStyles;
+  };
+
+  const responsiveStyles = getResponsiveStyles();
+
   return (
-    <div style={styles.container}>
+    <div style={responsiveStyles.container}>
       {/* Header with Logo and Back Button */}
-      <div style={styles.header}>
-        <button onClick={() => navigate('/admin/forms')} style={styles.backButton}>
-          ← Back
-        </button>
-        <img src="https://unitecare.org/content/images/logo.png" alt="Unite Care Ltd Logo" style={styles.logo} />
+      <div style={responsiveStyles.header}>
+        <div style={responsiveStyles.headerLeft}>
+          <button onClick={() => navigate('/admin/forms')} style={responsiveStyles.backButton}>
+            ← Back
+          </button>
+        </div>
+        <div style={responsiveStyles.headerCenter}>
+          <h2 style={responsiveStyles.mainTitle}>Care Assessment / Individual Care Plan</h2>
+        </div>
+        <div style={responsiveStyles.headerRight}>
+          <img src="https://unitecare.org/content/images/logo.png" alt="Unite Care Ltd Logo" style={responsiveStyles.logo} />
+        </div>
       </div>
 
-      <h2 style={styles.mainTitle}>Care Assessment / Individual Care Plan</h2>
-
       {/* Form Content */}
-      <div style={styles.formContent}>
+      <div style={responsiveStyles.formContent}>
         <form onSubmit={handleSave}>
           {/* SECTION 1: Client Information */}
           <Section title="Client Information" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Input label="Title" name="title" value={clientInfo.title} onChange={handleClientInfoChange} disabled={!isEditMode} />
             <Input label="First Name" name="firstName" value={clientInfo.firstName} onChange={handleClientInfoChange} disabled={!isEditMode} />
           </div>
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Input label="Last Name" name="lastName" value={clientInfo.lastName} onChange={handleClientInfoChange} disabled={!isEditMode} />
             <Input label="Preferred Name / Pronouns" name="preferredName" value={clientInfo.preferredName} onChange={handleClientInfoChange} disabled={!isEditMode} />
           </div>
@@ -203,7 +358,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 2: Contact Details */}
           <Section title="Contact Details" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Input label="Primary Phone Number" name="primaryPhone" value={contactDetails.primaryPhone} onChange={handleContactDetailsChange} disabled={!isEditMode} />
             <Select label="Phone Number Type" name="phoneType" value={contactDetails.phoneType} onChange={handleContactDetailsChange} disabled={!isEditMode}>
               <option value="">Select phone type</option>
@@ -212,14 +367,14 @@ const CareAssessmentForm = () => {
             </Select>
           </div>
           <Input label="Address" name="address" value={contactDetails.address} onChange={handleContactDetailsChange} disabled={!isEditMode} />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Input label="Secure Check-in Zone (meters)" name="secureCheckInZone" value={contactDetails.secureCheckInZone} onChange={handleContactDetailsChange} disabled={!isEditMode} />
             <Input label="Access Details" name="accessDetails" value={contactDetails.accessDetails} onChange={handleContactDetailsChange} disabled={!isEditMode} />
           </div>
 
           {/* SECTION 3: Culture & Religion */}
           <Section title="Culture & Religion" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Input label="Ethnicity" name="ethnicity" value={cultureReligion.ethnicity} onChange={handleCultureReligionChange} disabled={!isEditMode} />
             <Input label="Religion" name="religion" value={cultureReligion.religion} onChange={handleCultureReligionChange} disabled={!isEditMode} />
           </div>
@@ -233,7 +388,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 5: Medication Support */}
           <Section title="Medication Support" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Select label="Medication Type" name="medicationType" value={medicationSupport.medicationType} onChange={handleMedicationSupportChange} disabled={!isEditMode}>
               <option value="">Select medication type</option>
               <option value="blisterPack">Blister Pack</option>
@@ -252,7 +407,7 @@ const CareAssessmentForm = () => {
               <option value="asNeeded">As Needed</option>
             </Select>
           </div>
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Select label="Level of Support Required" name="supportLevel" value={medicationSupport.supportLevel} onChange={handleMedicationSupportChange} disabled={!isEditMode}>
               <option value="">Select support level</option>
               <option value="independent">Independent</option>
@@ -265,7 +420,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 6: Nutrition & Hydration */}
           <Section title="Nutrition & Hydration" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Select label="Appetite" name="appetite" value={nutritionHydration.appetite} onChange={handleNutritionHydrationChange} disabled={!isEditMode}>
               <option value="">Select appetite level</option>
               <option value="excellent">Excellent</option>
@@ -287,7 +442,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 7: Personal Care */}
           <Section title="Personal Care" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Select label="Washing / Bathing Ability" name="washingAbility" value={personalCare.washingAbility} onChange={handlePersonalCareChange} disabled={!isEditMode}>
               <option value="">Select ability</option>
               <option value="independent">Independent</option>
@@ -309,7 +464,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 8: Mobility */}
           <Section title="Mobility" />
-          <div style={styles.row}>
+          <div style={responsiveStyles.row}>
             <Select label="Mobility Level" name="mobilityLevel" value={mobility.mobilityLevel} onChange={handleMobilityChange} disabled={!isEditMode}>
               <option value="">Select mobility level</option>
               <option value="independent">Independent</option>
@@ -328,7 +483,7 @@ const CareAssessmentForm = () => {
 
           {/* SECTION 9: Daily Living */}
           <Section title="Daily Living" />
-          <div style={styles.grid}>
+          <div style={responsiveStyles.grid}>
             <Select label="Housekeeping Support" name="housekeepingSupport" value={dailyLiving.housekeepingSupport} onChange={handleDailyLivingChange} disabled={!isEditMode}>
               <option value="">Select support level</option>
               <option value="independent">Independent</option>
@@ -366,7 +521,7 @@ const CareAssessmentForm = () => {
           <Textarea label="Risk Mitigation Plan" name="mitigationPlan" value={risksMitigation.mitigationPlan} onChange={handleRisksMitigationChange} disabled={!isEditMode} rows="4" />
 
           {/* Save Button */}
-          <button type="submit" style={styles.saveButton}>
+          <button type="submit" style={responsiveStyles.saveButton}>
             Save Form
           </button>
         </form>
@@ -379,10 +534,10 @@ const CareAssessmentForm = () => {
 const styles = {
   container: {
     width: "100%",
-    margin: "20px auto",
+    margin: "0 auto",
     fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
     padding: "20px",
-    backgroundColor: "#fff", // Changed from #f5f7fa to #fff
+    backgroundColor: "#fff",
     minHeight: "100vh",
     boxSizing: "border-box",
   },
@@ -392,10 +547,26 @@ const styles = {
     alignItems: "center",
     marginBottom: "20px",
     padding: "15px 20px",
-    // backgroundColor: "#fff", // This line has been removed
-    borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    borderBottom: "1px solid #e9ecef",
     flexWrap: "wrap",
+    position: "relative",
+  },
+  headerLeft: {
+    flex: "1",
+    display: "flex",
+    alignItems: "center",
+  },
+  headerCenter: {
+    flex: "2",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerRight: {
+    flex: "1",
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   backButton: {
     background: "#3A8DFF",
@@ -405,21 +576,22 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     fontSize: "16px",
+    fontWeight: "500",
+    transition: "background-color 0.3s",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   },
   logo: {
-    height: "60px",
+    height: "50px",
     width: "auto",
     maxWidth: "150px",
     objectFit: "contain",
   },
   mainTitle: {
     color: "#00264D",
-    marginBottom: "25px",
-    marginTop: "0",
+    margin: "0",
     textAlign: "center",
-    borderBottom: "2px solid #f0f0f0",
-    paddingBottom: "15px",
-    backgroundColor: "#fff", // Added white background
+    fontSize: "24px",
+    fontWeight: "600",
   },
   formContent: {
     backgroundColor: "#fff",
