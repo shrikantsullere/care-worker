@@ -290,7 +290,6 @@ const Download = () => {
             <div key={d.id} style={styles.downloadCard}>
               <div style={styles.cardHeader}>
                 <div style={styles.cardTitle}>{d.name}</div>
-                <FaFileAlt style={styles.cardIcon} />
               </div>
               <div style={styles.cardDetails}>
                 <div style={styles.cardDetail}>
